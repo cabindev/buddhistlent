@@ -37,4 +37,6 @@ next-env.d.ts
 
 /lib/generated/prisma
 
-/lib/generated/prisma
+# uploaded user images (large binary files)
+/public/images/
+/public/organization/
