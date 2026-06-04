@@ -1,0 +1,172 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model SoberCheers {
+  id                Int       @id @default(autoincrement())
+  gender            String?
+  firstName         String
+  lastName          String
+  birthday          DateTime
+  addressLine1      String
+  district          String
+  amphoe            String
+  province          String
+  zipcode           String
+  type              String?
+  phone             String?    
+  job               String
+  alcoholConsumption String
+  drinkingFrequency String?
+  intentPeriod      String?
+  monthlyExpense    Int?
+  motivations       Json
+  healthImpact      String
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+model CampaignBuddhistLent {
+  id                Int       @id @default(autoincrement())
+  gender            String
+  userId            Int       @unique
+  user              User      @relation(fields: [userId], references: [id])
+  firstName         String
+  lastName          String
+  birthday          DateTime
+  addressLine1      String
+  district          String
+  amphoe            String
+  province          String
+  zipcode           String
+  type              String?
+  phone             String?    
+  job               String
+  alcoholConsumption String
+  drinkingFrequency String?
+  intentPeriod      String?
+  monthlyExpense    Int?
+  motivations       Json
+  healthImpact      String
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+model User {
+  id                Int                     @id @default(autoincrement())
+  firstName         String
+  lastName          String
+  email             String                  @unique
+  password          String?
+  image             String?
+  role              String                  @default("member")
+  emailVerified     DateTime?
+  resetToken        String?
+  resetTokenCreatedAt DateTime?
+  resetTokenExpiresAt   DateTime? 
+  lastPasswordReset   DateTime?
+  createdAt         DateTime                @default(now())
+  updatedAt         DateTime                @updatedAt
+  campaignBuddhistLent CampaignBuddhistLent[]
+}
+
+model Form_return {
+  id               Int       @id @default(autoincrement())
+  firstName        String
+  lastName         String
+  organizationName String
+  addressLine1     String
+  district         String
+  amphoe           String
+  province         String
+  zipcode          String
+  type             String
+  phoneNumber      String
+  image1           String?
+  image2           String?
+  numberOfSigners  Int
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([createdAt])
+  @@index([province, createdAt])
+}
+
+enum Role {
+  member
+  admin
+}
+
+// ✅ โมเดลสำหรับเก็บชื่อองค์กร (Master Data)
+model OrganizationCategory {
+  id              Int                    @id @default(autoincrement())
+  name            String                 @unique // ชื่อองค์กร เช่น "โรงพยาบาลสมเด็จพระเทพรัตน์", "เทศบาลตำบลบางไผ่"
+  shortName       String?                // ชื่อย่อ เช่น "รพ.สมเด็จ", "ทต.บางไผ่"
+  description     String?                // คำอธิบายองค์กร
+  categoryType    String                 // ประเภทองค์กร เช่น "โรงพยาบาล", "เทศบาล", "โรงเรียน", "วัด"
+  
+  // การจัดการ
+  isActive        Boolean                @default(true) // สถานะการใช้งาน
+  sortOrder       Int?                   // ลำดับการแสดง
+  
+  // Metadata
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+  
+  // Relationships
+  organizations   Organization[]         // ข้อมูลส่งคืนจากองค์กรนี้
+  
+  @@index([createdAt])
+  @@index([isActive, sortOrder])
+  @@index([categoryType])
+  @@map("OrganizationCategory") // กำหนดชื่อตารางให้ชัดเจน
+}
+
+// ✅ โมเดลสำหรับข้อมูลส่งคืนจากสมาชิก
+model Organization {
+  id                    Int                      @id @default(autoincrement())
+  
+  // ข้อมูลผู้ส่ง
+  firstName             String                   // ชื่อผู้ส่งข้อมูล
+  lastName              String                   // นามสกุลผู้ส่งข้อมูล
+  
+  // ข้อมูลองค์กร
+  organizationCategoryId Int?                    // เปลี่ยนจาก Int เป็น Int? (optional)
+  organizationCategory   OrganizationCategory?   @relation(fields: [organizationCategoryId], references: [id])
+  
+  // ข้อมูลที่อยู่
+  addressLine1          String                   // ที่อยู่
+  district              String                   // ตำบล/แขวง
+  amphoe                String                   // อำเภอ/เขต
+  province              String                   // จังหวัด
+  zipcode               String                   // รหัสไปรษณีย์
+  type                  String                   // ประเภทพื้นที่ (ภูมิภาค/)
+  
+  // ข้อมูลติดต่อ
+  phoneNumber           String                   @unique // เบอร์โทรศัพท์
+  
+  // ข้อมูลการดำเนินงาน
+  numberOfSigners       Int                      // จำนวนผู้ลงนาม
+  
+  // ✅ รูปภาพ 5 รูป (บังคับ 2 รูป แรก)
+  image1                String                   // รูปที่ 1 (บังคับ)
+  image2                String                   // รูปที่ 2 (บังคับ)
+  image3                String?                  // รูปที่ 3 (ไม่บังคับ)
+  image4                String?                  // รูปที่ 4 (ไม่บังคับ)
+  image5                String?                  // รูปที่ 5 (ไม่บังคับ)
+  
+  createdAt             DateTime                 @default(now())
+  updatedAt             DateTime                 @updatedAt
+  
+  // Indexes
+  @@index([organizationCategoryId])
+  @@index([province, createdAt])
+  @@index([createdAt])
+  @@index([phoneNumber])
+  @@map("Organization") // กำหนดชื่อตารางให้ชัดเจน
+}

@@ -1,0 +1,359 @@
+'use client';
+import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
+import { LoaderCircle, CheckCircle2 } from 'lucide-react';
+import { data as regions } from '@/app/data/regions';
+import { createSoberCheers } from '../actions/Post';
+
+const DRINKER = ['ดื่ม (ย้อนหลังไป 1 ปี)', 'เลิกดื่มมาแล้วมากกว่า 1 ปี แต่ยังไม่ถึง 3 ปี'];
+
+const JOBS = [
+  'ประกอบธุรกิจส่วนตัว', 'ข้าราชการ/ลูกจ้างหน่วยงานราชการ', 'รัฐวิสาหกิจ',
+  'พนักงานเอกชน/ลูกจ้างเอกชน', 'ค้าขาย/งานบริการ', 'เกษตรกรรม',
+  'รับจ้างทั่วไป', 'นักเรียน/นักศึกษา', 'ข้าราชการเกษียณ', 'อื่น ๆ',
+];
+
+const MOTIVATIONS = [
+  'เพื่อลูกและครอบครัว', 'เพื่อสุขภาพของตนเอง', 'ได้บุญ/รักษาศีล',
+  'ผู้นำชุมชนชักชวน', 'คนรักและเพื่อนชวน', 'ประหยัดเงิน',
+  'เพื่อเป็นแบบอย่างที่ดีให้กับคนอื่น',
+];
+
+function calcAge(birthday: string) {
+  if (!birthday) return null;
+  const today = new Date();
+  const b = new Date(birthday);
+  let age = today.getFullYear() - b.getFullYear();
+  if (today.getMonth() < b.getMonth() || (today.getMonth() === b.getMonth() && today.getDate() < b.getDate())) age--;
+  return age > 0 ? age : null;
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-4">{title}</h2>
+      <div className="space-y-4">{children}</div>
+    </div>
+  );
+}
+
+function Field({ label, required, hint, children }: { label: string; required?: boolean; hint?: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-1.5">
+        {label}{required && <span className="text-red-400 ml-0.5">*</span>}
+      </label>
+      {children}
+      {hint && <p className="mt-1 text-xs text-gray-400">{hint}</p>}
+    </div>
+  );
+}
+
+const inputCls = "w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent bg-white placeholder-gray-300 transition";
+const selectCls = `${inputCls} cursor-pointer`;
+
+export default function CreateSoberCheers() {
+  const router = useRouter();
+  const districtRef = useRef<HTMLDivElement>(null);
+
+  const [form, setForm] = useState({
+    firstName: '', lastName: '', gender: '', birthday: '',
+    addressLine1: '', district: '', amphoe: '', province: '', zipcode: '', type: '',
+    phone: '', job: '', alcoholConsumption: '',
+    drinkingFrequency: '', intentPeriod: '', monthlyExpense: '',
+    healthImpact: 'ไม่มีผลกระทบ',
+  });
+  const [motivations, setMotivations] = useState<string[]>([]);
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [autoFilled, setAutoFilled] = useState(false);
+  const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  const set = (key: string, value: string) => setForm(f => ({ ...f, [key]: value }));
+
+  const age = calcAge(form.birthday);
+  const isDrinker = DRINKER.includes(form.alcoholConsumption);
+
+  // District autocomplete
+  const handleDistrictChange = (val: string) => {
+    set('district', val);
+    setAutoFilled(false);
+    setSuggestions(val.length > 0 ? regions.filter(r => r.district.toLowerCase().startsWith(val.toLowerCase())).slice(0, 8) : []);
+  };
+
+  const pickSuggestion = (s: any) => {
+    setForm(f => ({ ...f, district: s.district, amphoe: s.amphoe, province: s.province, zipcode: s.zipcode.toString(), type: s.type }));
+    setSuggestions([]);
+    setAutoFilled(true);
+  };
+
+  // Close suggestions on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => { if (districtRef.current && !districtRef.current.contains(e.target as Node)) setSuggestions([]); };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const toggleMotivation = (m: string) =>
+    setMotivations(prev => prev.includes(m) ? prev.filter(x => x !== m) : [...prev, m]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    if (!form.gender) return setError('กรุณาเลือกเพศ');
+    if (form.phone && !/^[0-9]{10}$/.test(form.phone)) return setError('เบอร์โทรศัพท์ต้องเป็นตัวเลข 10 หลัก');
+
+    setSubmitting(true);
+    try {
+      const result = await createSoberCheers({
+        ...form,
+        motivations,
+        drinkingFrequency: isDrinker ? form.drinkingFrequency || null : null,
+        intentPeriod: isDrinker ? form.intentPeriod || null : null,
+        monthlyExpense: isDrinker && form.monthlyExpense ? parseInt(form.monthlyExpense.replace(/,/g, '')) : null,
+      });
+      if (result.success) {
+        setSuccess(true);
+        setTimeout(() => router.push('/soberCheers'), 1500);
+      } else {
+        setError(result.message);
+      }
+    } catch {
+      setError('เกิดข้อผิดพลาด กรุณาลองใหม่');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (success) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center space-y-3">
+          <CheckCircle2 className="w-12 h-12 text-green-500 mx-auto" />
+          <p className="text-gray-700 font-medium">ลงทะเบียนสำเร็จ</p>
+          <p className="text-sm text-gray-400">กำลังกลับสู่หน้าหลัก...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 py-10 px-4">
+      <div className="max-w-xl mx-auto">
+
+        {/* Header */}
+        <div className="mb-8 text-center">
+          <h1 className="text-2xl font-semibold text-gray-900">ลงทะเบียน Sober Cheers</h1>
+          <p className="text-sm text-gray-400 mt-1">ชวนช่วย ชมเชียร์ เชิดชู — งดเหล้าเข้าพรรษา ปี {new Date().getFullYear() + 543}</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-gray-200 divide-y divide-gray-100">
+
+          {/* Section 1 — ข้อมูลส่วนตัว */}
+          <div className="p-6">
+            <Section title="ข้อมูลส่วนตัว">
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="ชื่อ" required>
+                  <input className={inputCls} value={form.firstName} onChange={e => set('firstName', e.target.value)} placeholder="ชื่อ" required />
+                </Field>
+                <Field label="นามสกุล" required>
+                  <input className={inputCls} value={form.lastName} onChange={e => set('lastName', e.target.value)} placeholder="นามสกุล" required />
+                </Field>
+              </div>
+
+              <Field label="เพศ" required>
+                <div className="flex gap-2 mt-0.5">
+                  {['ชาย', 'หญิง', 'LGBTQ'].map(g => (
+                    <button key={g} type="button" onClick={() => set('gender', g)}
+                      className={`flex-1 py-2 text-sm rounded-lg border transition-colors ${
+                        form.gender === g
+                          ? 'bg-amber-500 border-amber-500 text-white font-medium'
+                          : 'border-gray-200 text-gray-600 hover:border-amber-300 hover:text-amber-600'
+                      }`}
+                    >{g}</button>
+                  ))}
+                </div>
+              </Field>
+
+              <Field label="วันเกิด (ค.ศ.)" required>
+                <div className="flex items-center gap-3">
+                  <input type="date" className={inputCls} value={form.birthday} onChange={e => set('birthday', e.target.value)} required />
+                  {age !== null && <span className="text-sm text-gray-500 whitespace-nowrap">{age} ปี</span>}
+                </div>
+              </Field>
+            </Section>
+          </div>
+
+          {/* Section 2 — ที่อยู่ */}
+          <div className="p-6">
+            <Section title="ที่อยู่">
+              <Field label="ที่อยู่ (บ้านเลขที่/หมู่บ้าน)" required>
+                <input className={inputCls} value={form.addressLine1} onChange={e => set('addressLine1', e.target.value)} placeholder="บ้านเลขที่ หมู่..." required />
+              </Field>
+
+              <Field label="ตำบล/แขวง" required hint="พิมพ์ชื่อตำบลโดยไม่ต้องมีคำนำหน้า ระบบจะแนะนำข้อมูลอัตโนมัติ">
+                <div className="relative" ref={districtRef}>
+                  <input className={inputCls} value={form.district} onChange={e => handleDistrictChange(e.target.value)} placeholder="พิมพ์ชื่อตำบล..." required />
+                  {suggestions.length > 0 && (
+                    <ul className="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+                      {suggestions.map((s, i) => (
+                        <li key={i} onClick={() => pickSuggestion(s)}
+                          className="px-4 py-2.5 text-sm text-gray-700 hover:bg-amber-50 cursor-pointer border-b border-gray-100 last:border-0">
+                          <span className="font-medium">{s.district}</span>
+                          <span className="text-gray-400"> · {s.amphoe} · {s.province} {s.zipcode}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </Field>
+
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="อำเภอ/เขต" required>
+                  <input className={`${inputCls} ${autoFilled ? 'bg-amber-50 border-amber-200' : ''}`}
+                    value={form.amphoe} onChange={e => set('amphoe', e.target.value)} placeholder="อำเภอ" required />
+                </Field>
+                <Field label="จังหวัด" required>
+                  <input className={`${inputCls} ${autoFilled ? 'bg-amber-50 border-amber-200' : ''}`}
+                    value={form.province} onChange={e => set('province', e.target.value)} placeholder="จังหวัด" required />
+                </Field>
+              </div>
+
+              <Field label="รหัสไปรษณีย์" required>
+                <input className={`${inputCls} ${autoFilled ? 'bg-amber-50 border-amber-200' : ''} max-w-[140px]`}
+                  value={form.zipcode} onChange={e => set('zipcode', e.target.value)} placeholder="00000" maxLength={5} required />
+              </Field>
+            </Section>
+          </div>
+
+          {/* Section 3 — ข้อมูลติดต่อ */}
+          <div className="p-6">
+            <Section title="ข้อมูลติดต่อ">
+              <Field label="เบอร์โทรศัพท์" hint="ไม่บังคับ — ตัวเลข 10 หลัก">
+                <input className={`${inputCls} max-w-[200px]`} type="tel" value={form.phone}
+                  onChange={e => set('phone', e.target.value.replace(/\D/g, '').slice(0, 10))}
+                  placeholder="0812345678" maxLength={10} />
+              </Field>
+
+              <Field label="อาชีพ" required>
+                <select className={selectCls} value={form.job} onChange={e => set('job', e.target.value)} required>
+                  <option value="" disabled>เลือกอาชีพ</option>
+                  {JOBS.map(j => <option key={j} value={j}>{j}</option>)}
+                </select>
+              </Field>
+            </Section>
+          </div>
+
+          {/* Section 4 — การดื่มแอลกอฮอล์ */}
+          <div className="p-6">
+            <Section title="การดื่มแอลกอฮอล์">
+              <Field label="สถานะการดื่ม" required>
+                <select className={selectCls} value={form.alcoholConsumption} onChange={e => set('alcoholConsumption', e.target.value)} required>
+                  <option value="" disabled>เลือกคำตอบ</option>
+                  <option value="ดื่ม (ย้อนหลังไป 1 ปี)">ดื่ม (ย้อนหลังไป 1 ปี)</option>
+                  <option value="เลิกดื่มมาแล้วมากกว่า 1 ปี แต่ยังไม่ถึง 3 ปี">เลิกดื่มมาแล้วมากกว่า 1 ปี แต่ยังไม่ถึง 3 ปี</option>
+                  <option value="เลิกดื่มมาแล้วมากกว่า 3 ปี">เลิกดื่มมาแล้วมากกว่า 3 ปี</option>
+                  <option value="ไม่เคยดื่มเลยตลอดชีวิต">ไม่เคยดื่มเลยตลอดชีวิต</option>
+                </select>
+              </Field>
+
+              {isDrinker && (
+                <div className="space-y-4 pl-4 border-l-2 border-amber-200">
+                  <Field label="ความถี่การดื่ม" required>
+                    <select className={selectCls} value={form.drinkingFrequency} onChange={e => set('drinkingFrequency', e.target.value)} required>
+                      <option value="" disabled>เลือกคำตอบ</option>
+                      <option value="ทุกวัน (7 วัน/สัปดาห์)">ทุกวัน (7 วัน/สัปดาห์)</option>
+                      <option value="เกือบทุกวัน (3-5 วัน/สัปดาห์)">เกือบทุกวัน (3-5 วัน/สัปดาห์)</option>
+                      <option value="ทุกสัปดาห์ (1-2 วัน/สัปดาห์)">ทุกสัปดาห์ (1-2 วัน/สัปดาห์)</option>
+                      <option value="ทุกเดือน (1-3 วัน/เดือน)">ทุกเดือน (1-3 วัน/เดือน)</option>
+                      <option value="นาน ๆ ครั้ง (8-11 วัน/ปี)">นาน ๆ ครั้ง (8-11 วัน/ปี)</option>
+                    </select>
+                  </Field>
+
+                  <Field label="ค่าใช้จ่าย/เดือน (บาท)" required>
+                    <input className={`${inputCls} max-w-[200px]`} type="text" value={form.monthlyExpense}
+                      onChange={e => set('monthlyExpense', e.target.value.replace(/[^0-9]/g, ''))}
+                      placeholder="500" required />
+                  </Field>
+
+                  <Field label="ตั้งใจงดดื่ม" required>
+                    <select className={selectCls} value={form.intentPeriod} onChange={e => set('intentPeriod', e.target.value)} required>
+                      <option value="" disabled>เลือกคำตอบ</option>
+                      <option value="1 เดือน">1 เดือน</option>
+                      <option value="2 เดือน">2 เดือน</option>
+                      <option value="3 เดือน">3 เดือน</option>
+                      <option value="ตลอดชีวิต">ตลอดชีวิต</option>
+                      <option value="ลดปริมาณการดื่ม">ลดปริมาณการดื่ม</option>
+                    </select>
+                  </Field>
+                </div>
+              )}
+            </Section>
+          </div>
+
+          {/* Section 5 — แรงจูงใจ */}
+          <div className="p-6">
+            <Section title="แรงจูงใจในการงดเหล้า">
+              <div className="grid grid-cols-2 gap-2">
+                {MOTIVATIONS.map(m => (
+                  <button key={m} type="button" onClick={() => toggleMotivation(m)}
+                    className={`px-3 py-2.5 text-sm rounded-lg border text-left transition-colors ${
+                      motivations.includes(m)
+                        ? 'bg-amber-50 border-amber-400 text-amber-800 font-medium'
+                        : 'border-gray-200 text-gray-600 hover:border-amber-200'
+                    }`}
+                  >
+                    {motivations.includes(m) && <span className="mr-1">✓</span>}
+                    {m}
+                  </button>
+                ))}
+              </div>
+            </Section>
+          </div>
+
+          {/* Section 6 — ผลกระทบ */}
+          <div className="p-6">
+            <Section title="ผลกระทบต่อสุขภาพ">
+              <div className="space-y-2">
+                {[
+                  { value: 'ไม่มีผลกระทบ', desc: '' },
+                  { value: 'มีผลกระทบแต่ไม่ต้องการช่วยเหลือ', desc: '' },
+                  { value: 'มีผลกระทบและควรได้รับการช่วยเหลือจากแพทย์หรือผู้เชี่ยวชาญด้านการบำบัดสุรา', desc: '' },
+                ].map(opt => (
+                  <button key={opt.value} type="button" onClick={() => set('healthImpact', opt.value)}
+                    className={`w-full px-4 py-3 text-sm rounded-lg border text-left transition-colors ${
+                      form.healthImpact === opt.value
+                        ? 'bg-amber-50 border-amber-400 text-amber-800 font-medium'
+                        : 'border-gray-200 text-gray-600 hover:border-amber-200'
+                    }`}
+                  >
+                    {form.healthImpact === opt.value && <span className="mr-2">✓</span>}
+                    {opt.value}
+                  </button>
+                ))}
+              </div>
+            </Section>
+          </div>
+
+          {/* Submit */}
+          <div className="p-6">
+            {error && (
+              <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
+                {error}
+              </div>
+            )}
+            <button type="submit" disabled={submitting}
+              className="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+              {submitting ? (
+                <><LoaderCircle className="w-4 h-4 animate-spin" /> กำลังบันทึก...</>
+              ) : 'ลงทะเบียน'}
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  );
+}
