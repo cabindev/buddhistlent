@@ -34,7 +34,7 @@ export default function Navbar() {
 
   return (
     <nav className="relative z-50 bg-white border-b border-gray-100">
-      <div className="max-w-2xl mx-auto px-8">
+      <div className="max-w-3xl mx-auto px-4">
         <div className="flex justify-between h-14">
 
           {/* Brand */}
