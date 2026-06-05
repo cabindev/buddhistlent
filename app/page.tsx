@@ -60,7 +60,7 @@ export default function Home() {
                   <span>{lent.pct}%</span>
                 </div>
                 <div className="h-1 bg-gray-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-orange-400 rounded-full transition-all" style={{ width: `${lent.pct}%` }} />
+                  <div className="h-full bg-yellow-400 rounded-full transition-all" style={{ width: `${lent.pct}%` }} />
                 </div>
               </div>
             )}
@@ -81,12 +81,12 @@ export default function Home() {
           <button
             type="button"
             onClick={() => router.push('/organization/create')}
-            className="col-span-2 md:col-span-1 group bg-orange-500 hover:bg-orange-600 transition-colors rounded-3xl p-6 shadow-sm text-left flex flex-col justify-between min-h-[160px]"
+            className="col-span-2 md:col-span-1 group bg-yellow-400 hover:bg-yellow-500 transition-colors rounded-3xl p-6 shadow-sm text-left flex flex-col justify-between min-h-[160px]"
           >
-            <ArrowUpRight className="w-5 h-5 text-orange-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            <ArrowUpRight className="w-5 h-5 text-yellow-900/40 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             <div>
-              <p className="text-base font-semibold text-white leading-snug">ลงทะเบียน<br />หน่วยงาน</p>
-              <p className="text-xs text-orange-200 mt-1">Register</p>
+              <p className="text-base font-semibold text-gray-900 leading-snug">ลงทะเบียน<br />หน่วยงาน</p>
+              <p className="text-xs text-yellow-900/50 mt-1">Register</p>
             </div>
           </button>
 
