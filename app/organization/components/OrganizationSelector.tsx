@@ -73,8 +73,8 @@ export default function OrganizationSelector({ value, onChange, error, disabled 
                         flex items-center px-3 py-2 rounded text-xs cursor-pointer border
                         transition-colors duration-150 min-h-[44px]
                         ${value === category.id
-                          ? 'border-orange-500 bg-orange-50 text-orange-700'
-                          : 'border-gray-300 bg-white text-gray-700 hover:border-orange-400 hover:bg-orange-50'
+                          ? 'border-yellow-400 bg-yellow-50 text-gray-900 font-semibold'
+                          : 'border-gray-200 bg-white text-gray-700 hover:border-yellow-400 hover:bg-yellow-50'
                         }
                         ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
                       `}
@@ -115,7 +115,7 @@ export default function OrganizationSelector({ value, onChange, error, disabled 
 
       {/* แสดงคำอธิบายขององค์กรที่เลือก */}
       {Boolean(value) && (
-        <div className="mt-3 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+        <div className="mt-3 p-3 bg-yellow-50 border border-yellow-300 rounded-lg">
           {(() => {
             const selectedCategory = organizationCategories.find(cat => cat.id === value);
             return selectedCategory?.description ? (
