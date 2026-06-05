@@ -3,22 +3,21 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowUpRight, ChevronDown, ChevronRight } from 'lucide-react';
 
-function SpinBorder({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+function ShimmerCard({ children, style = {}, className = '' }: { children: React.ReactNode; style?: React.CSSProperties; className?: string }) {
   return (
-    <div className={`relative ${className}`} style={{ padding: 2, borderRadius: 24 }}>
+    <div className={`relative overflow-hidden ${className}`} style={style}>
       <div style={{
-        position: 'absolute', inset: '-100%', width: '300%', height: '300%',
-        background: 'conic-gradient(from 0deg, transparent 0%, transparent 65%, #fef08a 75%, #fff 80%, #fef08a 85%, transparent 95%, transparent 100%)',
-        animation: 'spin-border 2.5s linear infinite',
-        borderRadius: '50%',
+        position: 'absolute', inset: 0, zIndex: 1,
+        background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.45) 50%, transparent 60%)',
+        backgroundSize: '200% 100%',
+        animation: 'shimmer 3s ease-in-out infinite',
+        pointerEvents: 'none',
       }} />
-      <div style={{ position: 'relative', borderRadius: 22, overflow: 'hidden', zIndex: 1 }}>
-        {children}
-      </div>
+      <div style={{ position: 'relative', zIndex: 2 }}>{children}</div>
       <style>{`
-        @keyframes spin-border {
-          from { transform: rotate(0deg); }
-          to   { transform: rotate(360deg); }
+        @keyframes shimmer {
+          0%   { background-position: 200% center; }
+          100% { background-position: -200% center; }
         }
       `}</style>
     </div>
@@ -98,34 +97,35 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Actions — one unified card */}
-        <div className="mb-3">
-        <SpinBorder>
-        <div style={{ background: '#fff' }}>
+        {/* Actions */}
+        <div className="rounded-2xl overflow-hidden shadow-sm mb-3" style={{ background: '#fff' }}>
           {actions.map((a, i) => (
-            <button
-              key={a.href}
-              type="button"
-              onClick={() => router.push(a.href)}
-              className="w-full flex items-center justify-between px-5 py-4 active:opacity-70 transition-opacity text-left"
-              style={{
-                background: a.primary ? GOLD : '#fff',
-                borderBottom: i < actions.length - 1 ? '1px solid #f0ebe4' : 'none',
-              }}
-            >
-              <div>
-                <p className="text-sm font-semibold" style={{ color: a.primary ? '#1c1917' : '#44403c' }}>
-                  {a.label}
-                </p>
-                <p className="text-[11px] mt-0.5" style={{ color: a.primary ? '#78613a' : '#a8a29e' }}>
-                  {a.sub}
-                </p>
-              </div>
-              <ChevronRight className="w-4 h-4 flex-shrink-0 ml-3" style={{ color: a.primary ? '#78613a' : '#d6d3d1' }} />
-            </button>
+            a.primary ? (
+              <ShimmerCard key={a.href}
+                style={{ background: GOLD, borderBottom: '1px solid #e5c46a' }}
+                className="w-full"
+              >
+                <button type="button" onClick={() => router.push(a.href)}
+                  className="w-full flex items-center justify-between px-5 py-4 active:opacity-70 transition-opacity text-left">
+                  <div>
+                    <p className="text-sm font-semibold" style={{ color: '#1c1917' }}>{a.label}</p>
+                    <p className="text-[11px] mt-0.5" style={{ color: '#78613a' }}>{a.sub}</p>
+                  </div>
+                  <ChevronRight className="w-4 h-4 flex-shrink-0 ml-3" style={{ color: '#78613a' }} />
+                </button>
+              </ShimmerCard>
+            ) : (
+              <button key={a.href} type="button" onClick={() => router.push(a.href)}
+                className="w-full flex items-center justify-between px-5 py-4 active:opacity-70 transition-opacity text-left"
+                style={{ background: '#fff', borderBottom: i < actions.length - 1 ? '1px solid #f0ebe4' : 'none' }}>
+                <div>
+                  <p className="text-sm font-semibold" style={{ color: '#44403c' }}>{a.label}</p>
+                  <p className="text-[11px] mt-0.5" style={{ color: '#a8a29e' }}>{a.sub}</p>
+                </div>
+                <ChevronRight className="w-4 h-4 flex-shrink-0 ml-3" style={{ color: '#d6d3d1' }} />
+              </button>
+            )
           ))}
-        </div>
-        </SpinBorder>
         </div>
 
         {/* How to use */}
@@ -192,17 +192,17 @@ export default function Home() {
           </div>
 
           {/* Register */}
-          <SpinBorder>
-          <button type="button" onClick={() => router.push('/organization/create')}
-            className="group w-full p-6 text-left flex flex-col justify-between hover:brightness-95 transition-all"
-            style={{ background: GOLD, minHeight: 170 }}>
-            <ArrowUpRight className="w-5 h-5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" style={{ color: '#78613a' }} />
-            <div>
-              <p className="text-base font-semibold text-stone-900 leading-snug">ลงทะเบียน<br />หน่วยงาน</p>
-              <p className="text-xs mt-1" style={{ color: '#78613a' }}>Register</p>
-            </div>
-          </button>
-          </SpinBorder>
+          <ShimmerCard className="rounded-3xl shadow-sm cursor-pointer group" style={{ background: GOLD, minHeight: 170 }}>
+            <button type="button" onClick={() => router.push('/organization/create')}
+              className="w-full h-full p-6 text-left flex flex-col justify-between hover:brightness-95 transition-all"
+              style={{ minHeight: 170 }}>
+              <ArrowUpRight className="w-5 h-5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" style={{ color: '#78613a' }} />
+              <div>
+                <p className="text-base font-semibold text-stone-900 leading-snug">ลงทะเบียน<br />หน่วยงาน</p>
+                <p className="text-xs mt-1" style={{ color: '#78613a' }}>Register</p>
+              </div>
+            </button>
+          </ShimmerCard>
 
           {/* View */}
           <button type="button" onClick={() => router.push('/organization')}
