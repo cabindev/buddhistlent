@@ -43,7 +43,7 @@ app.prepare().then(() => {
         });
     }
 
-    server.all('*', (req, res) => {
+    server.use((req, res) => {
         return handle(req, res);
     });
 
