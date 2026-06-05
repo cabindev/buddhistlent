@@ -94,23 +94,25 @@ export default function Home() {
         {/* handle */}
         <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mb-5" />
 
-        {actions.map((a) => (
-          <button
-            key={a.href}
-            type="button"
-            onClick={() => router.push(a.href)}
-            className="w-full flex items-center gap-4 rounded-2xl px-4 py-4 bg-gray-50 hover:bg-gray-100 active:scale-[0.98] transition-all duration-150 text-left"
-          >
-            <div className={`${a.bg} ${a.accent} w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0`}>
-              {a.icon}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-gray-800">{a.label}</p>
-              <p className="text-xs text-gray-400 mt-0.5">{a.sub}</p>
-            </div>
-            <ChevronRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
-          </button>
-        ))}
+        <div className="rounded-2xl overflow-hidden border border-gray-100">
+          {actions.map((a, i) => (
+            <button
+              key={a.href}
+              type="button"
+              onClick={() => router.push(a.href)}
+              className={`w-full flex items-center gap-4 px-4 py-4 hover:bg-gray-50 active:bg-gray-100 transition-colors duration-150 text-left ${i < actions.length - 1 ? 'border-b border-gray-100' : ''}`}
+            >
+              <div className={`${a.bg} ${a.accent} w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0`}>
+                {a.icon}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-gray-800">{a.label}</p>
+                <p className="text-xs text-gray-400 mt-0.5">{a.sub}</p>
+              </div>
+              <ChevronRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
+            </button>
+          ))}
+        </div>
 
         {/* How to use */}
         <div className="rounded-2xl overflow-hidden border border-gray-100">
