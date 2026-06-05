@@ -100,16 +100,16 @@ export default function Home() {
               key={a.href}
               type="button"
               onClick={() => router.push(a.href)}
-              className={`w-full flex items-center gap-4 px-4 py-4 hover:bg-gray-50 active:bg-gray-100 transition-colors duration-150 text-left ${i < actions.length - 1 ? 'border-b border-gray-100' : ''}`}
+              className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 active:bg-gray-100 transition-colors duration-150 text-left ${i < actions.length - 1 ? 'border-b border-gray-100' : ''}`}
             >
-              <div className={`${a.bg} ${a.accent} w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0`}>
-                {a.icon}
+              <div className={`${a.bg} ${a.accent} w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0`}>
+                {React.cloneElement(a.icon, { className: 'w-4 h-4' })}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-gray-800">{a.label}</p>
-                <p className="text-xs text-gray-400 mt-0.5">{a.sub}</p>
+                <p className="text-sm font-medium text-gray-800">{a.label}</p>
+                <p className="text-[11px] text-gray-400">{a.sub}</p>
               </div>
-              <ChevronRight className="w-4 h-4 text-gray-300 flex-shrink-0" />
+              <ChevronRight className="w-3.5 h-3.5 text-gray-300 flex-shrink-0" />
             </button>
           ))}
         </div>
