@@ -89,21 +89,20 @@ export default function Home() {
         </div>
 
         {/* How it Works — collapsible */}
-        <div className="rounded-2xl overflow-hidden shadow-sm">
+        <div className="bg-amber-50 rounded-2xl border border-orange-100 shadow-sm overflow-hidden">
           <button
             type="button"
             onClick={() => setHowToOpen(v => !v)}
-            className="w-full flex items-center justify-between px-6 py-4 text-left transition-colors hover:bg-orange-700"
-            style={{ background: '#ea580c' }}
+            className="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-orange-50 transition-colors"
           >
-            <span className="text-base font-semibold text-white">
-              วิธีการใช้งาน <span className="text-orange-200 font-normal">| How to Use</span>
+            <span className="text-base font-semibold text-gray-700">
+              วิธีการใช้งาน <span className="text-gray-400 font-normal">| How to Use</span>
             </span>
-            <ChevronDown className={`w-4 h-4 text-orange-200 transition-transform duration-300 ${howToOpen ? 'rotate-180' : ''}`} />
+            <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-300 ${howToOpen ? 'rotate-180' : ''}`} />
           </button>
 
           {howToOpen && (
-            <div className="border-t border-orange-700 px-6 py-6" style={{ background: '#ea580c' }}>
+            <div className="border-t border-orange-100 px-6 py-6">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
                 {[
                   { step: '1', title: 'ลงทะเบียน', desc: 'กรอกข้อมูลหน่วยงานและผู้ติดต่อ', icon: <Building2 className="w-5 h-5" /> },
@@ -112,14 +111,14 @@ export default function Home() {
                   { step: '4', title: 'ส่งข้อมูล', desc: 'ยืนยันและส่งข้อมูลเข้าสู่ระบบ', icon: <CheckCircle className="w-5 h-5" /> },
                 ].map((item) => (
                   <div key={item.step} className="text-center">
-                    <div className="relative mx-auto w-11 h-11 bg-orange-500 rounded-full flex items-center justify-center text-white mb-3">
+                    <div className="relative mx-auto w-11 h-11 bg-orange-100 rounded-full flex items-center justify-center text-orange-500 mb-3">
                       {item.icon}
-                      <span className="absolute -top-1 -right-1 w-5 h-5 bg-white text-orange-600 text-[10px] font-bold rounded-full flex items-center justify-center">
+                      <span className="absolute -top-1 -right-1 w-5 h-5 bg-orange-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
                         {item.step}
                       </span>
                     </div>
-                    <p className="text-sm font-medium text-white">{item.title}</p>
-                    <p className="text-xs text-orange-200 mt-1">{item.desc}</p>
+                    <p className="text-sm font-medium text-gray-700">{item.title}</p>
+                    <p className="text-xs text-gray-400 mt-1">{item.desc}</p>
                   </div>
                 ))}
               </div>
