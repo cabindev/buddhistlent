@@ -3,7 +3,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import {
   ArrowRight, Building2, Users, FileText,
-  CheckCircle, Calendar, Award
+  CheckCircle, Calendar, Award, ChevronDown
 } from 'lucide-react';
 
 function BuddhistLentBadge({ className = '' }) {
@@ -44,7 +44,7 @@ function BuddhistLentBadge({ className = '' }) {
 
 export default function Home() {
   const router = useRouter();
-
+  const [howToOpen, setHowToOpen] = React.useState(false);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
@@ -95,33 +95,46 @@ export default function Home() {
         </div>
 
         {/* How it Works */}
-        <div className="p-8">
-          <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">วิธีการใช้งาน | How to Use</h3>
-            <p className="text-gray-600">ขั้นตอนการรายงานข้อมูลการงดเหล้าเข้าพรรษา | Steps to report Buddhist Lent abstinence data</p>
-          </div>
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <button
+            type="button"
+            onClick={() => setHowToOpen(v => !v)}
+            className="w-full flex items-center justify-between px-8 py-5 text-left hover:bg-gray-50 transition-colors duration-200"
+          >
+            <div>
+              <span className="text-lg font-semibold text-gray-800">วิธีการใช้งาน</span>
+              <span className="ml-2 text-lg font-normal text-gray-400">| How to Use</span>
+            </div>
+            <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${howToOpen ? 'rotate-180' : ''}`} />
+          </button>
 
-          <div className="grid md:grid-cols-4 gap-6">
-            {[
-              { step: '1', title: 'ลงทะเบียน | Register',       description: 'กรอกข้อมูลหน่วยงาน/องค์กรและผู้ติดต่อ | Fill in organization and contact information', icon: <Building2 className="w-6 h-6" /> },
-              { step: '2', title: 'รายงานจำนวน | Report Numbers', description: 'บันทึกจำนวนสมาชิกที่งดเหล้าในหน่วยงาน | Record number of abstaining members',         icon: <Users className="w-6 h-6" /> },
-              { step: '3', title: 'อัปโหลดภาพ | Upload Images',  description: 'แนบรูปภาพกิจกรรมหรือหลักฐานประกอบ | Attach activity photos or supporting evidence',   icon: <FileText className="w-6 h-6" /> },
-              { step: '4', title: 'ส่งข้อมูล | Submit Data',     description: 'ยืนยันและส่งข้อมูลเข้าสู่ระบบ | Confirm and submit data to system',                    icon: <CheckCircle className="w-6 h-6" /> },
-            ].map((item, index) => (
-              <div key={index} className="text-center">
-                <div className="relative mb-4">
-                  <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 mx-auto">
-                    {item.icon}
+          {howToOpen && (
+            <div className="px-8 pb-8 border-t border-gray-100">
+              <p className="text-sm text-gray-500 mt-4 mb-6">ขั้นตอนการรายงานข้อมูลการงดเหล้าเข้าพรรษา | Steps to report Buddhist Lent abstinence data</p>
+              <div className="grid md:grid-cols-4 gap-6">
+                {[
+                  { step: '1', title: 'ลงทะเบียน',    titleEn: 'Register',       description: 'กรอกข้อมูลหน่วยงาน/องค์กรและผู้ติดต่อ', icon: <Building2 className="w-6 h-6" /> },
+                  { step: '2', title: 'รายงานจำนวน',  titleEn: 'Report Numbers',  description: 'บันทึกจำนวนสมาชิกที่งดเหล้าในหน่วยงาน',   icon: <Users className="w-6 h-6" /> },
+                  { step: '3', title: 'อัปโหลดภาพ',   titleEn: 'Upload Images',   description: 'แนบรูปภาพกิจกรรมหรือหลักฐานประกอบ',        icon: <FileText className="w-6 h-6" /> },
+                  { step: '4', title: 'ส่งข้อมูล',    titleEn: 'Submit Data',     description: 'ยืนยันและส่งข้อมูลเข้าสู่ระบบ',             icon: <CheckCircle className="w-6 h-6" /> },
+                ].map((item, index) => (
+                  <div key={index} className="text-center">
+                    <div className="relative mb-4">
+                      <div className="w-12 h-12 bg-orange-50 rounded-full flex items-center justify-center text-orange-600 mx-auto">
+                        {item.icon}
+                      </div>
+                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-orange-500 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                        {item.step}
+                      </div>
+                    </div>
+                    <h4 className="font-medium text-gray-800 text-sm">{item.title}</h4>
+                    <p className="text-xs text-orange-400 mb-1">{item.titleEn}</p>
+                    <p className="text-xs text-gray-500">{item.description}</p>
                   </div>
-                  <div className="absolute -top-1 -right-1 w-6 h-6 bg-orange-600 text-white rounded-full flex items-center justify-center text-xs font-bold">
-                    {item.step}
-                  </div>
-                </div>
-                <h4 className="font-semibold text-gray-900 mb-2">{item.title}</h4>
-                <p className="text-sm text-gray-600">{item.description}</p>
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
+          )}
         </div>
 
 
