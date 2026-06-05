@@ -3,6 +3,28 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowUpRight, ChevronDown, ChevronRight } from 'lucide-react';
 
+function SpinBorder({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={`relative ${className}`} style={{ padding: 2, borderRadius: 24 }}>
+      <div style={{
+        position: 'absolute', inset: '-100%', width: '300%', height: '300%',
+        background: 'conic-gradient(from 0deg, transparent 0%, transparent 65%, #fef08a 75%, #fff 80%, #fef08a 85%, transparent 95%, transparent 100%)',
+        animation: 'spin-border 2.5s linear infinite',
+        borderRadius: '50%',
+      }} />
+      <div style={{ position: 'relative', borderRadius: 22, overflow: 'hidden', zIndex: 1 }}>
+        {children}
+      </div>
+      <style>{`
+        @keyframes spin-border {
+          from { transform: rotate(0deg); }
+          to   { transform: rotate(360deg); }
+        }
+      `}</style>
+    </div>
+  );
+}
+
 function useLentCountdown() {
   const [info, setInfo] = React.useState({ days: '—', label: '', pct: 0 });
   React.useEffect(() => {
@@ -77,7 +99,9 @@ export default function Home() {
         </div>
 
         {/* Actions — one unified card */}
-        <div className="rounded-2xl overflow-hidden shadow-sm mb-3" style={{ background: '#fff' }}>
+        <div className="mb-3">
+        <SpinBorder>
+        <div style={{ background: '#fff' }}>
           {actions.map((a, i) => (
             <button
               key={a.href}
@@ -100,6 +124,8 @@ export default function Home() {
               <ChevronRight className="w-4 h-4 flex-shrink-0 ml-3" style={{ color: a.primary ? '#78613a' : '#d6d3d1' }} />
             </button>
           ))}
+        </div>
+        </SpinBorder>
         </div>
 
         {/* How to use */}
@@ -166,8 +192,9 @@ export default function Home() {
           </div>
 
           {/* Register */}
+          <SpinBorder>
           <button type="button" onClick={() => router.push('/organization/create')}
-            className="group rounded-3xl p-6 shadow-sm text-left flex flex-col justify-between hover:brightness-95 transition-all"
+            className="group w-full p-6 text-left flex flex-col justify-between hover:brightness-95 transition-all"
             style={{ background: GOLD, minHeight: 170 }}>
             <ArrowUpRight className="w-5 h-5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" style={{ color: '#78613a' }} />
             <div>
@@ -175,6 +202,7 @@ export default function Home() {
               <p className="text-xs mt-1" style={{ color: '#78613a' }}>Register</p>
             </div>
           </button>
+          </SpinBorder>
 
           {/* View */}
           <button type="button" onClick={() => router.push('/organization')}
