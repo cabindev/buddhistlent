@@ -139,7 +139,7 @@ export default function TambonSearch({
             setSearchQuery(e.target.value);
           }}
           onFocus={handleInputFocus}
-          className="w-full pl-10 pr-10 py-3 border border-slate-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+          className="w-full pl-10 pr-10 py-2 text-sm text-gray-900 bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-yellow-400 transition-all"
         />
 
         {isLoading && (
@@ -151,27 +151,11 @@ export default function TambonSearch({
 
       {/* Selected Location Display */}
       {selectedLocation && (
-        <div className="mt-3 p-4 bg-green-50 border border-green-200 rounded-lg">
-          <div className="flex items-start">
-            <svg className="h-5 w-5 text-green-600 mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            <div>
-              <p className="text-sm font-medium text-slate-900">
-                ตำบล{selectedLocation.district} อำเภอ{selectedLocation.amphoe} จังหวัด{selectedLocation.province}
-              </p>
-              <div className="text-xs text-slate-600 mt-1 space-y-1">
-                <p>รหัสไปรษณีย์: {selectedLocation.zipcode}</p>
-                <p>ประเภท: {selectedLocation.type}</p>
-                <p className="text-slate-500">
-                  รหัสตำบล: {selectedLocation.district_code} | 
-                  รหัสอำเภอ: {selectedLocation.amphoe_code} | 
-                  รหัสจังหวัด: {selectedLocation.province_code}
-                </p>
-              </div>
-            </div>
-          </div>
+        <div className="mt-2 p-3 bg-yellow-50 border border-yellow-300 rounded-lg">
+          <p className="text-sm font-medium text-gray-900">
+            ตำบล{selectedLocation.district} อำเภอ{selectedLocation.amphoe} จังหวัด{selectedLocation.province}
+          </p>
+          <p className="text-xs text-gray-500 mt-0.5">รหัสไปรษณีย์ {selectedLocation.zipcode} · {selectedLocation.type}</p>
         </div>
       )}
 
@@ -184,10 +168,10 @@ export default function TambonSearch({
                 <li
                   key={`${item.district_code}-${item.amphoe_code}-${item.province_code}-${index}`}
                   onClick={() => handleSelectLocation(item)}
-                  className="cursor-pointer hover:bg-blue-50 px-4 py-3 border-b border-slate-100 last:border-b-0 transition-colors"
+                  className="cursor-pointer hover:bg-yellow-50 px-4 py-3 border-b border-gray-100 last:border-b-0 transition-colors"
                 >
                   <div className="flex items-start">
-                    <svg className="h-5 w-5 text-blue-500 mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="h-4 w-4 text-yellow-500 mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>

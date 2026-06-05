@@ -323,345 +323,204 @@ export default function OrganizationForm({ organizationCategories, initialData, 
   }, [router]);
 
   const inputCls = (value: string | number, hasError?: boolean) => {
-    const base = 'w-full px-2 py-1.5 text-sm text-gray-900 rounded focus:outline-none focus:ring-1 transition-colors';
-    if (hasError) return `${base} bg-red-50 border border-red-300 focus:ring-red-400`;
-    if (value !== '' && value !== 0) return `${base} bg-green-50 border border-green-400 focus:ring-green-400`;
-    return `${base} bg-white border border-gray-300 focus:ring-orange-500 focus:border-orange-500`;
+    const base = 'w-full px-3 py-2 text-sm text-gray-900 bg-white rounded-lg border transition-colors focus:outline-none focus:ring-2';
+    if (hasError) return `${base} border-red-300 focus:ring-red-200 focus:border-red-400`;
+    if (value !== '' && value !== 0) return `${base} border-yellow-400 bg-yellow-50 focus:ring-yellow-200 focus:border-yellow-500`;
+    return `${base} border-gray-200 focus:ring-yellow-200 focus:border-yellow-400`;
   };
 
+  const sectionCls = 'bg-white rounded-2xl border border-gray-100 overflow-hidden';
+
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 py-3">
-          <button
-            onClick={handleGoBack}
-            className="flex items-center text-gray-600 hover:text-gray-900 mb-2 text-sm font-medium"
-            type="button"
-          >
-            <ArrowLeft className="h-4 w-4 mr-1" />
-            Back
+      <div className="bg-white border-b border-gray-100 sticky top-0 z-10">
+        <div className="max-w-2xl mx-auto px-5 py-4 flex items-center gap-3">
+          <button onClick={handleGoBack} type="button"
+            className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition-colors">
+            <ArrowLeft className="h-4 w-4" />
+            กลับ
           </button>
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-orange-500 rounded flex items-center justify-center">
-              <Building2 className="h-4 w-4 text-white" />
-            </div>
-            <div>
-              <h1 className="text-lg font-semibold text-gray-900">
-                {isEdit ? 'Edit Organization Data' : 'Submit Organization Data'}
-              </h1>
-              <p className="text-xs text-gray-600">
-                {isEdit ? 'แก้ไขข้อมูลที่ส่งคืน | Edit submitted data' : 'ส่งคืนข้อมูลองค์กร | Submit organization information'}
-              </p>
-            </div>
+          <div className="h-4 w-px bg-gray-200" />
+          <div>
+            <h1 className="text-sm font-semibold text-gray-900">
+              {isEdit ? 'แก้ไขข้อมูลองค์กร' : 'ลงทะเบียนหน่วยงาน'}
+            </h1>
+            <p className="text-[10px] text-gray-400">{isEdit ? 'Edit Organization' : 'Submit Organization Data'}</p>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-4">
-        {/* Error Alert - ยังคงใช้สำหรับแสดง error ในหน้า */}
+      <div className="max-w-2xl mx-auto px-4 py-6 pb-28">
+
         {errors.submit && (
-          <div className="mb-4 bg-red-50 border border-red-200 rounded p-3">
-            <div className="flex items-start">
-              <AlertTriangle className="h-4 w-4 text-red-500 mr-2 flex-shrink-0 mt-0.5" />
-              <div>
-                <h3 className="text-sm font-medium text-red-800">เกิดข้อผิดพลาด</h3>
-                <p className="text-sm text-red-700 mt-1">{errors.submit}</p>
-              </div>
-            </div>
+          <div className="mb-4 flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-xl">
+            <AlertTriangle className="h-4 w-4 text-red-500 flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-red-700">{errors.submit}</p>
           </div>
         )}
 
-        {/* Form content */}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Personal Information */}
-          <div className="bg-white border border-gray-200 rounded">
-            <div className="px-4 py-3 border-b border-gray-200 bg-gray-50">
-              <h2 className="text-sm font-medium text-gray-900">Personal Information | ข้อมูลผู้ส่ง</h2>
-            </div>
-            
-            <div className="p-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
-                    First Name | ชื่อ <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.firstName}
-                    onChange={(e) => handleInputChange('firstName', e.target.value)}
-                    className={inputCls(formData.firstName, !!errors.firstName)}
-                    placeholder="ชื่อ"
-                  />
-                  {errors.firstName && (
-                    <p className="mt-1 text-xs text-red-600">{errors.firstName}</p>
-                  )}
-                </div>
+        <form onSubmit={handleSubmit} className="space-y-3">
 
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
-                    Last Name | นามสกุล <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.lastName}
-                    onChange={(e) => handleInputChange('lastName', e.target.value)}
-                    className={inputCls(formData.lastName, !!errors.lastName)}
-                    placeholder="นามสกุล"
-                  />
-                  {errors.lastName && (
-                    <p className="mt-1 text-xs text-red-600">{errors.lastName}</p>
-                  )}
-                </div>
-              </div>
+          {/* 1 — ข้อมูลผู้ส่ง */}
+          <div className={sectionCls}>
+            <div className="px-5 py-3 border-b border-gray-100 flex items-center gap-2">
+              <span className="w-5 h-5 rounded-full bg-yellow-400 text-gray-900 text-[10px] font-bold flex items-center justify-center">1</span>
+              <h2 className="text-sm font-semibold text-gray-800">ข้อมูลผู้ส่ง</h2>
             </div>
-          </div>
-
-          {/* Organization Selection */}
-          <div className="bg-white border border-gray-200 rounded">
-            <div className="px-4 py-3 border-b border-gray-200 bg-gray-50">
-              <h2 className="text-sm font-medium text-gray-900">Organization | องค์กร</h2>
-            </div>
-            <div className="p-4">
-              <OrganizationSelector
-                value={formData.organizationCategoryId}
-                onChange={handleOrganizationSelect}
-                error={errors.organizationCategoryId}
-                disabled={isSubmitting}
-              />
-            </div>
-          </div>
-
-          {/* Address Information */}
-          <div className="bg-white border border-gray-200 rounded">
-            <div className="px-4 py-3 border-b border-gray-200 bg-gray-50">
-              <h2 className="text-sm font-medium text-gray-900">Address | ที่อยู่องค์กร</h2>
-            </div>
-            
-            <div className="p-4 space-y-4">
+            <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">
-                  ชื่อองค์กร <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={formData.addressLine1}
+                <label className="block text-xs font-medium text-gray-600 mb-1.5">ชื่อ <span className="text-red-400">*</span></label>
+                <input type="text" value={formData.firstName}
+                  onChange={(e) => handleInputChange('firstName', e.target.value)}
+                  className={inputCls(formData.firstName, !!errors.firstName)} placeholder="ชื่อ" />
+                {errors.firstName && <p className="mt-1 text-xs text-red-500">{errors.firstName}</p>}
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1.5">นามสกุล <span className="text-red-400">*</span></label>
+                <input type="text" value={formData.lastName}
+                  onChange={(e) => handleInputChange('lastName', e.target.value)}
+                  className={inputCls(formData.lastName, !!errors.lastName)} placeholder="นามสกุล" />
+                {errors.lastName && <p className="mt-1 text-xs text-red-500">{errors.lastName}</p>}
+              </div>
+            </div>
+          </div>
+
+          {/* 2 — องค์กร */}
+          <div className={sectionCls}>
+            <div className="px-5 py-3 border-b border-gray-100 flex items-center gap-2">
+              <span className="w-5 h-5 rounded-full bg-yellow-400 text-gray-900 text-[10px] font-bold flex items-center justify-center">2</span>
+              <h2 className="text-sm font-semibold text-gray-800">องค์กร / หน่วยงาน</h2>
+            </div>
+            <div className="p-5">
+              <OrganizationSelector value={formData.organizationCategoryId}
+                onChange={handleOrganizationSelect} error={errors.organizationCategoryId} disabled={isSubmitting} />
+            </div>
+          </div>
+
+          {/* 3 — ที่อยู่ */}
+          <div className={sectionCls}>
+            <div className="px-5 py-3 border-b border-gray-100 flex items-center gap-2">
+              <span className="w-5 h-5 rounded-full bg-yellow-400 text-gray-900 text-[10px] font-bold flex items-center justify-center">3</span>
+              <h2 className="text-sm font-semibold text-gray-800">ที่อยู่องค์กร</h2>
+            </div>
+            <div className="p-5 space-y-3">
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1.5">ที่อยู่ / ชื่อองค์กร <span className="text-red-400">*</span></label>
+                <input type="text" value={formData.addressLine1}
                   onChange={(e) => handleInputChange('addressLine1', e.target.value)}
-                  className={inputCls(formData.addressLine1, !!errors.addressLine1)}
-                  placeholder="ชื่อองค์กร"
-                />
-                {errors.addressLine1 && (
-                  <p className="mt-1 text-xs text-red-600">{errors.addressLine1}</p>
-                )}
+                  className={inputCls(formData.addressLine1, !!errors.addressLine1)} placeholder="เลขที่ / หมู่ / ถนน / ชื่อองค์กร" />
+                {errors.addressLine1 && <p className="mt-1 text-xs text-red-500">{errors.addressLine1}</p>}
               </div>
-
-              <TambonSearch
-                onSelectLocation={handleLocationSelect}
-                initialLocation={{
-                  district: formData.district,
-                  amphoe: formData.amphoe,
-                  province: formData.province,
-                  zipcode: formData.zipcode || 0,
-                  type: formData.type,
-                  district_code: 0,
-                  amphoe_code: 0,
-                  province_code: 0,
-                }}
-              />
+              <TambonSearch onSelectLocation={handleLocationSelect}
+                initialLocation={{ district: formData.district, amphoe: formData.amphoe,
+                  province: formData.province, zipcode: formData.zipcode || 0,
+                  type: formData.type, district_code: 0, amphoe_code: 0, province_code: 0 }} />
             </div>
           </div>
 
-          {/* Contact Information */}
-          <div className="bg-white border border-gray-200 rounded">
-            <div className="px-4 py-3 border-b border-gray-200 bg-gray-50">
-              <h2 className="text-sm font-medium text-gray-900">Contact Information | ข้อมูลติดต่อ</h2>
+          {/* 4 — ข้อมูลติดต่อ */}
+          <div className={sectionCls}>
+            <div className="px-5 py-3 border-b border-gray-100 flex items-center gap-2">
+              <span className="w-5 h-5 rounded-full bg-yellow-400 text-gray-900 text-[10px] font-bold flex items-center justify-center">4</span>
+              <h2 className="text-sm font-semibold text-gray-800">ข้อมูลติดต่อ</h2>
             </div>
-            
-            <div className="p-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
-                    Phone Number | เบอร์โทรศัพท์ <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="tel"
-                    value={formData.phoneNumber}
-                    onChange={(e) => handleInputChange('phoneNumber', e.target.value.replace(/[^0-9]/g, '').slice(0, 10))}
-                    className={inputCls(formData.phoneNumber, !!errors.phoneNumber)}
-                    placeholder="0812345678"
-                    maxLength={10}
-                  />
-                  {errors.phoneNumber && (
-                    <p className="mt-1 text-xs text-red-600">{errors.phoneNumber}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
-                    Number of Signers | จำนวนผู้ลงนาม <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    value={formData.numberOfSigners === 0 ? '' : formData.numberOfSigners}
-                    onChange={(e) => handleInputChange('numberOfSigners', e.target.value === '' ? 0 : parseInt(e.target.value) || 0)}
-                    className={inputCls(formData.numberOfSigners, !!errors.numberOfSigners)}
-                    placeholder="1"
-                  />
-                  {errors.numberOfSigners && (
-                    <p className="mt-1 text-xs text-red-600">{errors.numberOfSigners}</p>
-                  )}
-                </div>
+            <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1.5">เบอร์โทรศัพท์ <span className="text-red-400">*</span></label>
+                <input type="tel" value={formData.phoneNumber}
+                  onChange={(e) => handleInputChange('phoneNumber', e.target.value.replace(/[^0-9]/g, '').slice(0, 10))}
+                  className={inputCls(formData.phoneNumber, !!errors.phoneNumber)} placeholder="0812345678" maxLength={10} />
+                {errors.phoneNumber && <p className="mt-1 text-xs text-red-500">{errors.phoneNumber}</p>}
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1.5">จำนวนผู้ลงนาม <span className="text-red-400">*</span></label>
+                <input type="number" min="1"
+                  value={formData.numberOfSigners === 0 ? '' : formData.numberOfSigners}
+                  onChange={(e) => handleInputChange('numberOfSigners', e.target.value === '' ? 0 : parseInt(e.target.value) || 0)}
+                  className={inputCls(formData.numberOfSigners, !!errors.numberOfSigners)} placeholder="จำนวนคน" />
+                {errors.numberOfSigners && <p className="mt-1 text-xs text-red-500">{errors.numberOfSigners}</p>}
               </div>
             </div>
           </div>
 
-          {/* Images - แก้ไขการแสดงรูปภาพ */}
-          <div className="bg-white border border-gray-200 rounded">
-            <div className="px-4 py-3 border-b border-gray-200 bg-gray-50">
-              <h2 className="text-sm font-medium text-gray-900">Images | รูปภาพประกอบ</h2>
+          {/* 5 — รูปภาพ */}
+          <div className={sectionCls}>
+            <div className="px-5 py-3 border-b border-gray-100 flex items-center gap-2">
+              <span className="w-5 h-5 rounded-full bg-yellow-400 text-gray-900 text-[10px] font-bold flex items-center justify-center">5</span>
+              <div>
+                <h2 className="text-sm font-semibold text-gray-800">รูปภาพประกอบ</h2>
+                <p className="text-[10px] text-gray-400">รูปที่ 1–2 บังคับ · JPG, PNG, WebP · ≤200KB</p>
+              </div>
             </div>
-            
-            <div className="p-4">
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-                {[1, 2, 3, 4, 5].map((index) => {
-                  const imageField = `image${index}` as keyof OrganizationFormData;
-                  const imageValue = formData[imageField];
-                  const isUploading = uploadingImages[index];
-                  const isRequired = index <= 2;
+            <div className="p-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+              {[1, 2, 3, 4, 5].map((index) => {
+                const imageField = `image${index}` as keyof OrganizationFormData;
+                const imageValue = formData[imageField];
+                const imageUrl = typeof imageValue === 'string' ? imageValue : undefined;
+                const validImageUrl = validateImageUrl(imageUrl);
+                const isUploading = uploadingImages[index];
+                const isRequired = index <= 2;
 
-                  // ✅ ตรวจสอบและทำความสะอาด URL ก่อนส่งให้ Next.js Image
-                  // แปลงเป็น string หรือ undefined เท่านั้น
-                  const imageUrl = typeof imageValue === 'string' ? imageValue : undefined;
-                  const validImageUrl = validateImageUrl(imageUrl);
-
-                  return (
-                    <div key={index} className="space-y-1">
-                      <label className="block text-xs font-medium text-gray-700">
-                        Image {index} | รูปที่ {index} {isRequired && <span className="text-red-500">*</span>}
-                      </label>
-                      
-                      <div className="relative">
-                        {validImageUrl ? (
-                          <div className="relative w-full h-24 bg-gray-100 border border-gray-300 rounded overflow-hidden">
-                            <Image
-                              src={validImageUrl}
-                              alt={`Image ${index}`}
-                              fill
-                              className="object-cover"
-                              sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 20vw"
-                              onError={(e) => {
-                                console.warn(`Failed to load image ${index}:`, validImageUrl);
-                                // ซ่อนรูปภาพที่โหลดไม่ได้
-                                (e.target as HTMLImageElement).style.display = 'none';
-                              }}
-                            />
-                            <button
-                              type="button"
-                              onClick={() => handleImageRemove(index)}
-                              className="absolute top-1 right-1 p-0.5 bg-red-500 text-white rounded-full hover:bg-red-600 z-10"
-                            >
-                              <Trash2 className="h-2.5 w-2.5" />
-                            </button>
-                            <div className="absolute bottom-1 left-1 z-10">
-                              <div className="p-0.5 bg-green-500 rounded-full">
-                                <Check className="h-2.5 w-2.5 text-white" />
-                              </div>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="relative">
-                            <input
-                              ref={(el) => setFileInputRef(el, index)}
-                              type="file"
-                              accept="image/*"
-                              onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) handleImageUpload(index, file);
-                              }}
-                              className="hidden"
-                              id={`image-${index}`}
-                            />
-                            
-                            <label
-                              htmlFor={`image-${index}`}
-                              className={`
-                                flex flex-col items-center justify-center w-full h-24 
-                                border border-dashed border-gray-300 rounded cursor-pointer
-                                hover:bg-gray-50 transition-colors duration-200
-                                ${isUploading ? 'bg-orange-50 border-orange-300' : ''}
-                              `}
-                            >
-                              <div className="flex flex-col items-center justify-center p-2">
-                                {isUploading ? (
-                                  <div className="animate-spin h-4 w-4 border-2 border-orange-500 border-t-transparent rounded-full mb-1"></div>
-                                ) : (
-                                  <Upload className="w-4 h-4 mb-1 text-gray-400" />
-                                )}
-                                <p className="text-xs text-gray-500 text-center">
-                                  {isUploading 
-                                    ? 'Uploading...' 
-                                    : 'Upload Image'
-                                  }
-                                </p>
-                              </div>
-                            </label>
-                          </div>
-                        )}
+                return (
+                  <div key={index}>
+                    <p className="text-[10px] font-medium text-gray-500 mb-1.5">
+                      รูปที่ {index} {isRequired && <span className="text-red-400">*</span>}
+                    </p>
+                    {validImageUrl ? (
+                      <div className="relative w-full aspect-square rounded-xl overflow-hidden border border-gray-200 bg-gray-50">
+                        <Image src={validImageUrl} alt={`Image ${index}`} fill className="object-cover"
+                          sizes="(max-width: 768px) 50vw, 20vw"
+                          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                        <button type="button" onClick={() => handleImageRemove(index)}
+                          className="absolute top-1.5 right-1.5 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-sm border border-gray-200 hover:border-gray-400 transition-colors z-10">
+                          <X className="h-3 w-3 text-gray-500" />
+                        </button>
+                        <div className="absolute bottom-1.5 left-1.5 w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center z-10">
+                          <Check className="h-3 w-3 text-gray-900" />
+                        </div>
                       </div>
-                      
-                      {errors[imageField] && (
-                        <p className="text-xs text-red-600">{errors[imageField]}</p>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div className="mt-3 p-2 bg-orange-50 border border-orange-200 rounded">
-                <p className="text-xs text-orange-700">
-                  <strong>หมายเหตุ:</strong> รูปภาพจะถูกบีบอัดอัตโนมัติเป็น ≤200KB รองรับไฟล์ JPG, PNG, WebP
-                </p>
-              </div>
+                    ) : (
+                      <>
+                        <input ref={(el) => setFileInputRef(el, index)} type="file" accept="image/*"
+                          onChange={(e) => { const f = e.target.files?.[0]; if (f) handleImageUpload(index, f); }}
+                          className="hidden" id={`image-${index}`} />
+                        <label htmlFor={`image-${index}`}
+                          className={`flex flex-col items-center justify-center w-full aspect-square rounded-xl border-2 border-dashed cursor-pointer transition-colors
+                            ${isUploading ? 'border-yellow-400 bg-yellow-50' : 'border-gray-200 bg-white hover:border-yellow-400 hover:bg-yellow-50'}`}>
+                          {isUploading
+                            ? <div className="animate-spin h-5 w-5 border-2 border-yellow-500 border-t-transparent rounded-full" />
+                            : <><Upload className="w-5 h-5 text-gray-300 mb-1" /><span className="text-[10px] text-gray-400">อัปโหลด</span></>}
+                        </label>
+                      </>
+                    )}
+                    {errors[imageField] && <p className="mt-1 text-[10px] text-red-500">{errors[imageField]}</p>}
+                  </div>
+                );
+              })}
             </div>
           </div>
 
-          {/* Submit Buttons */}
-          <div className="bg-white border border-gray-200 rounded">
-            <div className="p-4">
-              <div className="flex flex-col sm:flex-row gap-2 justify-end">
-                <button
-                  type="button"
-                  onClick={handleGoBack}
-                  className="flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors duration-200"
-                  disabled={isSubmitting}
-                >
-                  <X className="h-4 w-4 mr-1" />
-                  ยกเลิก
-                </button>
-
-                <button
-                  type="submit"
-                  disabled={isSubmitting || Object.values(uploadingImages).some(Boolean)}
-                  className="flex items-center justify-center px-6 py-2 text-sm font-medium text-white bg-orange-500 rounded hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 min-w-[140px]"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <div className="animate-spin h-4 w-4 mr-2 border-2 border-white border-t-transparent rounded-full"></div>
-                      กำลังส่ง...
-                    </>
-                  ) : (
-                    <>
-                      <Save className="h-4 w-4 mr-1" />
-                      {isEdit ? 'บันทึกการแก้ไข' : 'ส่งข้อมูล'}
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
-          </div>
         </form>
       </div>
+
+      {/* Sticky footer */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-4 py-3">
+        <div className="max-w-2xl mx-auto flex gap-2">
+          <button type="button" onClick={handleGoBack} disabled={isSubmitting}
+            className="flex-1 py-2.5 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
+            ยกเลิก
+          </button>
+          <button type="submit" onClick={handleSubmit as unknown as React.MouseEventHandler}
+            disabled={isSubmitting || Object.values(uploadingImages).some(Boolean)}
+            className="flex-[2] flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-gray-900 bg-yellow-400 hover:bg-yellow-500 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+            {isSubmitting
+              ? <><div className="animate-spin h-4 w-4 border-2 border-gray-900 border-t-transparent rounded-full" />กำลังส่ง...</>
+              : <><Save className="h-4 w-4" />{isEdit ? 'บันทึกการแก้ไข' : 'ส่งข้อมูล'}</>}
+          </button>
+        </div>
+      </div>
+
     </div>
   );
 }
