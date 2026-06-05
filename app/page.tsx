@@ -1,10 +1,10 @@
 'use client';
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { Building2, FileText, BarChart3, ChevronRight, ChevronDown } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 
 function useLentCountdown() {
-  const [info, setInfo] = React.useState({ days: '', label: '', isActive: false });
+  const [info, setInfo] = React.useState({ days: '—', label: '', isActive: false });
   React.useEffect(() => {
     const calc = () => {
       const now = new Date();
@@ -32,117 +32,118 @@ export default function Home() {
   const lent = useLentCountdown();
   const [open, setOpen] = React.useState(false);
 
-  const actions = [
-    {
-      icon: <Building2 className="w-5 h-5" />,
-      label: 'ลงทะเบียนหน่วยงาน',
-      sub: 'Register your organization',
-      href: '/organization/create',
-      accent: 'text-yellow-500',
-      bg: 'bg-yellow-50',
-    },
-    {
-      icon: <FileText className="w-5 h-5" />,
-      label: 'ดูข้อมูลที่ส่งแล้ว',
-      sub: 'View all submissions',
-      href: '/organization',
-      accent: 'text-amber-500',
-      bg: 'bg-amber-50',
-    },
-    {
-      icon: <BarChart3 className="w-5 h-5" />,
-      label: 'สถิติและรายงาน',
-      sub: 'Statistics & reports',
-      href: '/dashboard',
-      accent: 'text-stone-500',
-      bg: 'bg-stone-50',
-    },
-  ];
-
   return (
-    <div className="min-h-screen bg-zinc-950 flex flex-col">
+    <div className="min-h-screen flex flex-col" style={{ background: '#0f0e0c', fontFamily: 'system-ui, sans-serif' }}>
 
-      {/* Hero */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 pt-16 pb-10 text-center">
+      {/* Top bar */}
+      <div className="flex items-center justify-between px-6 pt-8 pb-0">
+        <span className="text-xs tracking-[0.2em] uppercase" style={{ color: '#6b6457' }}>
+          พ.ศ. ๒๕๖๙
+        </span>
+        <span className="text-xs tracking-[0.15em] uppercase" style={{ color: '#6b6457' }}>
+          Buddhist Lent
+        </span>
+      </div>
 
-        {/* badge */}
-        <div className="inline-flex items-center gap-2 border border-yellow-500/30 text-yellow-400 text-xs px-3 py-1 rounded-full mb-8 tracking-wide">
-          <span className="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-pulse" />
-          Buddhist Lent 2026 · พ.ศ. ๒๕๖๙
+      {/* Big number */}
+      <div className="px-6 pt-6 pb-0 select-none">
+        <div
+          className="font-black leading-none tabular-nums"
+          style={{
+            fontSize: 'clamp(7rem, 28vw, 16rem)',
+            color: '#c8893a',
+            letterSpacing: '-0.04em',
+            lineHeight: 0.85,
+          }}
+        >
+          {lent.days}
         </div>
-
-        {/* countdown */}
-        <div className="mb-6">
-          <div className="text-8xl font-black text-yellow-400 tabular-nums leading-none tracking-tighter">
-            {lent.days}
-          </div>
-          <div className="text-zinc-400 text-sm mt-2 tracking-wide">{lent.label}</div>
+        <div className="mt-3 flex items-center gap-3">
+          <div className="h-px flex-1" style={{ background: '#2a2620' }} />
+          <span className="text-sm" style={{ color: '#6b6457' }}>{lent.label}</span>
         </div>
+      </div>
 
-        {/* title */}
-        <h1 className="text-2xl font-bold text-white leading-snug mb-2">
-          ระบบรายงานผลงดเหล้าเข้าพรรษา
+      {/* Title block */}
+      <div className="px-6 pt-10">
+        <h1
+          className="font-bold leading-tight"
+          style={{ color: '#f0ead8', fontSize: 'clamp(1.4rem, 5vw, 2.2rem)' }}
+        >
+          ระบบรายงานผล<br />งดเหล้าเข้าพรรษา
         </h1>
-        <p className="text-zinc-400 text-sm max-w-xs leading-relaxed mb-8">
-          รายงานจำนวนสมาชิกที่งดเหล้าและอัปโหลดภาพกิจกรรมจากหน่วยงานของท่าน
+        <p className="mt-2 text-sm leading-relaxed max-w-xs" style={{ color: '#6b6457' }}>
+          รายงานจำนวนสมาชิกที่งดเหล้าและอัปโหลดภาพกิจกรรม<br className="hidden sm:block" />จากหน่วยงานของท่าน
         </p>
+      </div>
 
-        {/* Actions — centered below title */}
-        <div className="w-full max-w-sm rounded-2xl overflow-hidden border border-zinc-800">
-          {actions.map((a, i) => (
+      {/* Nav links */}
+      <div className="px-6 pt-10 flex-1">
+        <div className="border-t" style={{ borderColor: '#2a2620' }}>
+          {[
+            { label: 'ลงทะเบียนหน่วยงาน', sub: 'Register', href: '/organization/create' },
+            { label: 'ดูข้อมูลที่ส่งแล้ว', sub: 'View submissions', href: '/organization' },
+            { label: 'สถิติและรายงาน', sub: 'Statistics', href: '/dashboard' },
+          ].map((item) => (
             <button
-              key={a.href}
+              key={item.href}
               type="button"
-              onClick={() => router.push(a.href)}
-              className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-zinc-900 active:bg-zinc-800 transition-colors duration-150 text-left ${i < actions.length - 1 ? 'border-b border-zinc-800' : ''}`}
+              onClick={() => router.push(item.href)}
+              className="w-full group border-b py-5 flex items-center justify-between text-left transition-opacity duration-150 hover:opacity-70"
+              style={{ borderColor: '#2a2620' }}
             >
-              <div className={`${a.bg} ${a.accent} w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0`}>
-                {React.cloneElement(a.icon, { className: 'w-4 h-4' })}
+              <div>
+                <span className="block font-medium" style={{ color: '#f0ead8', fontSize: '1.05rem' }}>
+                  {item.label}
+                </span>
+                <span className="text-xs mt-0.5 block" style={{ color: '#6b6457' }}>{item.sub}</span>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-zinc-100">{a.label}</p>
-                <p className="text-[11px] text-zinc-500">{a.sub}</p>
-              </div>
-              <ChevronRight className="w-3.5 h-3.5 text-zinc-600 flex-shrink-0" />
+              <span
+                className="text-xl transition-transform duration-200 group-hover:translate-x-1"
+                style={{ color: '#c8893a' }}
+              >
+                →
+              </span>
             </button>
           ))}
         </div>
       </div>
 
-      {/* Bottom */}
-      <div className="px-5 pb-8 space-y-2">
+      {/* How to use */}
+      <div className="px-6 pb-10 pt-4">
+        <button
+          type="button"
+          onClick={() => setOpen(v => !v)}
+          className="w-full flex items-center justify-between py-3 text-left hover:opacity-70 transition-opacity"
+        >
+          <span className="text-xs tracking-widest uppercase" style={{ color: '#6b6457' }}>
+            วิธีการใช้งาน · How to Use
+          </span>
+          <ChevronDown
+            className={`w-3.5 h-3.5 transition-transform duration-300 ${open ? 'rotate-180' : ''}`}
+            style={{ color: '#6b6457' }}
+          />
+        </button>
 
-        {/* How to use */}
-        <div className="rounded-2xl overflow-hidden border border-zinc-800">
-          <button
-            type="button"
-            onClick={() => setOpen(v => !v)}
-            className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-zinc-900 transition-colors"
-          >
-            <span className="text-sm font-medium text-zinc-400">วิธีการใช้งาน <span className="text-zinc-600 font-normal">| How to Use</span></span>
-            <ChevronDown className={`w-4 h-4 text-zinc-600 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
-          </button>
-          {open && (
-            <div className="grid grid-cols-4 gap-3 px-4 py-4 border-t border-zinc-800">
-              {[
-                { n: '1', th: 'ลงทะเบียน', en: 'Register' },
-                { n: '2', th: 'รายงานจำนวน', en: 'Report' },
-                { n: '3', th: 'อัปโหลดภาพ', en: 'Upload' },
-                { n: '4', th: 'ส่งข้อมูล', en: 'Submit' },
-              ].map((s) => (
-                <div key={s.n} className="text-center">
-                  <div className="w-8 h-8 bg-yellow-500/10 text-yellow-400 rounded-full flex items-center justify-center text-sm font-bold mx-auto mb-1">
-                    {s.n}
-                  </div>
-                  <p className="text-[11px] font-medium text-zinc-300">{s.th}</p>
-                  <p className="text-[10px] text-zinc-600">{s.en}</p>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        {open && (
+          <div className="mt-3 grid grid-cols-4 gap-4 border-t pt-5" style={{ borderColor: '#2a2620' }}>
+            {[
+              { n: '01', th: 'ลงทะเบียน' },
+              { n: '02', th: 'รายงาน' },
+              { n: '03', th: 'อัปโหลด' },
+              { n: '04', th: 'ส่งข้อมูล' },
+            ].map((s) => (
+              <div key={s.n}>
+                <div className="text-xs font-mono mb-1" style={{ color: '#c8893a' }}>{s.n}</div>
+                <div className="text-xs" style={{ color: '#6b6457' }}>{s.th}</div>
+              </div>
+            ))}
+          </div>
+        )}
 
-        <p className="text-center text-[11px] text-zinc-700 pt-2">ระบบรายงานผลงดเหล้าเข้าพรรษา © 2569</p>
+        <p className="mt-8 text-xs" style={{ color: '#3a3530' }}>
+          © 2569 · Healthy Sobriety
+        </p>
       </div>
 
     </div>
