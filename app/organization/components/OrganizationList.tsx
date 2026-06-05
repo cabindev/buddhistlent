@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Organization, OrganizationCategory } from '@/types/organization';
-import { getAllOrganizations, OrganizationFilters } from '../actions/Get';
+import { getAllOrganizations, getAvailableOrganizationYears, OrganizationFilters } from '../actions/Get';
 import { deleteOrganization } from '../actions/Delete';
 import { getActiveOrganizationCategories } from '@/app/dashboard/organization-category/actions/Get';
 import { 
@@ -29,14 +29,28 @@ export default function OrganizationList() {
   const [sortBy, setSortBy] = useState<'firstName' | 'createdAt' | 'numberOfSigners'>('createdAt');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [provinces, setProvinces] = useState<string[]>([]);
+  const [selectedYear, setSelectedYear] = useState<number | null>(null);
+  const [availableYears, setAvailableYears] = useState<number[]>([]);
 
   useEffect(() => {
     loadOrganizationCategories();
+    loadAvailableYears();
   }, []);
 
   useEffect(() => {
     loadOrganizations();
-  }, [searchTerm, filterCategory, filterProvince, currentPage, sortBy, sortOrder]);
+  }, [searchTerm, filterCategory, filterProvince, currentPage, sortBy, sortOrder, selectedYear]);
+
+  const loadAvailableYears = async () => {
+    try {
+      const years = await getAvailableOrganizationYears();
+      const currentYear = new Date().getFullYear();
+      const merged = [...new Set([...years, currentYear])].sort((a, b) => b - a);
+      setAvailableYears(merged);
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const loadOrganizationCategories = async () => {
     try {
@@ -54,6 +68,7 @@ export default function OrganizationList() {
         search: searchTerm || undefined,
         organizationCategoryId: filterCategory || undefined,
         province: filterProvince || undefined,
+        year: selectedYear || undefined,
         sortBy,
         sortOrder,
         page: currentPage,
@@ -147,6 +162,37 @@ export default function OrganizationList() {
             </div>
           </div>
         </div>
+
+        {/* Year Tabs */}
+        {availableYears.length > 0 && (
+          <div className="bg-white border border-gray-200 rounded">
+            <div className="px-4 py-2 flex items-center gap-2 overflow-x-auto">
+              <button
+                onClick={() => { setSelectedYear(null); setCurrentPage(1); }}
+                className={`flex-shrink-0 px-3 py-1.5 text-xs font-medium rounded-full transition-colors ${
+                  selectedYear === null
+                    ? 'bg-yellow-400 text-gray-900'
+                    : 'text-gray-500 hover:bg-gray-100'
+                }`}
+              >
+                ทั้งหมด
+              </button>
+              {availableYears.map((year) => (
+                <button
+                  key={year}
+                  onClick={() => { setSelectedYear(year); setCurrentPage(1); }}
+                  className={`flex-shrink-0 px-3 py-1.5 text-xs font-medium rounded-full transition-colors ${
+                    selectedYear === year
+                      ? 'bg-yellow-400 text-gray-900'
+                      : 'text-gray-500 hover:bg-gray-100'
+                  }`}
+                >
+                  {year}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Search & Filters */}
         <div className="bg-white border border-gray-200 rounded">
