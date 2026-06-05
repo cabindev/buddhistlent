@@ -329,7 +329,7 @@ export default function OrganizationForm({ organizationCategories, initialData, 
     return `${base} border-gray-200 focus:ring-yellow-200 focus:border-yellow-400`;
   };
 
-  const sectionCls = 'bg-white rounded-2xl border border-gray-100 overflow-hidden';
+  const sectionCls = 'bg-white rounded-2xl border border-gray-100';
 
   return (
     <div className="min-h-screen bg-gray-50">
