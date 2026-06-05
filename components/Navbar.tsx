@@ -33,7 +33,7 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="relative z-50 bg-white border-b border-gray-100">
+    <nav className="relative z-50 border-b border-stone-200/60" style={{ background: '#f8f5f0' }}>
       <div className="max-w-3xl mx-auto px-4">
         <div className="flex justify-between h-14">
 

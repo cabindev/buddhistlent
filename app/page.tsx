@@ -40,7 +40,7 @@ export default function Home() {
   ];
 
   return (
-    <div className="bg-gray-50 min-h-dvh">
+    <div className="min-h-dvh" style={{ background: '#f8f5f0' }}>
 
       {/* ── MOBILE ── flex column fills screen */}
       <div className="flex flex-col min-h-dvh md:hidden px-4 pt-4 pb-6">
