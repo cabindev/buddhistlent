@@ -322,6 +322,13 @@ export default function OrganizationForm({ organizationCategories, initialData, 
     router.back();
   }, [router]);
 
+  const inputCls = (value: string | number, hasError?: boolean) => {
+    const base = 'w-full px-2 py-1.5 text-sm text-gray-900 rounded focus:outline-none focus:ring-1 transition-colors';
+    if (hasError) return `${base} bg-red-50 border border-red-300 focus:ring-red-400`;
+    if (value !== '' && value !== 0) return `${base} bg-green-50 border border-green-400 focus:ring-green-400`;
+    return `${base} bg-white border border-gray-300 focus:ring-orange-500 focus:border-orange-500`;
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Header */}
@@ -383,8 +390,8 @@ export default function OrganizationForm({ organizationCategories, initialData, 
                     type="text"
                     value={formData.firstName}
                     onChange={(e) => handleInputChange('firstName', e.target.value)}
-                    className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500"
-                    placeholder="Enter first name"
+                    className={inputCls(formData.firstName, !!errors.firstName)}
+                    placeholder="ชื่อ"
                   />
                   {errors.firstName && (
                     <p className="mt-1 text-xs text-red-600">{errors.firstName}</p>
@@ -399,8 +406,8 @@ export default function OrganizationForm({ organizationCategories, initialData, 
                     type="text"
                     value={formData.lastName}
                     onChange={(e) => handleInputChange('lastName', e.target.value)}
-                    className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500"
-                    placeholder="Enter last name"
+                    className={inputCls(formData.lastName, !!errors.lastName)}
+                    placeholder="นามสกุล"
                   />
                   {errors.lastName && (
                     <p className="mt-1 text-xs text-red-600">{errors.lastName}</p>
@@ -440,7 +447,7 @@ export default function OrganizationForm({ organizationCategories, initialData, 
                   type="text"
                   value={formData.addressLine1}
                   onChange={(e) => handleInputChange('addressLine1', e.target.value)}
-                  className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500"
+                  className={inputCls(formData.addressLine1, !!errors.addressLine1)}
                   placeholder="ชื่อองค์กร"
                 />
                 {errors.addressLine1 && (
@@ -480,7 +487,7 @@ export default function OrganizationForm({ organizationCategories, initialData, 
                     type="tel"
                     value={formData.phoneNumber}
                     onChange={(e) => handleInputChange('phoneNumber', e.target.value.replace(/[^0-9]/g, '').slice(0, 10))}
-                    className={`w-full px-2 py-1.5 text-sm border rounded focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500 ${errors.phoneNumber ? 'border-red-300 bg-red-50' : 'border-gray-300'}`}
+                    className={inputCls(formData.phoneNumber, !!errors.phoneNumber)}
                     placeholder="0812345678"
                     maxLength={10}
                   />
@@ -498,7 +505,7 @@ export default function OrganizationForm({ organizationCategories, initialData, 
                     min="1"
                     value={formData.numberOfSigners === 0 ? '' : formData.numberOfSigners}
                     onChange={(e) => handleInputChange('numberOfSigners', e.target.value === '' ? 0 : parseInt(e.target.value) || 0)}
-                    className="w-full px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500"
+                    className={inputCls(formData.numberOfSigners, !!errors.numberOfSigners)}
                     placeholder="1"
                   />
                   {errors.numberOfSigners && (
