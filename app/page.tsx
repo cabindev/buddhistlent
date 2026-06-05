@@ -83,15 +83,12 @@ export default function Home() {
         <h1 className="text-2xl font-bold text-white leading-snug mb-2">
           ระบบรายงานผลงดเหล้าเข้าพรรษา
         </h1>
-        <p className="text-zinc-400 text-sm max-w-xs leading-relaxed">
+        <p className="text-zinc-400 text-sm max-w-xs leading-relaxed mb-8">
           รายงานจำนวนสมาชิกที่งดเหล้าและอัปโหลดภาพกิจกรรมจากหน่วยงานของท่าน
         </p>
-      </div>
 
-      {/* Actions */}
-      <div className="px-5 pb-8 space-y-2">
-
-        <div className="rounded-2xl overflow-hidden border border-zinc-800">
+        {/* Actions — centered below title */}
+        <div className="w-full max-w-sm rounded-2xl overflow-hidden border border-zinc-800">
           {actions.map((a, i) => (
             <button
               key={a.href}
@@ -110,6 +107,10 @@ export default function Home() {
             </button>
           ))}
         </div>
+      </div>
+
+      {/* Bottom */}
+      <div className="px-5 pb-8 space-y-2">
 
         {/* How to use */}
         <div className="rounded-2xl overflow-hidden border border-zinc-800">
