@@ -88,44 +88,41 @@ export default function Home() {
         </p>
       </div>
 
-      {/* Bottom sheet */}
-      <div className="bg-white rounded-t-3xl px-5 pt-6 pb-8 space-y-3 shadow-2xl">
+      {/* Actions */}
+      <div className="px-5 pb-8 space-y-2">
 
-        {/* handle */}
-        <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mb-5" />
-
-        <div className="rounded-2xl overflow-hidden border border-gray-100">
+        <div className="rounded-2xl overflow-hidden border border-zinc-800">
           {actions.map((a, i) => (
             <button
               key={a.href}
               type="button"
               onClick={() => router.push(a.href)}
-              className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 active:bg-gray-100 transition-colors duration-150 text-left ${i < actions.length - 1 ? 'border-b border-gray-100' : ''}`}
+              className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-zinc-900 active:bg-zinc-800 transition-colors duration-150 text-left ${i < actions.length - 1 ? 'border-b border-zinc-800' : ''}`}
             >
               <div className={`${a.bg} ${a.accent} w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0`}>
                 {React.cloneElement(a.icon, { className: 'w-4 h-4' })}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-800">{a.label}</p>
-                <p className="text-[11px] text-gray-400">{a.sub}</p>
+                <p className="text-sm font-medium text-zinc-100">{a.label}</p>
+                <p className="text-[11px] text-zinc-500">{a.sub}</p>
               </div>
-              <ChevronRight className="w-3.5 h-3.5 text-gray-300 flex-shrink-0" />
+              <ChevronRight className="w-3.5 h-3.5 text-zinc-600 flex-shrink-0" />
             </button>
           ))}
         </div>
 
         {/* How to use */}
-        <div className="rounded-2xl overflow-hidden border border-gray-100">
+        <div className="rounded-2xl overflow-hidden border border-zinc-800">
           <button
             type="button"
             onClick={() => setOpen(v => !v)}
-            className="w-full flex items-center justify-between px-4 py-3.5 bg-gray-50 hover:bg-gray-100 transition-colors"
+            className="w-full flex items-center justify-between px-4 py-3.5 hover:bg-zinc-900 transition-colors"
           >
-            <span className="text-sm font-medium text-gray-600">วิธีการใช้งาน <span className="text-gray-400 font-normal">| How to Use</span></span>
-            <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
+            <span className="text-sm font-medium text-zinc-400">วิธีการใช้งาน <span className="text-zinc-600 font-normal">| How to Use</span></span>
+            <ChevronDown className={`w-4 h-4 text-zinc-600 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
           </button>
           {open && (
-            <div className="grid grid-cols-4 gap-3 px-4 py-4 bg-white border-t border-gray-100">
+            <div className="grid grid-cols-4 gap-3 px-4 py-4 border-t border-zinc-800">
               {[
                 { n: '1', th: 'ลงทะเบียน', en: 'Register' },
                 { n: '2', th: 'รายงานจำนวน', en: 'Report' },
@@ -133,18 +130,18 @@ export default function Home() {
                 { n: '4', th: 'ส่งข้อมูล', en: 'Submit' },
               ].map((s) => (
                 <div key={s.n} className="text-center">
-                  <div className="w-8 h-8 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center text-sm font-bold mx-auto mb-1">
+                  <div className="w-8 h-8 bg-yellow-500/10 text-yellow-400 rounded-full flex items-center justify-center text-sm font-bold mx-auto mb-1">
                     {s.n}
                   </div>
-                  <p className="text-[11px] font-medium text-gray-700">{s.th}</p>
-                  <p className="text-[10px] text-gray-400">{s.en}</p>
+                  <p className="text-[11px] font-medium text-zinc-300">{s.th}</p>
+                  <p className="text-[10px] text-zinc-600">{s.en}</p>
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        <p className="text-center text-[11px] text-gray-300 pt-1">ระบบรายงานผลงดเหล้าเข้าพรรษา © 2569</p>
+        <p className="text-center text-[11px] text-zinc-700 pt-2">ระบบรายงานผลงดเหล้าเข้าพรรษา © 2569</p>
       </div>
 
     </div>
