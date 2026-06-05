@@ -1,135 +1,128 @@
 'use client';
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  ArrowRight, Building2, Users, FileText,
-  CheckCircle, Calendar, Award, ChevronDown
-} from 'lucide-react';
+import { ArrowRight, ChevronDown } from 'lucide-react';
 
-function BuddhistLentBadge({ className = '' }) {
-  const [info, setInfo] = React.useState({ message: '', isLentStarted: false });
-
+function useLentCountdown() {
+  const [info, setInfo] = React.useState({ days: '—', label: '' });
   React.useEffect(() => {
     const calc = () => {
       const now = new Date();
       const start = new Date('2026-07-31T00:00:00');
       const end = new Date('2026-10-27T23:59:59');
       if (now < start) {
-        const days = Math.ceil((start.getTime() - now.getTime()) / 86400000);
-        setInfo({ message: `อีก ${days} วัน เริ่มต้นวันเข้าพรรษา`, isLentStarted: false });
+        const d = Math.ceil((start.getTime() - now.getTime()) / 86400000);
+        setInfo({ days: String(d), label: 'วันก่อนเข้าพรรษา' });
       } else if (now <= end) {
-        const days = Math.floor((now.getTime() - start.getTime()) / 86400000) + 1;
-        setInfo({ message: `เข้าพรรษามาแล้ว ${days} วัน`, isLentStarted: true });
+        const d = Math.floor((now.getTime() - start.getTime()) / 86400000) + 1;
+        setInfo({ days: String(d), label: 'วันแห่งการงดเหล้า' });
       } else {
-        setInfo({ message: 'ออกพรรษาแล้ว', isLentStarted: true });
+        setInfo({ days: '—', label: 'สิ้นสุดเข้าพรรษาแล้ว' });
       }
     };
     calc();
     const t = setInterval(calc, 3600000);
     return () => clearInterval(t);
   }, []);
-
-  return (
-    <div className={`inline-flex items-center space-x-2 bg-orange-50 border border-orange-200 rounded-full px-3 py-1.5 text-sm ${className}`}>
-      <Calendar className="w-3.5 h-3.5 text-orange-600 flex-shrink-0" />
-      <span className={`font-medium whitespace-nowrap ${info.isLentStarted ? 'text-green-700' : 'text-orange-700'}`}>
-        {info.message}
-      </span>
-    </div>
-  );
+  return info;
 }
 
 export default function Home() {
   const router = useRouter();
-  const [howToOpen, setHowToOpen] = React.useState(false);
+  const lent = useLentCountdown();
+  const [open, setOpen] = React.useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
-      <div className="max-w-4xl mx-auto px-4 py-10 space-y-10">
+    <div className="min-h-screen bg-white">
+      <div className="max-w-2xl mx-auto px-8 py-16 md:py-24">
 
-        <BuddhistLentBadge />
+        {/* Label */}
+        <p className="text-xs tracking-[0.3em] text-gray-400 uppercase mb-12">
+          Buddhist Lent · พ.ศ. 2569
+        </p>
 
-        {/* Hero */}
-        <div className="text-center space-y-6">
-          <div className="inline-flex items-center bg-orange-100 text-orange-800 px-4 py-2 rounded-full text-sm font-medium">
-            <Award className="w-4 h-4 mr-2" />
-            ระบบรายงานผลงดเหล้าเข้าพรรษา | Buddhist Lent Report System พ.ศ. 2569
-          </div>
-
-          <div className="space-y-3">
-            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 leading-tight">
-              ระบบรายงานผลงดเหล้าเข้าพรรษา
-              <span className="text-orange-600"> พ.ศ. 2569</span>
-            </h1>
-            <p className="text-base text-gray-600 max-w-2xl mx-auto">
-              ระบบสำหรับหน่วยงาน องค์กร และชุมชน ในการรายงานจำนวนสมาชิกที่เข้าร่วมงดเหล้าเข้าพรรษา
-              พร้อมอัปโหลดภาพประกอบกิจกรรม
-            </p>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button
-              type="button"
-              onClick={() => router.push('/organization/create')}
-              className="inline-flex items-center bg-orange-600 hover:bg-orange-700 text-white font-semibold px-8 py-4 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+        {/* Countdown */}
+        <div className="mb-10">
+          <div className="flex items-end gap-4">
+            <span
+              className="font-light tabular-nums leading-none"
+              style={{ fontSize: 'clamp(4.5rem, 15vw, 8rem)', color: '#111', letterSpacing: '-0.03em' }}
             >
-              <Building2 className="w-5 h-5 mr-2" />
-              ลงทะเบียนหน่วยงาน
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </button>
-            <button
-              type="button"
-              onClick={() => router.push('/organization')}
-              className="inline-flex items-center bg-white hover:bg-gray-50 text-gray-700 font-semibold px-8 py-4 rounded-lg border border-gray-300 transition-all duration-300"
-            >
-              <FileText className="w-5 h-5 mr-2" />
-              ดูข้อมูลที่ส่งแล้ว
-            </button>
+              {lent.days}
+            </span>
+            <span className="text-sm text-gray-400 pb-4 leading-snug">
+              {lent.label}
+            </span>
           </div>
+          <div className="h-px bg-gray-100 mt-6" />
         </div>
 
-        {/* How it Works — collapsible */}
-        <div className="bg-amber-50 rounded-2xl border border-orange-100 shadow-sm overflow-hidden">
+        {/* Title */}
+        <div className="mb-14">
+          <h1 className="text-2xl font-medium text-gray-900 leading-snug mb-3">
+            ระบบรายงานผลงดเหล้าเข้าพรรษา
+          </h1>
+          <p className="text-sm text-gray-400 leading-relaxed max-w-md">
+            รายงานจำนวนสมาชิกที่งดเหล้าและอัปโหลดภาพกิจกรรม<br />จากหน่วยงานของท่าน
+          </p>
+        </div>
+
+        {/* Nav */}
+        <div className="space-y-0 mb-14">
+          {[
+            { label: 'ลงทะเบียนหน่วยงาน', sub: 'Register your organization', href: '/organization/create', primary: true },
+            { label: 'ดูข้อมูลที่ส่งแล้ว', sub: 'View all submissions', href: '/organization', primary: false },
+            { label: 'สถิติและรายงาน', sub: 'Statistics & reports', href: '/dashboard', primary: false },
+          ].map((item, i, arr) => (
+            <button
+              key={item.href}
+              type="button"
+              onClick={() => router.push(item.href)}
+              className={`group w-full flex items-center justify-between py-5 text-left transition-colors hover:bg-gray-50 -mx-4 px-4 ${i < arr.length - 1 ? 'border-b border-gray-100' : ''}`}
+            >
+              <div>
+                <p className={`text-sm font-medium ${item.primary ? 'text-gray-900' : 'text-gray-600'}`}>
+                  {item.label}
+                </p>
+                <p className="text-xs text-gray-400 mt-0.5">{item.sub}</p>
+              </div>
+              <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-gray-500 transition-colors flex-shrink-0 ml-4" />
+            </button>
+          ))}
+        </div>
+
+        {/* How to use */}
+        <div className="border-t border-gray-100">
           <button
             type="button"
-            onClick={() => setHowToOpen(v => !v)}
-            className="w-full flex items-center justify-between px-6 py-4 text-left hover:bg-orange-50 transition-colors"
+            onClick={() => setOpen(v => !v)}
+            className="w-full flex items-center justify-between py-4 -mx-4 px-4 hover:bg-gray-50 transition-colors"
           >
-            <span className="text-base font-semibold text-gray-700">
-              วิธีการใช้งาน <span className="text-gray-400 font-normal">| How to Use</span>
-            </span>
-            <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-300 ${howToOpen ? 'rotate-180' : ''}`} />
+            <span className="text-xs tracking-[0.2em] text-gray-400 uppercase">วิธีการใช้งาน · How to Use</span>
+            <ChevronDown className={`w-3.5 h-3.5 text-gray-300 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
           </button>
 
-          {howToOpen && (
-            <div className="border-t border-orange-100 px-6 py-6">
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
-                {[
-                  { step: '1', title: 'ลงทะเบียน', desc: 'กรอกข้อมูลหน่วยงานและผู้ติดต่อ', icon: <Building2 className="w-5 h-5" /> },
-                  { step: '2', title: 'รายงานจำนวน', desc: 'บันทึกจำนวนสมาชิกที่งดเหล้า', icon: <Users className="w-5 h-5" /> },
-                  { step: '3', title: 'อัปโหลดภาพ', desc: 'แนบรูปภาพกิจกรรมประกอบ', icon: <FileText className="w-5 h-5" /> },
-                  { step: '4', title: 'ส่งข้อมูล', desc: 'ยืนยันและส่งข้อมูลเข้าสู่ระบบ', icon: <CheckCircle className="w-5 h-5" /> },
-                ].map((item) => (
-                  <div key={item.step} className="text-center">
-                    <div className="relative mx-auto w-11 h-11 bg-orange-100 rounded-full flex items-center justify-center text-orange-500 mb-3">
-                      {item.icon}
-                      <span className="absolute -top-1 -right-1 w-5 h-5 bg-orange-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                        {item.step}
-                      </span>
-                    </div>
-                    <p className="text-sm font-medium text-gray-700">{item.title}</p>
-                    <p className="text-xs text-gray-400 mt-1">{item.desc}</p>
-                  </div>
-                ))}
-              </div>
+          {open && (
+            <div className="pb-8 pt-2 grid grid-cols-4 gap-6">
+              {[
+                { n: '01', th: 'ลงทะเบียน', en: 'Register' },
+                { n: '02', th: 'รายงานจำนวน', en: 'Report' },
+                { n: '03', th: 'อัปโหลดภาพ', en: 'Upload' },
+                { n: '04', th: 'ส่งข้อมูล', en: 'Submit' },
+              ].map((s) => (
+                <div key={s.n}>
+                  <p className="text-xs font-mono text-gray-300 mb-1">{s.n}</p>
+                  <p className="text-xs font-medium text-gray-600">{s.th}</p>
+                  <p className="text-[10px] text-gray-400">{s.en}</p>
+                </div>
+              ))}
             </div>
           )}
         </div>
 
-        {/* Footer */}
-        <div className="text-center py-4 border-t border-gray-200">
-          <p className="text-xs text-gray-400">ระบบรายงานผลงดเหล้าเข้าพรรษา พุทธศักราช 2569</p>
-        </div>
+        <p className="mt-12 text-[10px] text-gray-300 tracking-widest uppercase">
+          © 2569 Healthy Sobriety
+        </p>
 
       </div>
     </div>
