@@ -438,7 +438,7 @@ export default function OrganizationForm({ organizationCategories, initialData, 
                 <input type="number" min="1"
                   value={formData.numberOfSigners === 0 ? '' : formData.numberOfSigners}
                   onChange={(e) => handleInputChange('numberOfSigners', e.target.value === '' ? 0 : parseInt(e.target.value) || 0)}
-                  className={inputCls(formData.numberOfSigners, !!errors.numberOfSigners)} placeholder="จำนวนคน" />
+                  className={inputCls(formData.numberOfSigners, !!errors.numberOfSigners)} placeholder="100" />
                 {errors.numberOfSigners && <p className="mt-1 text-xs text-red-500">{errors.numberOfSigners}</p>}
               </div>
             </div>
