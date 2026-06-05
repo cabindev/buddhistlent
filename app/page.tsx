@@ -2,7 +2,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  ArrowRight, Building2, Users, BarChart3, FileText,
+  ArrowRight, Building2, Users, FileText,
   CheckCircle, Calendar, Award
 } from 'lucide-react';
 
@@ -45,26 +45,6 @@ function BuddhistLentBadge({ className = '' }) {
 export default function Home() {
   const router = useRouter();
 
-  const features = [
-    {
-      icon: <Building2 className="w-8 h-8 text-orange-600" />,
-      title: 'ลงทะเบียนองค์กร',
-      description: 'ลงข้อมูลหน่วยงาน/องค์กรที่เข้าร่วมงดเหล้าเข้าพรรษา',
-      action: () => router.push('/organization/create'),
-    },
-    {
-      icon: <Users className="w-8 h-8 text-green-600" />,
-      title: 'รายงานจำนวนผู้เข้าร่วม',
-      description: 'บันทึกจำนวนสมาชิกที่งดเหล้าในหน่วยงาน',
-      action: () => router.push('/organization'),
-    },
-    {
-      icon: <BarChart3 className="w-8 h-8 text-blue-600" />,
-      title: 'สถิติและรายงาน',
-      description: 'ดูสถิติการเข้าร่วมจากทุกหน่วยงาน',
-      action: () => router.push('/dashboard'),
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50">
@@ -144,26 +124,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Features Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-xl border border-orange-100 p-4 shadow-sm hover:shadow-lg transition-all duration-200 hover:border-orange-300 cursor-pointer group flex flex-col items-center text-center"
-              onClick={feature.action}
-            >
-              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-orange-50 mb-3 group-hover:bg-orange-100 transition-colors duration-200">
-                {React.cloneElement(feature.icon, { className: 'w-6 h-6' })}
-              </div>
-              <h3 className="text-base font-semibold text-gray-900 mb-1">{feature.title}</h3>
-              <p className="text-xs text-gray-500 mb-3">{feature.description}</p>
-              <span className="inline-flex items-center text-xs text-orange-600 font-medium px-3 py-1 rounded-full bg-orange-50 group-hover:bg-orange-100 transition">
-                เริ่มต้นใช้งาน
-                <ArrowRight className="w-3 h-3 ml-1" />
-              </span>
-            </div>
-          ))}
-        </div>
 
         {/* Footer */}
         <div className="text-center py-8 border-t border-gray-200">
