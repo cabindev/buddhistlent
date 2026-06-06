@@ -97,19 +97,22 @@ function BirthdayPicker({ value, onChange }: { value: string; onChange: (v: stri
   const currentYearBE = new Date().getFullYear() + 543;
   const years = Array.from({ length: currentYearBE - 2472 }, (_, i) => currentYearBE - i);
 
-  const sel = "flex-1 px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white cursor-pointer transition";
+  const selBase = "flex-1 px-3 py-2.5 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 cursor-pointer transition";
+  const sel = (v: string) => v
+    ? `${selBase} border border-amber-400 bg-amber-50 text-gray-900`
+    : `${selBase} border border-gray-200 bg-white text-gray-900`;
 
   return (
     <div className="flex gap-2">
-      <select value={d} onChange={e => { setD(e.target.value); update(e.target.value, m, yBE); }} className={sel}>
+      <select value={d} onChange={e => { setD(e.target.value); update(e.target.value, m, yBE); }} className={sel(d)}>
         <option value="">วัน</option>
         {Array.from({ length: maxDay }, (_, i) => i + 1).map(n => <option key={n} value={n}>{n}</option>)}
       </select>
-      <select value={m} onChange={e => { setM(e.target.value); update(d, e.target.value, yBE); }} className={sel}>
+      <select value={m} onChange={e => { setM(e.target.value); update(d, e.target.value, yBE); }} className={sel(m)}>
         <option value="">เดือน</option>
         {MONTHS_TH.map((name, i) => <option key={i+1} value={i+1}>{name}</option>)}
       </select>
-      <select value={yBE} onChange={e => { setYBE(e.target.value); update(d, m, e.target.value); }} className={`${sel} flex-[1.4]`}>
+      <select value={yBE} onChange={e => { setYBE(e.target.value); update(d, m, e.target.value); }} className={`${sel(yBE)} flex-[1.4]`}>
         <option value="">ปี (พ.ศ.)</option>
         {years.map(n => <option key={n} value={n}>{n}</option>)}
       </select>
@@ -252,9 +255,13 @@ export default function CreateSoberCheers() {
                 </div>
               </Field>
 
-              <Field label="วันเกิด (ค.ศ.)" required>
+              <Field label="วันเกิด (พ.ศ.)" required>
                 <BirthdayPicker value={form.birthday} onChange={v => set('birthday', v)} />
-                {age !== null && <p className="mt-1.5 text-xs text-gray-400">อายุ {age} ปี</p>}
+                {age !== null && (
+                  <p className="mt-1.5 text-xs text-amber-600 font-medium flex items-center gap-1">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> อายุ {age} ปี
+                  </p>
+                )}
               </Field>
             </Section>
           </div>
