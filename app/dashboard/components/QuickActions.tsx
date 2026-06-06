@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { PlusCircle, Database, BarChart3, FileText, Wine, ClipboardList } from 'lucide-react';
+import { PlusCircle, Database, BarChart3, Wine, Building2, Table } from 'lucide-react';
 
 interface QuickActionsProps {
   isAdmin: boolean;
@@ -7,6 +7,41 @@ interface QuickActionsProps {
 
 export default function QuickActions({ isAdmin }: QuickActionsProps) {
   const actions = [
+    // Organization Actions (เมนูหลักปีนี้)
+    {
+      title: 'ลงทะเบียนหน่วยงาน',
+      description: 'เพิ่มองค์กรที่ร่วมงดเหล้าเข้าพรรษา',
+      href: '/dashboard/organization/create',
+      icon: Building2,
+      bgColor: 'bg-amber-50',
+      textColor: 'text-amber-700',
+      borderColor: 'border-amber-200',
+      hoverColor: 'hover:bg-amber-100',
+      requireAdmin: false,
+    },
+    ...(isAdmin ? [{
+      title: 'ข้อมูลองค์กร ร่วมเข้าพรรษา',
+      description: 'จัดการข้อมูลองค์กรที่ส่งคืน',
+      href: '/dashboard/organization/tables',
+      icon: Table,
+      bgColor: 'bg-amber-50',
+      textColor: 'text-amber-700',
+      borderColor: 'border-amber-200',
+      hoverColor: 'hover:bg-amber-100',
+      requireAdmin: true,
+    }] : []),
+    ...(isAdmin ? [{
+      title: 'แดชบอร์ดองค์กร',
+      description: 'สถิติและรายงานองค์กร',
+      href: '/dashboard/organization',
+      icon: BarChart3,
+      bgColor: 'bg-amber-50',
+      textColor: 'text-amber-700',
+      borderColor: 'border-amber-200',
+      hoverColor: 'hover:bg-amber-100',
+      requireAdmin: true,
+    }] : []),
+
     // SoberCheers Actions
     {
       title: 'เพิ่มข้อมูล SoberCheers',
@@ -39,30 +74,6 @@ export default function QuickActions({ isAdmin }: QuickActionsProps) {
       textColor: 'text-green-700',
       borderColor: 'border-green-200',
       hoverColor: 'hover:bg-green-100',
-      requireAdmin: true,
-    }] : []),
-
-    // Form Return Actions
-    {
-      title: 'เพิ่มข้อมูลคืนงดเหล้า',
-      description: 'สร้างฟอร์มคืนข้อมูลใหม่',
-      href: '/form_return/create',
-      icon: ClipboardList,
-      bgColor: 'bg-purple-50',
-      textColor: 'text-purple-700',
-      borderColor: 'border-purple-200',
-      hoverColor: 'hover:bg-purple-100',
-      requireAdmin: false,
-    },
-    ...(isAdmin ? [{
-      title: 'คืนข้อมูลงดเหล้า',
-      description: 'จัดการรายการคืนข้อมูล',
-      href: '/dashboard/formReturn',
-      icon: FileText,
-      bgColor: 'bg-purple-50',
-      textColor: 'text-purple-700',
-      borderColor: 'border-purple-200',
-      hoverColor: 'hover:bg-purple-100',
       requireAdmin: true,
     }] : []),
   ];
