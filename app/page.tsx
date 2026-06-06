@@ -75,7 +75,7 @@ function TypewriterOrg({ items }: { items: { name: string }[] }) {
 export default function Home() {
   const router = useRouter();
   const lent = useLentCountdown();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
   const [orgNames, setOrgNames] = React.useState<{ name: string }[]>([]);
 
   React.useEffect(() => {
