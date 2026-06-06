@@ -196,8 +196,8 @@ export default function CreateSoberCheers() {
 
         {/* Header */}
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-semibold text-gray-900">ลงทะเบียน Sober Cheers</h1>
-          <p className="text-sm text-gray-400 mt-1">ชวนช่วย ชมเชียร์ เชิดชู — งดเหล้าเข้าพรรษา ปี {new Date().getFullYear() + 543}</p>
+          <h1 className="text-2xl font-semibold text-gray-900">ลงทะเบียนร่วม งดเหล้าเข้าพรรษา</h1>
+          <p className="text-sm text-gray-400 mt-1">Buddhistlent — ปี {new Date().getFullYear() + 543}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-gray-200 divide-y divide-gray-100">
