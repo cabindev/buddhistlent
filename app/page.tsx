@@ -17,7 +17,7 @@ function useLentCountdown() {
         setInfo({ days: String(d), label: 'วันก่อนเข้าพรรษา', pct: 0 });
       } else if (now <= end) {
         const d = Math.floor((now.getTime() - start.getTime()) / 86400000) + 1;
-        setInfo({ days: String(d), label: 'วันแห่งการงดเหล้า', pct: Math.round((d / total) * 100) });
+        setInfo({ days: String(d), label: 'งดเหล้า เข้าพรรษา', pct: Math.round((d / total) * 100) });
       } else {
         setInfo({ days: '—', label: 'สิ้นสุดเข้าพรรษาแล้ว', pct: 100 });
       }
