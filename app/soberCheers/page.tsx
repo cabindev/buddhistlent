@@ -223,6 +223,7 @@ export default function SoberCheersPage() {
                 <th className="px-4 py-3 text-left">จังหวัด</th>
                 <th className="px-4 py-3 text-left">ภาค</th>
                 <th className="px-4 py-3 text-left">อาชีพ</th>
+                {isAdmin && <th className="w-16 px-4 py-3" />}
               </tr>
             </thead>
             <tbody>
@@ -258,6 +259,16 @@ export default function SoberCheersPage() {
                   <td className="px-4 py-3 text-gray-600">{item.province}</td>
                   <td className="px-4 py-3 text-gray-500">{item.type || '—'}</td>
                   <td className="px-4 py-3 text-gray-500">{item.job}</td>
+                  {isAdmin && (
+                    <td className="px-4 py-3 text-right">
+                      <button
+                        onClick={() => setEditId(item.id)}
+                        className="p-1.5 text-gray-400 hover:text-gray-700 rounded hover:bg-gray-100 transition-colors"
+                      >
+                        <Pencil className="w-3.5 h-3.5" />
+                      </button>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>

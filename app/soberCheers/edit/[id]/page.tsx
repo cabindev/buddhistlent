@@ -110,11 +110,6 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
   const router = useRouter();
   const districtRef = useRef<HTMLDivElement>(null);
 
-  const [verified, setVerified] = useState(false);
-  const [verifyPhone, setVerifyPhone] = useState('');
-  const [verifyError, setVerifyError] = useState('');
-  const [recordPhone, setRecordPhone] = useState('');
-
   const [form, setForm] = useState({
     firstName: '', lastName: '', gender: '', birthday: '',
     addressLine1: '', district: '', amphoe: '', province: '', zipcode: '', type: '',
@@ -143,7 +138,6 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
         return;
       }
       const item = result.data;
-      setRecordPhone(item.phone || '');
       const motivationsArr = Array.isArray(item.motivations) ? item.motivations
         : typeof item.motivations === 'string' ? (() => { try { return JSON.parse(item.motivations); } catch { return []; } })()
         : [];
@@ -220,48 +214,6 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
   };
 
   if (loadingData) return <Loading size="lg" />;
-
-  if (!verified) return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 w-full max-w-sm space-y-5">
-        <div>
-          <h2 className="text-base font-semibold text-gray-900">ยืนยันตัวตน</h2>
-          <p className="text-sm text-gray-400 mt-1">กรอกเบอร์โทรที่ใช้ลงทะเบียนเพื่อแก้ไขข้อมูล</p>
-        </div>
-        <input
-          type="tel"
-          value={verifyPhone}
-          onChange={e => { setVerifyPhone(e.target.value.replace(/\D/g,'').slice(0,10)); setVerifyError(''); }}
-          onKeyDown={e => {
-            if (e.key === 'Enter') {
-              if (verifyPhone === recordPhone) setVerified(true);
-              else setVerifyError('เบอร์โทรไม่ตรงกับข้อมูลที่ลงทะเบียนไว้');
-            }
-          }}
-          placeholder="0812345678"
-          className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white"
-          maxLength={10}
-          autoFocus
-        />
-        {verifyError && <p className="text-xs text-red-500">{verifyError}</p>}
-        <div className="flex gap-2">
-          <button type="button" onClick={() => router.back()}
-            className="flex-1 py-2.5 text-sm text-gray-500 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-            ยกเลิก
-          </button>
-          <button type="button"
-            onClick={() => {
-              if (verifyPhone === recordPhone) setVerified(true);
-              else setVerifyError('เบอร์โทรไม่ตรงกับข้อมูลที่ลงทะเบียนไว้');
-            }}
-            disabled={verifyPhone.length < 9}
-            className="flex-[2] py-2.5 text-sm font-semibold text-gray-900 bg-amber-400 hover:bg-amber-500 rounded-lg disabled:opacity-40 transition-colors">
-            ยืนยัน
-          </button>
-        </div>
-      </div>
-    </div>
-  );
 
   if (loadError) return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
