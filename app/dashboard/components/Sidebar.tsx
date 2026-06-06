@@ -391,77 +391,6 @@ export default function Sidebar({ user }: SidebarProps) {
                 )}
             </div>
 
-            {/* Form Return menu */}
-            <div className="px-2 mb-2">
-              <button
-                onClick={() => setIsFormReturnMenuOpen(!isFormReturnMenuOpen)}
-                className={cn(
-                  "group flex items-center w-full p-2 rounded text-sm transition-colors",
-                  pathname?.startsWith("/dashboard/formReturn") ||
-                    pathname?.startsWith("/dashboard/form_return") ||
-                    pathname?.startsWith("/form_return")
-                    ? "bg-purple-50 text-purple-700 border-l-2 border-purple-500"
-                    : "text-gray-700 hover:bg-gray-50",
-                  sidebarCollapsed && "justify-center"
-                )}
-                title={sidebarCollapsed ? formReturnMenu.name : ""}
-              >
-                <div
-                  className={cn(
-                    "flex items-center justify-center",
-                    sidebarCollapsed ? "h-8 w-8" : "h-4 w-4"
-                  )}
-                >
-                  <ClipboardList className={sidebarCollapsed ? "w-5 h-5" : "w-4 h-4"} />
-                </div>
-                {!sidebarCollapsed && (
-                  <div className="flex items-center justify-between w-full ml-2">
-                    <span className="font-medium text-sm">{formReturnMenu.name}</span>
-                    <ChevronDown
-                      className={`w-3 h-3 transition-transform ${
-                        isFormReturnMenuOpen ? "rotate-180" : ""
-                      }`}
-                    />
-                  </div>
-                )}
-              </button>
-
-              {/* Form Return submenu */}
-              {isFormReturnMenuOpen &&
-                !sidebarCollapsed && (
-                  <div className="mt-1 ml-2">
-                    <ul className="space-y-1">
-                      {formReturnMenu.subMenus.map((subMenu) => {
-                        if (subMenu.requireAdmin && !isAdmin) {
-                          return null;
-                        }
-
-                        const Icon = subMenu.icon;
-                        const isSubActive =
-                          pathname === subMenu.href ||
-                          pathname?.startsWith(subMenu.href);
-
-                        return (
-                          <li key={subMenu.href}>
-                            <Link
-                              href={subMenu.href}
-                              className={`flex items-center p-2 text-sm rounded transition-colors ${
-                                isSubActive
-                                  ? "bg-purple-100 text-purple-800"
-                                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                              }`}
-                            >
-                              <Icon className="w-4 h-4 mr-2" />
-                              <span className="text-xs font-normal">{subMenu.name}</span>
-                            </Link>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                )}
-            </div>
-
             {/* Settings menu */}
             {isAdmin && (
               <div className="px-2 mb-2">
@@ -532,6 +461,86 @@ export default function Sidebar({ user }: SidebarProps) {
                   )}
               </div>
             )}
+
+            {/* ── ข้อมูลย้อนหลัง (ปีเก่า) ── */}
+            {!sidebarCollapsed && (
+              <div className="px-3 mt-6 mb-1">
+                <div className="border-t border-gray-100 pt-3">
+                  <span className="text-[10px] text-gray-300 uppercase tracking-widest">ข้อมูลย้อนหลัง</span>
+                </div>
+              </div>
+            )}
+
+            {/* Form Return menu (archived) */}
+            <div className="px-2 mb-2">
+              <button
+                onClick={() => setIsFormReturnMenuOpen(!isFormReturnMenuOpen)}
+                className={cn(
+                  "group flex items-center w-full p-2 rounded text-sm transition-colors opacity-70 hover:opacity-100",
+                  pathname?.startsWith("/dashboard/formReturn") ||
+                    pathname?.startsWith("/dashboard/form_return") ||
+                    pathname?.startsWith("/form_return")
+                    ? "bg-gray-100 text-gray-700 border-l-2 border-gray-400"
+                    : "text-gray-400 hover:bg-gray-50",
+                  sidebarCollapsed && "justify-center"
+                )}
+                title={sidebarCollapsed ? formReturnMenu.name : ""}
+              >
+                <div
+                  className={cn(
+                    "flex items-center justify-center",
+                    sidebarCollapsed ? "h-8 w-8" : "h-4 w-4"
+                  )}
+                >
+                  <ClipboardList className={sidebarCollapsed ? "w-5 h-5" : "w-4 h-4"} />
+                </div>
+                {!sidebarCollapsed && (
+                  <div className="flex items-center justify-between w-full ml-2">
+                    <span className="font-normal text-sm">{formReturnMenu.name}</span>
+                    <ChevronDown
+                      className={`w-3 h-3 transition-transform ${
+                        isFormReturnMenuOpen ? "rotate-180" : ""
+                      }`}
+                    />
+                  </div>
+                )}
+              </button>
+
+              {/* Form Return submenu */}
+              {isFormReturnMenuOpen &&
+                !sidebarCollapsed && (
+                  <div className="mt-1 ml-2">
+                    <ul className="space-y-1">
+                      {formReturnMenu.subMenus.map((subMenu) => {
+                        if (subMenu.requireAdmin && !isAdmin) {
+                          return null;
+                        }
+
+                        const Icon = subMenu.icon;
+                        const isSubActive =
+                          pathname === subMenu.href ||
+                          pathname?.startsWith(subMenu.href);
+
+                        return (
+                          <li key={subMenu.href}>
+                            <Link
+                              href={subMenu.href}
+                              className={`flex items-center p-2 text-sm rounded transition-colors ${
+                                isSubActive
+                                  ? "bg-gray-100 text-gray-700"
+                                  : "text-gray-400 hover:bg-gray-50 hover:text-gray-600"
+                              }`}
+                            >
+                              <Icon className="w-4 h-4 mr-2" />
+                              <span className="text-xs font-normal">{subMenu.name}</span>
+                            </Link>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                )}
+            </div>
           </div>
         </div>
 
