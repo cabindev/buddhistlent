@@ -113,16 +113,22 @@ const AdminManagementPage: React.FC = () => {
     }
   };
 
-  const filteredUsers = users.filter(user => {
-    const matchesSearch = 
-      user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesRole = filterRole === 'all' || user.role === filterRole;
-    
-    return matchesSearch && matchesRole;
-  });
+  const filteredUsers = users
+    .filter(user => {
+      const matchesSearch =
+        user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchTerm.toLowerCase());
+
+      const matchesRole = filterRole === 'all' || user.role === filterRole;
+
+      return matchesSearch && matchesRole;
+    })
+    // ✅ เรียงผู้ดูแลระบบขึ้นบนสุดเสมอ แล้วตามด้วยผู้ใช้ใหม่สุด
+    .sort((a, b) => {
+      if (a.role !== b.role) return a.role === 'admin' ? -1 : 1;
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('th-TH', {
@@ -237,36 +243,42 @@ const AdminManagementPage: React.FC = () => {
             </div>
           )}
 
-          {/* Filters */}
-          <div className="bg-white border border-gray-100 p-6 mb-8">
-            <div className="flex flex-col lg:flex-row gap-4">
-              {/* Search */}
-              <div className="flex-1">
-                <div className="relative">
-                  <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-3 h-3" />
-                  <input
-                    type="text"
-                    placeholder="ค้นหาชื่อ, นามสกุล, อีเมล..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 border border-gray-200 focus:border-gray-400 focus:outline-none transition-colors font-light text-sm"
-                  />
-                </div>
-              </div>
+          {/* Role Tabs */}
+          <div className="flex items-center gap-1 border-b border-gray-100 mb-6">
+            {([
+              { key: 'all', label: 'ทั้งหมด', count: stats?.totalUsers ?? users.length },
+              { key: 'admin', label: 'ผู้ดูแลระบบ', count: stats?.totalAdmins ?? users.filter(u => u.role === 'admin').length },
+              { key: 'member', label: 'ผู้ใช้ทั่วไป', count: stats?.totalMembers ?? users.filter(u => u.role === 'member').length },
+            ] as const).map(tab => (
+              <button
+                key={tab.key}
+                type="button"
+                onClick={() => setFilterRole(tab.key)}
+                className={`relative px-4 py-2.5 text-sm transition-colors -mb-px border-b-2 ${
+                  filterRole === tab.key
+                    ? 'border-gray-900 text-gray-900 font-medium'
+                    : 'border-transparent text-gray-400 hover:text-gray-700'
+                }`}
+              >
+                {tab.label}
+                <span className={`ml-1.5 text-xs ${filterRole === tab.key ? 'text-gray-500' : 'text-gray-300'}`}>
+                  {tab.count}
+                </span>
+              </button>
+            ))}
+          </div>
 
-              {/* Role Filter */}
-              <div className="lg:w-48">
-                <select
-                  title="กรองตามสิทธิ์"
-                  value={filterRole}
-                  onChange={(e) => setFilterRole(e.target.value as 'all' | 'admin' | 'member')}
-                  className="w-full px-3 py-2.5 border border-gray-200 focus:border-gray-400 focus:outline-none font-light text-sm"
-                >
-                  <option value="all">ทุกสิทธิ์</option>
-                  <option value="admin">ผู้ดูแลระบบ</option>
-                  <option value="member">ผู้ใช้ทั่วไป</option>
-                </select>
-              </div>
+          {/* Search */}
+          <div className="mb-6">
+            <div className="relative max-w-sm">
+              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-3 h-3" />
+              <input
+                type="text"
+                placeholder="ค้นหาชื่อ, นามสกุล, อีเมล..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:border-gray-400 focus:outline-none transition-colors font-light text-sm"
+              />
             </div>
           </div>
 
@@ -295,7 +307,7 @@ const AdminManagementPage: React.FC = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {filteredUsers.map((user) => (
-                    <tr key={user.id} className="hover:bg-gray-50 transition-colors">
+                    <tr key={user.id} className={`transition-colors ${user.role === 'admin' ? 'bg-indigo-50/40 hover:bg-indigo-50' : 'hover:bg-gray-50'}`}>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="flex-shrink-0 h-10 w-10">
