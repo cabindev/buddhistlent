@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { LoaderCircle, CheckCircle2 } from 'lucide-react';
 import { data as regions } from '@/app/data/regions';
@@ -51,6 +51,53 @@ function Field({ label, required, hint, children }: { label: string; required?: 
 
 const inputCls = "w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent bg-white placeholder-gray-300 transition";
 const selectCls = `${inputCls} cursor-pointer`;
+
+const MONTHS_TH = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน',
+  'กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+
+function BirthdayPicker({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const [d, setD] = useState('');
+  const [m, setM] = useState('');
+  const [y, setY] = useState('');
+
+  useEffect(() => {
+    if (value) {
+      const [yy, mm, dd] = value.split('-');
+      setY(yy); setM(String(parseInt(mm))); setD(String(parseInt(dd)));
+    }
+  }, []);
+
+  const update = (nd: string, nm: string, ny: string) => {
+    if (nd && nm && ny) {
+      onChange(`${ny}-${nm.padStart(2,'0')}-${nd.padStart(2,'0')}`);
+    } else {
+      onChange('');
+    }
+  };
+
+  const maxDay = m && y ? new Date(parseInt(y), parseInt(m), 0).getDate() : 31;
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: currentYear - 1929 }, (_, i) => currentYear - i);
+
+  const sel = "flex-1 px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white cursor-pointer transition appearance-none";
+
+  return (
+    <div className="flex gap-2">
+      <select value={d} onChange={e => { setD(e.target.value); update(e.target.value, m, y); }} className={sel}>
+        <option value="">วัน</option>
+        {Array.from({ length: maxDay }, (_, i) => i + 1).map(n => <option key={n} value={n}>{n}</option>)}
+      </select>
+      <select value={m} onChange={e => { setM(e.target.value); update(d, e.target.value, y); }} className={sel}>
+        <option value="">เดือน</option>
+        {MONTHS_TH.map((name, i) => <option key={i+1} value={i+1}>{name}</option>)}
+      </select>
+      <select value={y} onChange={e => { setY(e.target.value); update(d, m, e.target.value); }} className={`${sel} flex-[1.4]`}>
+        <option value="">ปี (ค.ศ.)</option>
+        {years.map(n => <option key={n} value={n}>{n}</option>)}
+      </select>
+    </div>
+  );
+}
 
 export default function CreateSoberCheers() {
   const router = useRouter();
@@ -178,10 +225,8 @@ export default function CreateSoberCheers() {
               </Field>
 
               <Field label="วันเกิด (ค.ศ.)" required>
-                <div className="flex items-center gap-3">
-                  <input type="date" className={inputCls} value={form.birthday} onChange={e => set('birthday', e.target.value)} required />
-                  {age !== null && <span className="text-sm text-gray-500 whitespace-nowrap">{age} ปี</span>}
-                </div>
+                <BirthdayPicker value={form.birthday} onChange={v => set('birthday', v)} />
+                {age !== null && <p className="mt-1.5 text-xs text-gray-400">อายุ {age} ปี</p>}
               </Field>
             </Section>
           </div>
