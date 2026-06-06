@@ -5,15 +5,11 @@ import { LoaderCircle, CheckCircle2 } from 'lucide-react';
 import { data as regions } from '@/app/data/regions';
 import { getSoberCheersById } from '../../actions/Get';
 import { updateSoberCheers } from '../../actions/Update';
+import { getActiveOrganizationCategories } from '@/app/dashboard/organization-category/actions/Get';
+import type { OrganizationCategory } from '@/types/organization';
 import Loading from '@/components/ui/Loading';
 
 const DRINKER = ['ดื่ม (ย้อนหลังไป 1 ปี)', 'เลิกดื่มมาแล้วมากกว่า 1 ปี แต่ยังไม่ถึง 3 ปี'];
-
-const JOBS = [
-  'ประกอบธุรกิจส่วนตัว', 'ข้าราชการ/ลูกจ้างหน่วยงานราชการ', 'รัฐวิสาหกิจ',
-  'พนักงานเอกชน/ลูกจ้างเอกชน', 'ค้าขาย/งานบริการ', 'เกษตรกรรม',
-  'รับจ้างทั่วไป', 'นักเรียน/นักศึกษา', 'ข้าราชการเกษียณ', 'อื่น ๆ',
-];
 
 const MOTIVATIONS = [
   'เพื่อลูกและครอบครัว', 'เพื่อสุขภาพของตนเอง', 'ได้บุญ/รักษาศีล',
@@ -127,6 +123,16 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [orgCategories, setOrgCategories] = useState<OrganizationCategory[]>([]);
+
+  useEffect(() => {
+    getActiveOrganizationCategories().then(setOrgCategories).catch(() => setOrgCategories([]));
+  }, []);
+
+  const orgGroups = orgCategories.reduce((acc, c) => {
+    (acc[c.categoryType] ??= []).push(c);
+    return acc;
+  }, {} as Record<string, OrganizationCategory[]>);
 
   const set = (key: string, value: string) => setForm(f => ({ ...f, [key]: value }));
 
@@ -329,10 +335,23 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
                   placeholder="0812345678" maxLength={10} />
               </Field>
 
-              <Field label="อาชีพ" required>
-                <select className={filledSelect(form.job)} value={form.job} onChange={e => set('job', e.target.value)} required>
-                  <option value="" disabled>เลือกอาชีพ</option>
-                  {JOBS.map(j => <option key={j} value={j}>{j}</option>)}
+              <Field label="สังกัด" required hint="หน่วยงาน/องค์กรที่ท่านสังกัด">
+                <select title="สังกัด" className={filledSelect(form.job)} value={form.job} onChange={e => set('job', e.target.value)} required>
+                  <option value="" disabled>เลือกสังกัด</option>
+                  {/* แสดงค่าเดิมที่ไม่อยู่ในรายการสังกัดปัจจุบัน (เช่น อาชีพเก่า) */}
+                  {form.job && !orgCategories.some(c => c.name === form.job) && form.job !== 'อื่น ๆ' && (
+                    <option value={form.job}>{form.job}</option>
+                  )}
+                  {Object.entries(orgGroups).map(([type, items]) => (
+                    <optgroup key={type} label={type}>
+                      {items.map(c => (
+                        <option key={c.id} value={c.name}>
+                          {c.name}{c.shortName ? ` (${c.shortName})` : ''}
+                        </option>
+                      ))}
+                    </optgroup>
+                  ))}
+                  <option value="อื่น ๆ">อื่น ๆ</option>
                 </select>
               </Field>
             </Section>
