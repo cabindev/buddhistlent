@@ -58,41 +58,45 @@ const MONTHS_TH = ['มกราคม','กุมภาพันธ์','มี
 function BirthdayPicker({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   const [d, setD] = useState('');
   const [m, setM] = useState('');
-  const [y, setY] = useState('');
+  const [yBE, setYBE] = useState(''); // พ.ศ.
 
   useEffect(() => {
     if (value) {
       const [yy, mm, dd] = value.split('-');
-      setY(yy); setM(String(parseInt(mm))); setD(String(parseInt(dd)));
+      setYBE(String(parseInt(yy) + 543));
+      setM(String(parseInt(mm)));
+      setD(String(parseInt(dd)));
     }
   }, []);
 
   const update = (nd: string, nm: string, ny: string) => {
     if (nd && nm && ny) {
-      onChange(`${ny}-${nm.padStart(2,'0')}-${nd.padStart(2,'0')}`);
+      const yCE = parseInt(ny) - 543;
+      onChange(`${yCE}-${nm.padStart(2,'0')}-${nd.padStart(2,'0')}`);
     } else {
       onChange('');
     }
   };
 
-  const maxDay = m && y ? new Date(parseInt(y), parseInt(m), 0).getDate() : 31;
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: currentYear - 1929 }, (_, i) => currentYear - i);
+  const yCE = yBE ? parseInt(yBE) - 543 : undefined;
+  const maxDay = m && yCE ? new Date(yCE, parseInt(m), 0).getDate() : 31;
+  const currentYearBE = new Date().getFullYear() + 543;
+  const years = Array.from({ length: currentYearBE - 2472 }, (_, i) => currentYearBE - i);
 
-  const sel = "flex-1 px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white cursor-pointer transition appearance-none";
+  const sel = "flex-1 px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white cursor-pointer transition";
 
   return (
     <div className="flex gap-2">
-      <select value={d} onChange={e => { setD(e.target.value); update(e.target.value, m, y); }} className={sel}>
+      <select value={d} onChange={e => { setD(e.target.value); update(e.target.value, m, yBE); }} className={sel}>
         <option value="">วัน</option>
         {Array.from({ length: maxDay }, (_, i) => i + 1).map(n => <option key={n} value={n}>{n}</option>)}
       </select>
-      <select value={m} onChange={e => { setM(e.target.value); update(d, e.target.value, y); }} className={sel}>
+      <select value={m} onChange={e => { setM(e.target.value); update(d, e.target.value, yBE); }} className={sel}>
         <option value="">เดือน</option>
         {MONTHS_TH.map((name, i) => <option key={i+1} value={i+1}>{name}</option>)}
       </select>
-      <select value={y} onChange={e => { setY(e.target.value); update(d, m, e.target.value); }} className={`${sel} flex-[1.4]`}>
-        <option value="">ปี (ค.ศ.)</option>
+      <select value={yBE} onChange={e => { setYBE(e.target.value); update(d, m, e.target.value); }} className={`${sel} flex-[1.4]`}>
+        <option value="">ปี (พ.ศ.)</option>
         {years.map(n => <option key={n} value={n}>{n}</option>)}
       </select>
     </div>
