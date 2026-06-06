@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowUpRight, ChevronDown, ChevronRight, LayoutDashboard, ClipboardList, PlusCircle, Trophy } from 'lucide-react';
+import { ArrowUpRight, ChevronDown, ChevronRight, LayoutDashboard, ClipboardList, PlusCircle } from 'lucide-react';
 import { getTopOrganizations } from '@/app/organization/actions/Get';
 
 function useLentCountdown() {
@@ -30,30 +30,44 @@ function useLentCountdown() {
 }
 
 const steps = ['ลงทะเบียน', 'รายงาน', 'อัปโหลด', 'ส่งข้อมูล'];
-const RANK_COLORS = ['text-yellow-500', 'text-gray-400', 'text-amber-600', 'text-stone-400', 'text-stone-400'];
-const RANK_ICONS = ['🥇', '🥈', '🥉', '4.', '5.'];
-
-function TopOrgTicker({ items }: { items: { name: string; signers: number; rank: number }[] }) {
-  const [idx, setIdx] = React.useState(0);
-  const [fade, setFade] = React.useState(true);
+function TypewriterOrg({ items }: { items: { name: string }[] }) {
+  const [display, setDisplay] = React.useState('');
+  const [orgIdx, setOrgIdx] = React.useState(0);
+  const [phase, setPhase] = React.useState<'typing' | 'pause' | 'erasing'>('typing');
 
   React.useEffect(() => {
     if (!items.length) return;
-    const t = setInterval(() => {
-      setFade(false);
-      setTimeout(() => { setIdx(i => (i + 1) % items.length); setFade(true); }, 300);
-    }, 2800);
-    return () => clearInterval(t);
-  }, [items.length]);
+    const name = items[orgIdx].name;
 
-  if (!items.length) return null;
-  const item = items[idx];
+    if (phase === 'typing') {
+      if (display.length < name.length) {
+        const t = setTimeout(() => setDisplay(name.slice(0, display.length + 1)), 60);
+        return () => clearTimeout(t);
+      } else {
+        const t = setTimeout(() => setPhase('pause'), 1800);
+        return () => clearTimeout(t);
+      }
+    }
+    if (phase === 'pause') {
+      const t = setTimeout(() => setPhase('erasing'), 400);
+      return () => clearTimeout(t);
+    }
+    if (phase === 'erasing') {
+      if (display.length > 0) {
+        const t = setTimeout(() => setDisplay(d => d.slice(0, -1)), 30);
+        return () => clearTimeout(t);
+      } else {
+        setOrgIdx(i => (i + 1) % items.length);
+        setPhase('typing');
+      }
+    }
+  }, [display, phase, orgIdx, items]);
+
   return (
-    <div className="flex items-center gap-2 transition-opacity duration-300" style={{ opacity: fade ? 1 : 0 }}>
-      <span className="text-base">{RANK_ICONS[item.rank - 1]}</span>
-      <span className="text-xs font-medium text-stone-700 truncate max-w-[160px]">{item.name}</span>
-      <span className="text-xs text-stone-400 ml-auto tabular-nums">{item.signers.toLocaleString()} คน</span>
-    </div>
+    <span className="text-sm font-medium text-stone-700">
+      {display}
+      <span className="inline-block w-0.5 h-4 bg-amber-500 ml-0.5 align-middle animate-pulse" />
+    </span>
   );
 }
 
@@ -122,14 +136,11 @@ export default function Home() {
                 <ArrowUpRight className="w-5 h-5 text-stone-300 group-hover:text-amber-600 transition-all group-hover:translate-x-1 group-hover:-translate-y-1" />
               </div>
 
-              {/* Top 5 ticker */}
+              {/* Typewriter */}
               {topOrgs.length > 0 && (
                 <div className="w-full">
-                  <div className="flex items-center gap-1.5 mb-2">
-                    <Trophy className="w-3 h-3 text-amber-500" />
-                    <span className="text-[10px] font-semibold text-stone-400 uppercase tracking-widest">5 อันดับหน่วยงานสูงสุด</span>
-                  </div>
-                  <TopOrgTicker items={topOrgs} />
+                  <p className="text-[10px] text-stone-400 uppercase tracking-widest mb-1">หน่วยงานร่วม</p>
+                  <TypewriterOrg items={topOrgs} />
                 </div>
               )}
 
