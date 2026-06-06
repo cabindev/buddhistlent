@@ -268,6 +268,17 @@ export async function getTopOrganizations(limit = 5): Promise<{ name: string; ca
   } catch { return []; } finally { await prisma.$disconnect(); }
 }
 
+export async function getAllOrganizationCategoryNames(): Promise<string[]> {
+  try {
+    const cats = await prisma.organizationCategory.findMany({
+      where: { isActive: true },
+      select: { name: true },
+      orderBy: { sortOrder: 'asc' },
+    });
+    return cats.map(c => c.name);
+  } catch { return []; } finally { await prisma.$disconnect(); }
+}
+
 export async function getAvailableOrganizationYears(): Promise<number[]> {
   try {
     const rows = await prisma.organization.findMany({

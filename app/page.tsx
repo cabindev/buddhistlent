@@ -2,7 +2,7 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowUpRight, ChevronDown, ChevronRight, LayoutDashboard, ClipboardList, PlusCircle } from 'lucide-react';
-import { getTopOrganizations } from '@/app/organization/actions/Get';
+import { getAllOrganizationCategoryNames } from '@/app/organization/actions/Get';
 
 function useLentCountdown() {
   const [info, setInfo] = React.useState({ days: '—', label: '', pct: 0 });
@@ -75,10 +75,10 @@ export default function Home() {
   const router = useRouter();
   const lent = useLentCountdown();
   const [open, setOpen] = React.useState(false);
-  const [topOrgs, setTopOrgs] = React.useState<{ name: string; categoryType: string; signers: number; rank: number }[]>([]);
+  const [orgNames, setOrgNames] = React.useState<{ name: string }[]>([]);
 
   React.useEffect(() => {
-    getTopOrganizations(5).then(setTopOrgs);
+    getAllOrganizationCategoryNames().then(names => setOrgNames(names.map(n => ({ name: n }))));
   }, []);
 
   return (
@@ -137,10 +137,10 @@ export default function Home() {
               </div>
 
               {/* Typewriter */}
-              {topOrgs.length > 0 && (
+              {orgNames.length > 0 && (
                 <div className="w-full">
                   <p className="text-[10px] text-stone-400 uppercase tracking-widest mb-1">หน่วยงานร่วม</p>
-                  <TypewriterOrg items={topOrgs} />
+                  <TypewriterOrg items={orgNames} />
                 </div>
               )}
 
