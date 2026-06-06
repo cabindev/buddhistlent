@@ -20,6 +20,7 @@ interface SoberCheer {
   alcoholConsumption: string;
   intentPeriod: string;
   phone: string;
+  createdAt: string | Date;
 }
 
 const PAGE_SIZE = 20;
@@ -40,6 +41,7 @@ export default function SoberCheersPage() {
 
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
+  const [yearFilter, setYearFilter] = useState<number | null>(null);
   const [page, setPage] = useState(1);
 
   const [selected, setSelected] = useState<Set<number>>(new Set());
@@ -57,9 +59,14 @@ export default function SoberCheersPage() {
     }).finally(() => setLoading(false));
   }, []);
 
+  const availableYears = [...new Set(items.map(i => new Date(i.createdAt).getFullYear()))]
+    .sort((a, b) => b - a);
+
   const filtered = items.filter(item => {
     const q = search.toLowerCase();
-    return (!typeFilter || item.type === typeFilter)
+    const itemYear = new Date(item.createdAt).getFullYear();
+    return (!yearFilter || itemYear === yearFilter)
+      && (!typeFilter || item.type === typeFilter)
       && (!q || `${item.firstName} ${item.lastName} ${item.province} ${item.amphoe}`.toLowerCase().includes(q));
   });
 
@@ -106,6 +113,35 @@ export default function SoberCheersPage() {
             ลงทะเบียน
           </Link>
         </div>
+
+        {/* Year Tabs */}
+        {availableYears.length > 0 && (
+          <div className="flex items-center gap-2 overflow-x-auto pb-1">
+            <button
+              onClick={() => { setYearFilter(null); setPage(1); }}
+              className={`flex-shrink-0 px-4 py-1.5 text-sm font-medium rounded-full transition-colors ${
+                yearFilter === null ? 'bg-amber-500 text-white' : 'text-gray-500 hover:bg-gray-100'
+              }`}
+            >
+              ทั้งหมด
+              <span className="ml-1.5 text-xs opacity-70">{items.length.toLocaleString()}</span>
+            </button>
+            {availableYears.map(year => (
+              <button
+                key={year}
+                onClick={() => { setYearFilter(year); setPage(1); }}
+                className={`flex-shrink-0 px-4 py-1.5 text-sm font-medium rounded-full transition-colors ${
+                  yearFilter === year ? 'bg-amber-500 text-white' : 'text-gray-500 hover:bg-gray-100'
+                }`}
+              >
+                {year}
+                <span className="ml-1.5 text-xs opacity-70">
+                  {items.filter(i => new Date(i.createdAt).getFullYear() === year).length.toLocaleString()}
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Search + Filter */}
         <div className="flex gap-3">
