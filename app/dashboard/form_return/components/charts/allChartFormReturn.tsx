@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { FileText, Users, TrendingUp, RefreshCw } from 'lucide-react';
 import {
   getFormReturnChartData,
   getAvailableFormReturnYears,
@@ -74,8 +73,8 @@ export default function DashboardFormReturn({ initialYear }: Props = {}) {
             ))}
           </div>
           <button onClick={() => loadData(year)}
-            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-            <RefreshCw className="w-4 h-4" />
+            className="px-3 py-1.5 text-sm text-gray-500 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+            รีเฟรช
           </button>
         </div>
       </div>
@@ -84,10 +83,10 @@ export default function DashboardFormReturn({ initialYear }: Props = {}) {
         <>
           {/* Stats */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <StatsCard title="ฟอร์มทั้งหมด" value={data.stats.totalForms} icon="📋" />
-            <StatsCard title="องค์กรที่เข้าร่วม" value={data.stats.totalOrganizations} icon="🏢" />
-            <StatsCard title="ผู้ลงนามรวม" value={data.stats.totalSigners} icon="✍️" />
-            <StatsCard title="ส่งใน 7 วัน" value={data.stats.recentForms} icon="📅" />
+            <StatsCard title="ฟอร์มทั้งหมด" value={data.stats.totalForms} />
+            <StatsCard title="องค์กรที่เข้าร่วม" value={data.stats.totalOrganizations} />
+            <StatsCard title="ผู้ลงนามรวม" value={data.stats.totalSigners} />
+            <StatsCard title="ส่งใน 7 วัน" value={data.stats.recentForms} />
           </div>
 
           {/* Row 1 — Province + Type */}
