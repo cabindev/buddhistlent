@@ -63,7 +63,7 @@ function TypewriterOrg({ items }: { items: { name: string }[] }) {
 
   return (
     <span
-      className="text-sm font-medium text-stone-700 transition-opacity duration-300"
+      className="text-sm font-medium text-amber-500 transition-opacity duration-300"
       style={{ opacity: visible ? 1 : 0 }}
     >
       {display}
