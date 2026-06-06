@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useRef, use } from 'react';
+import { useState, useEffect, useRef, use, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { LoaderCircle, CheckCircle2 } from 'lucide-react';
 import { data as regions } from '@/app/data/regions';
@@ -51,8 +51,59 @@ function Field({ label, required, hint, children }: { label: string; required?: 
   );
 }
 
-const inputCls = "w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent bg-white placeholder-gray-300 transition";
-const selectCls = `${inputCls} cursor-pointer`;
+const MONTHS_TH = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน',
+  'กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+
+function BirthdayPicker({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const [d, setD] = useState('');
+  const [m, setM] = useState('');
+  const [yBE, setYBE] = useState('');
+
+  useEffect(() => {
+    if (value) {
+      const [yy, mm, dd] = value.split('-');
+      setYBE(String(parseInt(yy) + 543));
+      setM(String(parseInt(mm)));
+      setD(String(parseInt(dd)));
+    }
+  }, [value]);
+
+  const update = (nd: string, nm: string, ny: string) => {
+    if (nd && nm && ny) {
+      const yCE = parseInt(ny) - 543;
+      onChange(`${yCE}-${nm.padStart(2,'0')}-${nd.padStart(2,'0')}`);
+    } else onChange('');
+  };
+
+  const yCE = yBE ? parseInt(yBE) - 543 : undefined;
+  const maxDay = m && yCE ? new Date(yCE, parseInt(m), 0).getDate() : 31;
+  const currentYearBE = new Date().getFullYear() + 543;
+  const years = Array.from({ length: currentYearBE - 2472 }, (_, i) => currentYearBE - i);
+  const sel = "flex-1 px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white cursor-pointer transition";
+
+  return (
+    <div className="flex gap-2">
+      <select value={d} onChange={e => { setD(e.target.value); update(e.target.value, m, yBE); }} className={sel}>
+        <option value="">วัน</option>
+        {Array.from({ length: maxDay }, (_, i) => i + 1).map(n => <option key={n} value={n}>{n}</option>)}
+      </select>
+      <select value={m} onChange={e => { setM(e.target.value); update(d, e.target.value, yBE); }} className={sel}>
+        <option value="">เดือน</option>
+        {MONTHS_TH.map((name, i) => <option key={i+1} value={i+1}>{name}</option>)}
+      </select>
+      <select value={yBE} onChange={e => { setYBE(e.target.value); update(d, m, e.target.value); }} className={`${sel} flex-[1.4]`}>
+        <option value="">ปี (พ.ศ.)</option>
+        {years.map(n => <option key={n} value={n}>{n}</option>)}
+      </select>
+    </div>
+  );
+}
+
+const base = "w-full px-3 py-2.5 text-sm text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white placeholder-gray-300 transition";
+const inputCls = `${base} border border-gray-200`;
+const selectCls = `${base} border border-gray-200 cursor-pointer`;
+const filledInput = (v: string | number) => v !== '' && v !== 0 ? `${base} border border-amber-400 bg-amber-50` : inputCls;
+const filledSelect = (v: string | number) => v !== '' && v !== 0 ? `${base} border border-amber-400 bg-amber-50 cursor-pointer` : selectCls;
 
 export default function EditSoberCheers({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -199,10 +250,10 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
             <Section title="ข้อมูลส่วนตัว">
               <div className="grid grid-cols-2 gap-3">
                 <Field label="ชื่อ" required>
-                  <input className={inputCls} value={form.firstName} onChange={e => set('firstName', e.target.value)} placeholder="ชื่อ" required />
+                  <input className={filledInput(form.firstName)} value={form.firstName} onChange={e => set('firstName', e.target.value)} placeholder="ชื่อ" required />
                 </Field>
                 <Field label="นามสกุล" required>
-                  <input className={inputCls} value={form.lastName} onChange={e => set('lastName', e.target.value)} placeholder="นามสกุล" required />
+                  <input className={filledInput(form.lastName)} value={form.lastName} onChange={e => set('lastName', e.target.value)} placeholder="นามสกุล" required />
                 </Field>
               </div>
 
@@ -220,11 +271,9 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
                 </div>
               </Field>
 
-              <Field label="วันเกิด (ค.ศ.)" required>
-                <div className="flex items-center gap-3">
-                  <input type="date" className={inputCls} value={form.birthday} onChange={e => set('birthday', e.target.value)} required />
-                  {age !== null && <span className="text-sm text-gray-500 whitespace-nowrap">{age} ปี</span>}
-                </div>
+              <Field label="วันเกิด (พ.ศ.)" required>
+                <BirthdayPicker value={form.birthday} onChange={v => set('birthday', v)} />
+                {age !== null && <p className="mt-1.5 text-xs text-gray-400">อายุ {age} ปี</p>}
               </Field>
             </Section>
           </div>
@@ -233,12 +282,12 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
           <div className="p-6">
             <Section title="ที่อยู่">
               <Field label="ที่อยู่ (บ้านเลขที่/หมู่บ้าน)" required>
-                <input className={inputCls} value={form.addressLine1} onChange={e => set('addressLine1', e.target.value)} placeholder="บ้านเลขที่ หมู่..." required />
+                <input className={filledInput(form.addressLine1)} value={form.addressLine1} onChange={e => set('addressLine1', e.target.value)} placeholder="บ้านเลขที่ หมู่..." required />
               </Field>
 
               <Field label="ตำบล/แขวง" required hint="พิมพ์ชื่อตำบลโดยไม่ต้องมีคำนำหน้า ระบบจะแนะนำอัตโนมัติ">
                 <div className="relative" ref={districtRef}>
-                  <input className={inputCls} value={form.district} onChange={e => handleDistrictChange(e.target.value)} placeholder="พิมพ์ชื่อตำบล..." required />
+                  <input className={filledInput(form.district)} value={form.district} onChange={e => handleDistrictChange(e.target.value)} placeholder="พิมพ์ชื่อตำบล..." required />
                   {suggestions.length > 0 && (
                     <ul className="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
                       {suggestions.map((s, i) => (
@@ -255,15 +304,15 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
 
               <div className="grid grid-cols-2 gap-3">
                 <Field label="อำเภอ/เขต" required>
-                  <input className={inputCls} value={form.amphoe} onChange={e => set('amphoe', e.target.value)} placeholder="อำเภอ" required />
+                  <input className={filledInput(form.amphoe)} value={form.amphoe} onChange={e => set('amphoe', e.target.value)} placeholder="อำเภอ" required />
                 </Field>
                 <Field label="จังหวัด" required>
-                  <input className={inputCls} value={form.province} onChange={e => set('province', e.target.value)} placeholder="จังหวัด" required />
+                  <input className={filledInput(form.province)} value={form.province} onChange={e => set('province', e.target.value)} placeholder="จังหวัด" required />
                 </Field>
               </div>
 
               <Field label="รหัสไปรษณีย์" required>
-                <input className={`${inputCls} max-w-[140px]`} value={form.zipcode} onChange={e => set('zipcode', e.target.value)} placeholder="00000" maxLength={5} required />
+                <input className={`${filledInput(form.zipcode)} max-w-[140px]`} value={form.zipcode} onChange={e => set('zipcode', e.target.value)} placeholder="00000" maxLength={5} required />
               </Field>
             </Section>
           </div>
@@ -272,13 +321,13 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
           <div className="p-6">
             <Section title="ข้อมูลติดต่อ">
               <Field label="เบอร์โทรศัพท์" hint="ไม่บังคับ — ตัวเลข 10 หลัก">
-                <input className={`${inputCls} max-w-[200px]`} type="tel" value={form.phone}
+                <input className={`${filledInput(form.phone)} max-w-[200px]`} type="tel" value={form.phone}
                   onChange={e => set('phone', e.target.value.replace(/\D/g, '').slice(0, 10))}
                   placeholder="0812345678" maxLength={10} />
               </Field>
 
               <Field label="อาชีพ" required>
-                <select className={selectCls} value={form.job} onChange={e => set('job', e.target.value)} required>
+                <select className={filledSelect(form.job)} value={form.job} onChange={e => set('job', e.target.value)} required>
                   <option value="" disabled>เลือกอาชีพ</option>
                   {JOBS.map(j => <option key={j} value={j}>{j}</option>)}
                 </select>
@@ -290,7 +339,7 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
           <div className="p-6">
             <Section title="การดื่มแอลกอฮอล์">
               <Field label="สถานะการดื่ม" required>
-                <select className={selectCls} value={form.alcoholConsumption} onChange={e => set('alcoholConsumption', e.target.value)} required>
+                <select className={filledSelect(form.alcoholConsumption)} value={form.alcoholConsumption} onChange={e => set('alcoholConsumption', e.target.value)} required>
                   <option value="" disabled>เลือกคำตอบ</option>
                   <option value="ดื่ม (ย้อนหลังไป 1 ปี)">ดื่ม (ย้อนหลังไป 1 ปี)</option>
                   <option value="เลิกดื่มมาแล้วมากกว่า 1 ปี แต่ยังไม่ถึง 3 ปี">เลิกดื่มมาแล้วมากกว่า 1 ปี แต่ยังไม่ถึง 3 ปี</option>
@@ -302,7 +351,7 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
               {isDrinker && (
                 <div className="space-y-4 pl-4 border-l-2 border-amber-200">
                   <Field label="ความถี่การดื่ม" required>
-                    <select className={selectCls} value={form.drinkingFrequency} onChange={e => set('drinkingFrequency', e.target.value)} required>
+                    <select className={filledSelect(form.drinkingFrequency)} value={form.drinkingFrequency} onChange={e => set('drinkingFrequency', e.target.value)} required>
                       <option value="" disabled>เลือกคำตอบ</option>
                       <option value="ทุกวัน (7 วัน/สัปดาห์)">ทุกวัน (7 วัน/สัปดาห์)</option>
                       <option value="เกือบทุกวัน (3-5 วัน/สัปดาห์)">เกือบทุกวัน (3-5 วัน/สัปดาห์)</option>
@@ -313,13 +362,13 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
                   </Field>
 
                   <Field label="ค่าใช้จ่าย/เดือน (บาท)" required>
-                    <input className={`${inputCls} max-w-[200px]`} type="text" value={form.monthlyExpense}
+                    <input className={`${filledInput(form.monthlyExpense)} max-w-[200px]`} type="text" value={form.monthlyExpense}
                       onChange={e => set('monthlyExpense', e.target.value.replace(/[^0-9]/g, ''))}
                       placeholder="500" required />
                   </Field>
 
                   <Field label="ตั้งใจงดดื่ม" required>
-                    <select className={selectCls} value={form.intentPeriod} onChange={e => set('intentPeriod', e.target.value)} required>
+                    <select className={filledSelect(form.intentPeriod)} value={form.intentPeriod} onChange={e => set('intentPeriod', e.target.value)} required>
                       <option value="" disabled>เลือกคำตอบ</option>
                       <option value="1 เดือน">1 เดือน</option>
                       <option value="2 เดือน">2 เดือน</option>
