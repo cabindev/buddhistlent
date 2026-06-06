@@ -41,7 +41,7 @@ export default function SoberCheersPage() {
 
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
-  const [yearFilter, setYearFilter] = useState<number | null>(null);
+  const [yearFilter, setYearFilter] = useState<number | null>(new Date().getFullYear());
   const [page, setPage] = useState(1);
 
   const [selected, setSelected] = useState<Set<number>>(new Set());
@@ -60,6 +60,10 @@ export default function SoberCheersPage() {
     ]).then(([t, yc]) => {
       if (t.success && t.data) setTypes(t.data);
       setYearCounts(yc);
+      // ถ้าปีปัจจุบันยังไม่มีข้อมูล ให้เลือกปีล่าสุดที่มีข้อมูลแทน
+      if (yc.length > 0 && !yc.some(y => y.year === yearFilter)) {
+        setYearFilter(yc[0].year); // yc เรียง year มาก→น้อย ปีแรกคือล่าสุด
+      }
     });
   }, []);
 
@@ -123,7 +127,7 @@ export default function SoberCheersPage() {
           <div>
             <h1 className="text-2xl font-semibold text-gray-900">Sober Cheers</h1>
             <p className="text-sm text-gray-500 mt-1">
-              {filtered.length.toLocaleString()} รายการ{filtered.length !== total && ` / ${total.toLocaleString()} ทั้งหมด`}
+              {yearFilter ? `ปี ${yearFilter} · ` : ''}{filtered.length.toLocaleString()} รายการ
             </p>
           </div>
           <div className="flex gap-2">
@@ -147,15 +151,6 @@ export default function SoberCheersPage() {
         {/* Year Tabs */}
         {yearCounts.length > 0 && (
           <div className="flex items-center gap-2 overflow-x-auto pb-1">
-            <button
-              onClick={() => { setYearFilter(null); setPage(1); }}
-              className={`flex-shrink-0 px-4 py-1.5 text-sm font-medium rounded-full transition-colors ${
-                yearFilter === null ? 'bg-amber-500 text-white' : 'text-gray-500 hover:bg-gray-100'
-              }`}
-            >
-              ทั้งหมด
-              <span className="ml-1.5 text-xs opacity-70">{total.toLocaleString()}</span>
-            </button>
             {yearCounts.map(({ year, count }) => (
               <button
                 key={year}
