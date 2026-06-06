@@ -3,8 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { getActiveOrganizationCategories } from '@/app/dashboard/organization-category/actions/Get';
-import DashboardOrganizationForm from '../components/DashboardOrganizationForm';
-import type { OrganizationCategory } from '@/types/organization';
+import OrganizationForm from '@/app/organization/components/OrganizationForm';
 
 export default async function DashboardCreateOrganizationPage() {
   try {
@@ -41,14 +40,11 @@ export default async function DashboardCreateOrganizationPage() {
     }
     
     return (
-      <div className="max-w-7xl mx-auto p-6">
-
-        
-        <DashboardOrganizationForm 
-          organizationCategories={organizationCategories}
-          isEdit={false} 
-        />
-      </div>
+      <OrganizationForm
+        organizationCategories={organizationCategories}
+        isEdit={false}
+        basePath="/dashboard/organization"
+      />
     );
   } catch (error) {
     console.error('Error loading organization categories:', error);

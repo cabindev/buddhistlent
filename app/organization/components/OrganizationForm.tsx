@@ -45,6 +45,7 @@ interface OrganizationFormProps {
   organizationCategories: OrganizationCategory[];
   initialData?: OrganizationFormData;
   isEdit?: boolean;
+  basePath?: string;
 }
 
 // ฟังก์ชันสำหรับตรวจสอบและทำความสะอาด URL ของรูปภาพ
@@ -72,7 +73,7 @@ const validateImageUrl = (url: string | undefined | null): string | null => {
   }
 };
 
-export default function OrganizationForm({ organizationCategories, initialData, isEdit = false }: OrganizationFormProps) {
+export default function OrganizationForm({ organizationCategories, initialData, isEdit = false, basePath = '/organization' }: OrganizationFormProps) {
   const router = useRouter();
   // Fixed ref array initialization for Next.js 15
   const fileInputRefs = useRef<Array<HTMLInputElement | null>>([]);
@@ -259,7 +260,7 @@ export default function OrganizationForm({ organizationCategories, initialData, 
         if (result.success) {
           // ใช้ Toast แทน alert
           showUpdateSuccessToast(formData.organizationCategory?.name);
-          router.push('/organization');
+          router.push(basePath);
           router.refresh();
         } else {
           // แสดง error ในฟอร์มและ Toast
@@ -289,7 +290,7 @@ export default function OrganizationForm({ organizationCategories, initialData, 
         if (result.success) {
           // ใช้ Toast พิเศษสำหรับการส่งข้อมูลสำเร็จ
           showSubmitSuccessToast(formData.organizationCategory?.name);
-          router.push('/organization');
+          router.push(basePath);
           router.refresh();
         } else {
           // แสดง error ในฟอร์ม
