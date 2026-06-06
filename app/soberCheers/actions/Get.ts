@@ -7,6 +7,7 @@ type ActionResult<T> = { success: boolean; data?: T; error?: string };
 export interface SoberCheersFilters {
   search?: string;
   type?: string;
+  year?: number;
   sortOrder?: 'asc' | 'desc';
   page?: number;
   limit?: number;
@@ -39,6 +40,13 @@ export async function getAllSoberCheers(filters?: SoberCheersFilters): Promise<A
 
     if (filters?.type) where.type = filters.type;
 
+    if (filters?.year) {
+      where.createdAt = {
+        gte: new Date(`${filters.year}-01-01`),
+        lt:  new Date(`${filters.year + 1}-01-01`),
+      };
+    }
+
     const orderBy = { createdAt: (filters?.sortOrder || 'desc') as 'asc' | 'desc' };
 
     const [items, total] = await Promise.all([
@@ -52,6 +60,20 @@ export async function getAllSoberCheers(filters?: SoberCheersFilters): Promise<A
     };
   } catch (error) {
     return { success: false, error: error instanceof Error ? error.message : 'Failed to fetch' };
+  }
+}
+
+export async function getSoberCheersYearCounts(): Promise<{ year: number; count: number }[]> {
+  try {
+    const rows = await prisma.soberCheers.findMany({ select: { createdAt: true } });
+    const map = new Map<number, number>();
+    rows.forEach(r => {
+      const y = r.createdAt.getFullYear();
+      map.set(y, (map.get(y) || 0) + 1);
+    });
+    return [...map.entries()].map(([year, count]) => ({ year, count })).sort((a, b) => b.year - a.year);
+  } catch {
+    return [];
   }
 }
 

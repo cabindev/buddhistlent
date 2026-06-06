@@ -3,7 +3,7 @@ import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { Search, Plus, Trash2, Pencil, ChevronLeft, ChevronRight } from 'lucide-react';
-import { getAllSoberCheers, getSoberCheersCount, getTypeRegions } from './actions/Get';
+import { getAllSoberCheers, getSoberCheersCount, getTypeRegions, getSoberCheersYearCounts } from './actions/Get';
 import { deleteSoberCheers } from './actions/Delete';
 import Loading from '@/components/ui/Loading';
 import EditSoberCheersModal from './components/editSoberCheersModal';
@@ -46,27 +46,32 @@ export default function SoberCheersPage() {
 
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [editId, setEditId] = useState<number | null>(null);
+  const [yearCounts, setYearCounts] = useState<{ year: number; count: number }[]>([]);
 
   useEffect(() => {
     Promise.all([
-      getAllSoberCheers({ limit: 10000 }),
-      getSoberCheersCount(),
       getTypeRegions(),
-    ]).then(([list, count, t]) => {
-      if (list.success && list.data) setItems(list.data.items);
-      if (count.success && count.data !== undefined) setTotal(count.data);
+      getSoberCheersYearCounts(),
+    ]).then(([t, yc]) => {
       if (t.success && t.data) setTypes(t.data);
-    }).finally(() => setLoading(false));
+      setYearCounts(yc);
+    });
   }, []);
 
-  const availableYears = [...new Set(items.map(i => new Date(i.createdAt).getFullYear()))]
-    .sort((a, b) => b - a);
+  useEffect(() => {
+    setLoading(true);
+    Promise.all([
+      getAllSoberCheers({ limit: 10000, year: yearFilter ?? undefined }),
+      getSoberCheersCount(),
+    ]).then(([list, count]) => {
+      if (list.success && list.data) setItems(list.data.items);
+      if (count.success && count.data !== undefined) setTotal(count.data);
+    }).finally(() => setLoading(false));
+  }, [yearFilter]);
 
   const filtered = items.filter(item => {
     const q = search.toLowerCase();
-    const itemYear = new Date(item.createdAt).getFullYear();
-    return (!yearFilter || itemYear === yearFilter)
-      && (!typeFilter || item.type === typeFilter)
+    return (!typeFilter || item.type === typeFilter)
       && (!q || `${item.firstName} ${item.lastName} ${item.province} ${item.amphoe}`.toLowerCase().includes(q));
   });
 
@@ -115,7 +120,7 @@ export default function SoberCheersPage() {
         </div>
 
         {/* Year Tabs */}
-        {availableYears.length > 0 && (
+        {yearCounts.length > 0 && (
           <div className="flex items-center gap-2 overflow-x-auto pb-1">
             <button
               onClick={() => { setYearFilter(null); setPage(1); }}
@@ -124,9 +129,9 @@ export default function SoberCheersPage() {
               }`}
             >
               ทั้งหมด
-              <span className="ml-1.5 text-xs opacity-70">{items.length.toLocaleString()}</span>
+              <span className="ml-1.5 text-xs opacity-70">{total.toLocaleString()}</span>
             </button>
-            {availableYears.map(year => (
+            {yearCounts.map(({ year, count }) => (
               <button
                 key={year}
                 onClick={() => { setYearFilter(year); setPage(1); }}
@@ -135,9 +140,7 @@ export default function SoberCheersPage() {
                 }`}
               >
                 {year}
-                <span className="ml-1.5 text-xs opacity-70">
-                  {items.filter(i => new Date(i.createdAt).getFullYear() === year).length.toLocaleString()}
-                </span>
+                <span className="ml-1.5 text-xs opacity-70">{count.toLocaleString()}</span>
               </button>
             ))}
           </div>
