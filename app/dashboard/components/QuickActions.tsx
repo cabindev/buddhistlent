@@ -1,113 +1,92 @@
 import Link from 'next/link';
-import { PlusCircle, Database, BarChart3, Wine, Building2, Table } from 'lucide-react';
+import { ArrowUpRight, Database, BarChart3, Wine, Building2, Table, UserPlus } from 'lucide-react';
 
 interface QuickActionsProps {
   isAdmin: boolean;
 }
 
-export default function QuickActions({ isAdmin }: QuickActionsProps) {
-  const actions = [
-    // Organization Actions (เมนูหลักปีนี้)
-    {
-      title: 'ลงทะเบียนหน่วยงาน',
-      description: 'เพิ่มองค์กรที่ร่วมงดเหล้าเข้าพรรษา',
-      href: '/dashboard/organization/create',
-      icon: Building2,
-      bgColor: 'bg-amber-50',
-      textColor: 'text-amber-700',
-      borderColor: 'border-amber-200',
-      hoverColor: 'hover:bg-amber-100',
-      requireAdmin: false,
-    },
-    ...(isAdmin ? [{
-      title: 'ข้อมูลองค์กร ร่วมเข้าพรรษา',
-      description: 'จัดการข้อมูลองค์กรที่ส่งคืน',
-      href: '/dashboard/organization/tables',
-      icon: Table,
-      bgColor: 'bg-amber-50',
-      textColor: 'text-amber-700',
-      borderColor: 'border-amber-200',
-      hoverColor: 'hover:bg-amber-100',
-      requireAdmin: true,
-    }] : []),
-    ...(isAdmin ? [{
-      title: 'แดชบอร์ดองค์กร',
-      description: 'สถิติและรายงานองค์กร',
-      href: '/dashboard/organization',
-      icon: BarChart3,
-      bgColor: 'bg-amber-50',
-      textColor: 'text-amber-700',
-      borderColor: 'border-amber-200',
-      hoverColor: 'hover:bg-amber-100',
-      requireAdmin: true,
-    }] : []),
+interface Action {
+  title: string;
+  description: string;
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  requireAdmin?: boolean;
+}
 
-    // SoberCheers Actions
+interface Group {
+  label: string;
+  sub: string;
+  accent: string;       // text + icon color
+  ring: string;         // hover border color
+  iconBg: string;       // icon circle bg
+  actions: Action[];
+}
+
+export default function QuickActions({ isAdmin }: QuickActionsProps) {
+  const groups: Group[] = [
     {
-      title: 'เพิ่มข้อมูล SoberCheers',
-      description: 'ลงทะเบียนงดเหล้าใหม่',
-      href: '/soberCheers/create',
-      icon: Wine,
-      bgColor: 'bg-green-50',
-      textColor: 'text-green-700',
-      borderColor: 'border-green-200',
-      hoverColor: 'hover:bg-green-100',
-      requireAdmin: false,
+      label: 'องค์กร / หน่วยงาน',
+      sub: 'เมนูหลักปีนี้',
+      accent: 'text-amber-600',
+      ring: 'hover:border-amber-300',
+      iconBg: 'bg-amber-50',
+      actions: [
+        { title: 'ลงทะเบียนหน่วยงาน', description: 'เพิ่มองค์กรที่ร่วมงดเหล้าเข้าพรรษา', href: '/dashboard/organization/create', icon: Building2 },
+        { title: 'ข้อมูลองค์กร ร่วมเข้าพรรษา', description: 'จัดการข้อมูลองค์กรที่ส่งคืน', href: '/dashboard/organization/tables', icon: Table, requireAdmin: true },
+        { title: 'แดชบอร์ดองค์กร', description: 'สถิติและรายงานองค์กร', href: '/dashboard/organization', icon: BarChart3, requireAdmin: true },
+      ],
     },
-    ...(isAdmin ? [{
-      title: 'ข้อมูลงดเหล้าเข้าพรรษา',
-      description: 'จัดการข้อมูลผู้งดเหล้า',
-      href: '/dashboard/soberCheers/components/soberTable',
-      icon: Database,
-      bgColor: 'bg-green-50',
-      textColor: 'text-green-700',
-      borderColor: 'border-green-200',
-      hoverColor: 'hover:bg-green-100',
-      requireAdmin: true,
-    }] : []),
-    ...(isAdmin ? [{
-      title: 'แดชบอร์ด SoberCheers',
-      description: 'สถิติและรายงาน',
-      href: '/dashboard/soberCheers',
-      icon: BarChart3,
-      bgColor: 'bg-green-50',
-      textColor: 'text-green-700',
-      borderColor: 'border-green-200',
-      hoverColor: 'hover:bg-green-100',
-      requireAdmin: true,
-    }] : []),
+    {
+      label: 'Sober Cheers',
+      sub: 'ผู้ลงทะเบียนงดเหล้า',
+      accent: 'text-green-600',
+      ring: 'hover:border-green-300',
+      iconBg: 'bg-green-50',
+      actions: [
+        { title: 'เพิ่มข้อมูล SoberCheers', description: 'ลงทะเบียนงดเหล้าใหม่', href: '/soberCheers/create', icon: UserPlus },
+        { title: 'ข้อมูลผู้เข้าร่วม', description: 'จัดการข้อมูลผู้งดเหล้า', href: '/dashboard/soberCheers/components/soberTable', icon: Database, requireAdmin: true },
+        { title: 'แดชบอร์ด SoberCheers', description: 'สถิติและรายงาน', href: '/dashboard/soberCheers', icon: BarChart3, requireAdmin: true },
+      ],
+    },
   ];
 
-  const filteredActions = actions.filter(action => !action.requireAdmin || isAdmin);
-
   return (
-    <div className="bg-white rounded-lg p-6 border border-gray-200 shadow-sm">
-      <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-        <PlusCircle className="w-5 h-5 mr-2 text-gray-600" />
-        การดำเนินการด่วน
-      </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredActions.map((action, index) => {
-          const Icon = action.icon;
-          return (
-            <Link
-              key={index}
-              href={action.href}
-              className={`group block p-4 rounded-lg border transition-all duration-200 ${action.bgColor} ${action.borderColor} ${action.hoverColor} hover:shadow-md`}
-            >
-              <div className="flex items-start space-x-3">
-                <div className={`p-2 rounded ${action.bgColor} border ${action.borderColor}`}>
-                  <Icon className={`w-5 h-5 ${action.textColor}`} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className={`font-medium text-sm ${action.textColor} mb-1`}>{action.title}</h3>
-                  <p className="text-xs text-gray-600 leading-relaxed">{action.description}</p>
-                </div>
-              </div>
-            </Link>
-          );
-        })}
-      </div>
+    <div className="space-y-7">
+      {groups.map((group) => {
+        const actions = group.actions.filter(a => !a.requireAdmin || isAdmin);
+        if (actions.length === 0) return null;
+
+        return (
+          <div key={group.label}>
+            <div className="flex items-baseline gap-2 mb-3 px-1">
+              <h2 className="text-sm font-semibold text-gray-800">{group.label}</h2>
+              <span className="text-xs text-gray-400">· {group.sub}</span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {actions.map((action) => {
+                const Icon = action.icon;
+                return (
+                  <Link
+                    key={action.href}
+                    href={action.href}
+                    className={`group relative bg-white rounded-2xl border border-gray-100 p-5 transition-all hover:shadow-md ${group.ring} active:scale-[0.99]`}
+                  >
+                    <div className="flex items-start justify-between mb-4">
+                      <div className={`w-10 h-10 rounded-xl ${group.iconBg} flex items-center justify-center`}>
+                        <Icon className={`w-5 h-5 ${group.accent}`} />
+                      </div>
+                      <ArrowUpRight className="w-4 h-4 text-gray-300 group-hover:text-gray-500 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                    </div>
+                    <h3 className="text-sm font-semibold text-gray-900 mb-0.5">{action.title}</h3>
+                    <p className="text-xs text-gray-400 leading-relaxed">{action.description}</p>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
