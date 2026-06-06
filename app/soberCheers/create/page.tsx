@@ -324,19 +324,38 @@ export default function CreateSoberCheers() {
               </Field>
 
               <Field label="สังกัด" required hint="หน่วยงาน/องค์กรที่ท่านสังกัด">
-                <select title="สังกัด" className={filledSelect(form.job)} value={form.job} onChange={e => set('job', e.target.value)} required>
-                  <option value="" disabled>เลือกสังกัด</option>
+                <div className="space-y-3">
                   {Object.entries(orgGroups).map(([type, items]) => (
-                    <optgroup key={type} label={type}>
-                      {items.map(c => (
-                        <option key={c.id} value={c.name}>
-                          {c.name}{c.shortName ? ` (${c.shortName})` : ''}
-                        </option>
-                      ))}
-                    </optgroup>
+                    <div key={type}>
+                      <p className="text-[10px] text-gray-400 uppercase tracking-widest mb-1.5">{type}</p>
+                      <div className="grid grid-cols-2 gap-2">
+                        {items.map(c => (
+                          <button key={c.id} type="button" onClick={() => set('job', c.name)}
+                            className={`px-3 py-2.5 rounded-lg border text-left transition-colors ${
+                              form.job === c.name
+                                ? 'bg-amber-50 border-amber-400'
+                                : 'border-gray-200 hover:border-amber-200'
+                            }`}>
+                            <span className={`block text-sm font-semibold leading-tight ${form.job === c.name ? 'text-amber-800' : 'text-gray-800'}`}>
+                              {c.shortName || c.name}
+                            </span>
+                            {c.shortName && (
+                              <span className="block text-[11px] text-gray-400 leading-tight mt-0.5">{c.name}</span>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   ))}
-                  <option value="อื่น ๆ">อื่น ๆ</option>
-                </select>
+                  <button type="button" onClick={() => set('job', 'อื่น ๆ')}
+                    className={`w-full px-3 py-2.5 rounded-lg border text-sm font-medium transition-colors ${
+                      form.job === 'อื่น ๆ'
+                        ? 'bg-amber-50 border-amber-400 text-amber-800'
+                        : 'border-gray-200 text-gray-600 hover:border-amber-200'
+                    }`}>
+                    อื่น ๆ
+                  </button>
+                </div>
               </Field>
             </Section>
           </div>
