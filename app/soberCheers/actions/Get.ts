@@ -77,6 +77,19 @@ export async function getSoberCheersYearCounts(): Promise<{ year: number; count:
   }
 }
 
+export async function findSoberCheersByPhone(phone: string): Promise<ActionResult<any>> {
+  try {
+    const item = await prisma.soberCheers.findFirst({
+      where: { phone: phone.trim() },
+      orderBy: { createdAt: 'desc' },
+    });
+    if (!item) return { success: false, error: 'ไม่พบข้อมูลที่ตรงกับเบอร์โทรนี้' };
+    return { success: true, data: item };
+  } catch (error) {
+    return { success: false, error: 'เกิดข้อผิดพลาด' };
+  }
+}
+
 export async function getSoberCheersById(id: number): Promise<ActionResult<any>> {
   try {
     const item = await prisma.soberCheers.findUnique({ where: { id } });

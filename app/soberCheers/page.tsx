@@ -2,8 +2,8 @@
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
-import { Search, Plus, Trash2, Pencil, ChevronLeft, ChevronRight } from 'lucide-react';
-import { getAllSoberCheers, getSoberCheersCount, getTypeRegions, getSoberCheersYearCounts } from './actions/Get';
+import { Search, Plus, Trash2, Pencil, ChevronLeft, ChevronRight, Phone, X } from 'lucide-react';
+import { getAllSoberCheers, getSoberCheersCount, getTypeRegions, getSoberCheersYearCounts, findSoberCheersByPhone } from './actions/Get';
 import { deleteSoberCheers } from './actions/Delete';
 import Loading from '@/components/ui/Loading';
 import EditSoberCheersModal from './components/editSoberCheersModal';
@@ -47,6 +47,11 @@ export default function SoberCheersPage() {
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [editId, setEditId] = useState<number | null>(null);
   const [yearCounts, setYearCounts] = useState<{ year: number; count: number }[]>([]);
+  const [showLookup, setShowLookup] = useState(false);
+  const [lookupPhone, setLookupPhone] = useState('');
+  const [lookupResult, setLookupResult] = useState<any>(null);
+  const [lookupError, setLookupError] = useState('');
+  const [lookupLoading, setLookupLoading] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -90,6 +95,17 @@ export default function SoberCheersPage() {
     setSelected(new Set());
   };
 
+  const handleLookup = async () => {
+    if (!lookupPhone.trim()) return;
+    setLookupLoading(true);
+    setLookupError('');
+    setLookupResult(null);
+    const r = await findSoberCheersByPhone(lookupPhone.trim());
+    if (r.success) setLookupResult(r.data);
+    else setLookupError(r.error || 'ไม่พบข้อมูล');
+    setLookupLoading(false);
+  };
+
   const refresh = useCallback(() => {
     getAllSoberCheers({ limit: 10000 }).then(r => {
       if (r.success && r.data) setItems(r.data.items);
@@ -110,13 +126,22 @@ export default function SoberCheersPage() {
               {filtered.length.toLocaleString()} รายการ{filtered.length !== total && ` / ${total.toLocaleString()} ทั้งหมด`}
             </p>
           </div>
-          <Link
-            href="/soberCheers/create"
-            className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-            ลงทะเบียน
-          </Link>
+          <div className="flex gap-2">
+            <button
+              onClick={() => { setShowLookup(true); setLookupPhone(''); setLookupResult(null); setLookupError(''); }}
+              className="inline-flex items-center gap-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+            >
+              <Phone className="w-4 h-4" />
+              ค้นหาข้อมูลของฉัน
+            </button>
+            <Link
+              href="/soberCheers/create"
+              className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              ลงทะเบียน
+            </Link>
+          </div>
         </div>
 
         {/* Year Tabs */}
@@ -284,6 +309,62 @@ export default function SoberCheersPage() {
           </div>
         )}
       </div>
+
+      {/* Phone Lookup Modal */}
+      {showLookup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-base font-semibold text-gray-900">ค้นหาข้อมูลของฉัน</h2>
+              <button onClick={() => setShowLookup(false)} className="p-1 hover:bg-gray-100 rounded-lg">
+                <X className="w-4 h-4 text-gray-500" />
+              </button>
+            </div>
+
+            <p className="text-sm text-gray-500 mb-4">กรอกเบอร์โทรศัพท์ที่ใช้ลงทะเบียนเพื่อดูและแก้ไขข้อมูลของคุณ</p>
+
+            <div className="flex gap-2 mb-4">
+              <input
+                type="tel"
+                value={lookupPhone}
+                onChange={e => setLookupPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                onKeyDown={e => e.key === 'Enter' && handleLookup()}
+                placeholder="0812345678"
+                className="flex-1 px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white"
+                maxLength={10}
+              />
+              <button
+                onClick={handleLookup}
+                disabled={lookupLoading || lookupPhone.length < 9}
+                className="px-4 py-2.5 text-sm font-medium bg-amber-500 hover:bg-amber-600 text-white rounded-lg disabled:opacity-40 transition-colors"
+              >
+                {lookupLoading ? '...' : 'ค้นหา'}
+              </button>
+            </div>
+
+            {lookupError && (
+              <p className="text-sm text-red-500 mb-3">{lookupError}</p>
+            )}
+
+            {lookupResult && (
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-2">
+                <p className="text-sm font-semibold text-gray-900">{lookupResult.firstName} {lookupResult.lastName}</p>
+                <p className="text-xs text-gray-500">จังหวัด{lookupResult.province} · {lookupResult.type}</p>
+                <p className="text-xs text-gray-500">อาชีพ: {lookupResult.job}</p>
+                <p className="text-xs text-gray-400">ลงทะเบียนเมื่อ {new Date(lookupResult.createdAt).toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                <Link
+                  href={`/soberCheers/edit/${lookupResult.id}`}
+                  onClick={() => setShowLookup(false)}
+                  className="mt-2 flex items-center justify-center gap-2 w-full py-2 text-sm font-medium bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors"
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                  แก้ไขข้อมูล
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {editId && (
         <EditSoberCheersModal
