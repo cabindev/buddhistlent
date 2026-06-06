@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { LoaderCircle, CheckCircle2 } from 'lucide-react';
+import { LoaderCircle, CheckCircle2, ArrowLeft } from 'lucide-react';
 import { data as regions } from '@/app/data/regions';
 import { createSoberCheers } from '../actions/Post';
 
@@ -28,10 +28,13 @@ function calcAge(birthday: string) {
   return age > 0 ? age : null;
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({ n, title, children }: { n: number; title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-4">{title}</h2>
+      <div className="flex items-center gap-2.5 mb-4">
+        <span className="w-5 h-5 rounded-full bg-amber-400 text-gray-900 text-[10px] font-bold flex items-center justify-center flex-shrink-0">{n}</span>
+        <h2 className="text-sm font-semibold text-gray-700">{title}</h2>
+      </div>
       <div className="space-y-4">{children}</div>
     </div>
   );
@@ -202,20 +205,30 @@ export default function CreateSoberCheers() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4">
-      <div className="max-w-xl mx-auto">
+    <div className="min-h-screen bg-gray-50">
 
-        {/* Header */}
-        <div className="mb-8 text-center">
-          <h1 className="text-2xl font-semibold text-gray-900">ลงทะเบียนร่วม งดเหล้าเข้าพรรษา</h1>
-          <p className="text-sm text-gray-400 mt-1">Buddhistlent — ปี {new Date().getFullYear() + 543}</p>
+      {/* Header */}
+      <div className="bg-white border-b border-gray-100 sticky top-0 z-10">
+        <div className="max-w-xl mx-auto px-5 py-4 flex items-center gap-3">
+          <button onClick={() => router.back()} type="button"
+            className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-900 transition-colors">
+            <ArrowLeft className="h-4 w-4" />
+            กลับ
+          </button>
+          <div className="h-4 w-px bg-gray-200" />
+          <div>
+            <h1 className="text-sm font-semibold text-gray-900">ลงทะเบียนร่วม งดเหล้าเข้าพรรษา</h1>
+            <p className="text-[10px] text-gray-400">Buddhistlent · ปี {new Date().getFullYear() + 543}</p>
+          </div>
         </div>
+      </div>
 
+      <div className="max-w-xl mx-auto px-4 py-6 pb-28">
         <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-gray-200 divide-y divide-gray-100">
 
           {/* Section 1 — ข้อมูลส่วนตัว */}
           <div className="p-6">
-            <Section title="ข้อมูลส่วนตัว">
+            <Section n={1} title="ข้อมูลส่วนตัว">
               <div className="grid grid-cols-2 gap-3">
                 <Field label="ชื่อ" required>
                   <input className={filledInput(form.firstName)} value={form.firstName} onChange={e => set('firstName', e.target.value)} placeholder="ชื่อ" required />
@@ -231,7 +244,7 @@ export default function CreateSoberCheers() {
                     <button key={g} type="button" onClick={() => set('gender', g)}
                       className={`flex-1 py-2 text-sm rounded-lg border transition-colors ${
                         form.gender === g
-                          ? 'bg-amber-500 border-amber-500 text-white font-medium'
+                          ? 'bg-amber-400 border-amber-400 text-gray-900 font-semibold'
                           : 'border-gray-200 text-gray-600 hover:border-amber-300 hover:text-amber-600'
                       }`}
                     >{g}</button>
@@ -248,7 +261,7 @@ export default function CreateSoberCheers() {
 
           {/* Section 2 — ที่อยู่ */}
           <div className="p-6">
-            <Section title="ที่อยู่">
+            <Section n={2} title="ที่อยู่">
               <Field label="ที่อยู่ (บ้านเลขที่/หมู่บ้าน)" required>
                 <input className={filledInput(form.addressLine1)} value={form.addressLine1} onChange={e => set('addressLine1', e.target.value)} placeholder="บ้านเลขที่ หมู่..." required />
               </Field>
@@ -288,7 +301,7 @@ export default function CreateSoberCheers() {
 
           {/* Section 3 — ข้อมูลติดต่อ */}
           <div className="p-6">
-            <Section title="ข้อมูลติดต่อ">
+            <Section n={3} title="ข้อมูลติดต่อ">
               <Field label="เบอร์โทรศัพท์" hint="ไม่บังคับ — ตัวเลข 10 หลัก">
                 <input className={`${filledInput(form.phone)} max-w-[200px]`} type="tel" value={form.phone}
                   onChange={e => set('phone', e.target.value.replace(/\D/g, '').slice(0, 10))}
@@ -306,7 +319,7 @@ export default function CreateSoberCheers() {
 
           {/* Section 4 — การดื่มแอลกอฮอล์ */}
           <div className="p-6">
-            <Section title="การดื่มแอลกอฮอล์">
+            <Section n={4} title="การดื่มแอลกอฮอล์">
               <Field label="สถานะการดื่ม" required>
                 <select className={filledSelect(form.alcoholConsumption)} value={form.alcoholConsumption} onChange={e => set('alcoholConsumption', e.target.value)} required>
                   <option value="" disabled>เลือกคำตอบ</option>
@@ -353,7 +366,7 @@ export default function CreateSoberCheers() {
 
           {/* Section 5 — แรงจูงใจ */}
           <div className="p-6">
-            <Section title="แรงจูงใจในการงดเหล้า">
+            <Section n={5} title="แรงจูงใจในการงดเหล้า">
               <div className="grid grid-cols-2 gap-2">
                 {MOTIVATIONS.map(m => (
                   <button key={m} type="button" onClick={() => toggleMotivation(m)}
@@ -373,7 +386,7 @@ export default function CreateSoberCheers() {
 
           {/* Section 6 — ผลกระทบ */}
           <div className="p-6">
-            <Section title="ผลกระทบต่อสุขภาพ">
+            <Section n={6} title="ผลกระทบต่อสุขภาพ">
               <div className="space-y-2">
                 {[
                   { value: 'ไม่มีผลกระทบ', desc: '' },
@@ -395,22 +408,31 @@ export default function CreateSoberCheers() {
             </Section>
           </div>
 
-          {/* Submit */}
-          <div className="p-6">
-            {error && (
-              <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
+          {error && (
+            <div className="p-6">
+              <div className="px-4 py-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
                 {error}
               </div>
-            )}
-            <button type="submit" disabled={submitting}
-              className="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
-              {submitting ? (
-                <><LoaderCircle className="w-4 h-4 animate-spin" /> กำลังบันทึก...</>
-              ) : 'ลงทะเบียน'}
-            </button>
-          </div>
+            </div>
+          )}
 
         </form>
+      </div>
+
+      {/* Sticky footer */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-4 py-3">
+        <div className="max-w-xl mx-auto flex gap-2">
+          <button type="button" onClick={() => router.back()} disabled={submitting}
+            className="flex-1 py-2.5 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
+            ยกเลิก
+          </button>
+          <button type="button" onClick={handleSubmit as unknown as React.MouseEventHandler} disabled={submitting}
+            className="flex-[2] flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-gray-900 bg-amber-400 hover:bg-amber-500 rounded-xl transition-colors disabled:opacity-50">
+            {submitting ? (
+              <><LoaderCircle className="w-4 h-4 animate-spin" /> กำลังบันทึก...</>
+            ) : 'ลงทะเบียน'}
+          </button>
+        </div>
       </div>
     </div>
   );
