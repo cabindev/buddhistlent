@@ -49,8 +49,19 @@ function Field({ label, required, hint, children }: { label: string; required?: 
   );
 }
 
-const inputCls = "w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent bg-white placeholder-gray-300 transition";
-const selectCls = `${inputCls} cursor-pointer`;
+const base = "w-full px-3 py-2.5 text-sm text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white placeholder-gray-300 transition";
+const inputCls = `${base} border border-gray-200`;
+const selectCls = `${base} border border-gray-200 cursor-pointer`;
+
+const filledInput = (value: string | number) =>
+  value !== '' && value !== 0
+    ? `${base} border border-amber-400 bg-amber-50`
+    : inputCls;
+
+const filledSelect = (value: string | number) =>
+  value !== '' && value !== 0
+    ? `${base} border border-amber-400 bg-amber-50 cursor-pointer`
+    : selectCls;
 
 const MONTHS_TH = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน',
   'กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
@@ -207,10 +218,10 @@ export default function CreateSoberCheers() {
             <Section title="ข้อมูลส่วนตัว">
               <div className="grid grid-cols-2 gap-3">
                 <Field label="ชื่อ" required>
-                  <input className={inputCls} value={form.firstName} onChange={e => set('firstName', e.target.value)} placeholder="ชื่อ" required />
+                  <input className={filledInput(form.firstName)} value={form.firstName} onChange={e => set('firstName', e.target.value)} placeholder="ชื่อ" required />
                 </Field>
                 <Field label="นามสกุล" required>
-                  <input className={inputCls} value={form.lastName} onChange={e => set('lastName', e.target.value)} placeholder="นามสกุล" required />
+                  <input className={filledInput(form.lastName)} value={form.lastName} onChange={e => set('lastName', e.target.value)} placeholder="นามสกุล" required />
                 </Field>
               </div>
 
@@ -239,12 +250,12 @@ export default function CreateSoberCheers() {
           <div className="p-6">
             <Section title="ที่อยู่">
               <Field label="ที่อยู่ (บ้านเลขที่/หมู่บ้าน)" required>
-                <input className={inputCls} value={form.addressLine1} onChange={e => set('addressLine1', e.target.value)} placeholder="บ้านเลขที่ หมู่..." required />
+                <input className={filledInput(form.addressLine1)} value={form.addressLine1} onChange={e => set('addressLine1', e.target.value)} placeholder="บ้านเลขที่ หมู่..." required />
               </Field>
 
               <Field label="ตำบล/แขวง" required hint="พิมพ์ชื่อตำบลโดยไม่ต้องมีคำนำหน้า ระบบจะแนะนำข้อมูลอัตโนมัติ">
                 <div className="relative" ref={districtRef}>
-                  <input className={inputCls} value={form.district} onChange={e => handleDistrictChange(e.target.value)} placeholder="พิมพ์ชื่อตำบล..." required />
+                  <input className={filledInput(form.district)} value={form.district} onChange={e => handleDistrictChange(e.target.value)} placeholder="พิมพ์ชื่อตำบล..." required />
                   {suggestions.length > 0 && (
                     <ul className="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
                       {suggestions.map((s, i) => (
@@ -261,17 +272,15 @@ export default function CreateSoberCheers() {
 
               <div className="grid grid-cols-2 gap-3">
                 <Field label="อำเภอ/เขต" required>
-                  <input className={`${inputCls} ${autoFilled ? 'bg-amber-50 border-amber-200' : ''}`}
-                    value={form.amphoe} onChange={e => set('amphoe', e.target.value)} placeholder="อำเภอ" required />
+                  <input className={filledInput(form.amphoe)} value={form.amphoe} onChange={e => set('amphoe', e.target.value)} placeholder="อำเภอ" required />
                 </Field>
                 <Field label="จังหวัด" required>
-                  <input className={`${inputCls} ${autoFilled ? 'bg-amber-50 border-amber-200' : ''}`}
-                    value={form.province} onChange={e => set('province', e.target.value)} placeholder="จังหวัด" required />
+                  <input className={filledInput(form.province)} value={form.province} onChange={e => set('province', e.target.value)} placeholder="จังหวัด" required />
                 </Field>
               </div>
 
               <Field label="รหัสไปรษณีย์" required>
-                <input className={`${inputCls} ${autoFilled ? 'bg-amber-50 border-amber-200' : ''} max-w-[140px]`}
+                <input className={`${filledInput(form.zipcode)} max-w-[140px]`}
                   value={form.zipcode} onChange={e => set('zipcode', e.target.value)} placeholder="00000" maxLength={5} required />
               </Field>
             </Section>
@@ -281,13 +290,13 @@ export default function CreateSoberCheers() {
           <div className="p-6">
             <Section title="ข้อมูลติดต่อ">
               <Field label="เบอร์โทรศัพท์" hint="ไม่บังคับ — ตัวเลข 10 หลัก">
-                <input className={`${inputCls} max-w-[200px]`} type="tel" value={form.phone}
+                <input className={`${filledInput(form.phone)} max-w-[200px]`} type="tel" value={form.phone}
                   onChange={e => set('phone', e.target.value.replace(/\D/g, '').slice(0, 10))}
                   placeholder="0812345678" maxLength={10} />
               </Field>
 
               <Field label="อาชีพ" required>
-                <select className={selectCls} value={form.job} onChange={e => set('job', e.target.value)} required>
+                <select className={filledSelect(form.job)} value={form.job} onChange={e => set('job', e.target.value)} required>
                   <option value="" disabled>เลือกอาชีพ</option>
                   {JOBS.map(j => <option key={j} value={j}>{j}</option>)}
                 </select>
@@ -299,7 +308,7 @@ export default function CreateSoberCheers() {
           <div className="p-6">
             <Section title="การดื่มแอลกอฮอล์">
               <Field label="สถานะการดื่ม" required>
-                <select className={selectCls} value={form.alcoholConsumption} onChange={e => set('alcoholConsumption', e.target.value)} required>
+                <select className={filledSelect(form.alcoholConsumption)} value={form.alcoholConsumption} onChange={e => set('alcoholConsumption', e.target.value)} required>
                   <option value="" disabled>เลือกคำตอบ</option>
                   <option value="ดื่ม (ย้อนหลังไป 1 ปี)">ดื่ม (ย้อนหลังไป 1 ปี)</option>
                   <option value="เลิกดื่มมาแล้วมากกว่า 1 ปี แต่ยังไม่ถึง 3 ปี">เลิกดื่มมาแล้วมากกว่า 1 ปี แต่ยังไม่ถึง 3 ปี</option>
@@ -311,7 +320,7 @@ export default function CreateSoberCheers() {
               {isDrinker && (
                 <div className="space-y-4 pl-4 border-l-2 border-amber-200">
                   <Field label="ความถี่การดื่ม" required>
-                    <select className={selectCls} value={form.drinkingFrequency} onChange={e => set('drinkingFrequency', e.target.value)} required>
+                    <select className={filledSelect(form.drinkingFrequency)} value={form.drinkingFrequency} onChange={e => set('drinkingFrequency', e.target.value)} required>
                       <option value="" disabled>เลือกคำตอบ</option>
                       <option value="ทุกวัน (7 วัน/สัปดาห์)">ทุกวัน (7 วัน/สัปดาห์)</option>
                       <option value="เกือบทุกวัน (3-5 วัน/สัปดาห์)">เกือบทุกวัน (3-5 วัน/สัปดาห์)</option>
@@ -322,13 +331,13 @@ export default function CreateSoberCheers() {
                   </Field>
 
                   <Field label="ค่าใช้จ่าย/เดือน (บาท)" required>
-                    <input className={`${inputCls} max-w-[200px]`} type="text" value={form.monthlyExpense}
+                    <input className={`${filledInput(form.monthlyExpense)} max-w-[200px]`} type="text" value={form.monthlyExpense}
                       onChange={e => set('monthlyExpense', e.target.value.replace(/[^0-9]/g, ''))}
                       placeholder="500" required />
                   </Field>
 
                   <Field label="ตั้งใจงดดื่ม" required>
-                    <select className={selectCls} value={form.intentPeriod} onChange={e => set('intentPeriod', e.target.value)} required>
+                    <select className={filledSelect(form.intentPeriod)} value={form.intentPeriod} onChange={e => set('intentPeriod', e.target.value)} required>
                       <option value="" disabled>เลือกคำตอบ</option>
                       <option value="1 เดือน">1 เดือน</option>
                       <option value="2 เดือน">2 เดือน</option>
