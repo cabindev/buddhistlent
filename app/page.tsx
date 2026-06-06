@@ -1,28 +1,8 @@
 'use client';
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowUpRight, ChevronDown, ChevronRight } from 'lucide-react';
-
-function ShimmerCard({ children, style = {}, className = '' }: { children: React.ReactNode; style?: React.CSSProperties; className?: string }) {
-  return (
-    <div className={`relative overflow-hidden ${className}`} style={style}>
-      <div style={{
-        position: 'absolute', inset: 0, zIndex: 1,
-        background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.45) 50%, transparent 60%)',
-        backgroundSize: '200% 100%',
-        animation: 'shimmer 3s ease-in-out infinite',
-        pointerEvents: 'none',
-      }} />
-      <div style={{ position: 'relative', zIndex: 2 }}>{children}</div>
-      <style>{`
-        @keyframes shimmer {
-          0%   { background-position: 200% center; }
-          100% { background-position: -200% center; }
-        }
-      `}</style>
-    </div>
-  );
-}
+import { ArrowUpRight, ChevronDown, ChevronRight, LayoutDashboard, ClipboardList, PlusCircle, Trophy } from 'lucide-react';
+import { getTopOrganizations } from '@/app/organization/actions/Get';
 
 function useLentCountdown() {
   const [info, setInfo] = React.useState({ days: '—', label: '', pct: 0 });
@@ -49,196 +29,182 @@ function useLentCountdown() {
   return info;
 }
 
-const BG = '#f8f5f0';
-const GOLD = '#d4a843';
-
-const actions = [
-  { label: 'ลงทะเบียนหน่วยงาน', sub: 'Register your organization', href: '/organization/create', primary: true },
-  { label: 'ดูข้อมูลที่ส่งแล้ว',  sub: 'View all submissions',      href: '/organization',        primary: false },
-  { label: 'สถิติและรายงาน',      sub: 'Statistics & reports',       href: '/dashboard',           primary: false },
-];
-
 const steps = ['ลงทะเบียน', 'รายงาน', 'อัปโหลด', 'ส่งข้อมูล'];
+const RANK_COLORS = ['text-yellow-500', 'text-gray-400', 'text-amber-600', 'text-stone-400', 'text-stone-400'];
+const RANK_ICONS = ['🥇', '🥈', '🥉', '4.', '5.'];
+
+function TopOrgTicker({ items }: { items: { name: string; signers: number; rank: number }[] }) {
+  const [idx, setIdx] = React.useState(0);
+  const [fade, setFade] = React.useState(true);
+
+  React.useEffect(() => {
+    if (!items.length) return;
+    const t = setInterval(() => {
+      setFade(false);
+      setTimeout(() => { setIdx(i => (i + 1) % items.length); setFade(true); }, 300);
+    }, 2800);
+    return () => clearInterval(t);
+  }, [items.length]);
+
+  if (!items.length) return null;
+  const item = items[idx];
+  return (
+    <div className="flex items-center gap-2 transition-opacity duration-300" style={{ opacity: fade ? 1 : 0 }}>
+      <span className="text-base">{RANK_ICONS[item.rank - 1]}</span>
+      <span className="text-xs font-medium text-stone-700 truncate max-w-[160px]">{item.name}</span>
+      <span className="text-xs text-stone-400 ml-auto tabular-nums">{item.signers.toLocaleString()} คน</span>
+    </div>
+  );
+}
 
 export default function Home() {
   const router = useRouter();
   const lent = useLentCountdown();
   const [open, setOpen] = React.useState(false);
+  const [topOrgs, setTopOrgs] = React.useState<{ name: string; categoryType: string; signers: number; rank: number }[]>([]);
+
+  React.useEffect(() => {
+    getTopOrganizations(5).then(setTopOrgs);
+  }, []);
 
   return (
-    <div className="min-h-dvh" style={{ background: BG }}>
-
-      {/* ── MOBILE ── */}
-      <div className="md:hidden flex flex-col min-h-dvh px-5">
-
-        {/* Hero — no card, sits on cream bg */}
-        <div className="flex-1 flex flex-col justify-center pt-2 pb-8">
-          <p className="text-[10px] tracking-[0.3em] text-stone-400 uppercase mb-8">
-            Buddhist Lent · พ.ศ. 2569
-          </p>
-
-          <div className="mb-6">
-            <span
-              className="font-black tabular-nums leading-none"
-              style={{ fontSize: 'clamp(5rem,22vw,7rem)', color: '#1c1917', letterSpacing: '-0.03em' }}
-            >
-              {lent.days}
-            </span>
-            <p className="text-sm text-stone-400 mt-1">{lent.label}</p>
-          </div>
-
-          <div className="h-px mb-6" style={{ background: '#e5ddd4' }} />
-
-          <h1 className="text-lg font-semibold text-stone-800 leading-snug mb-2">
-            ระบบรายงานผลงดเหล้าเข้าพรรษา
-          </h1>
-          <p className="text-sm text-stone-400 leading-relaxed">
-            รายงานจำนวนสมาชิกที่งดเหล้าและอัปโหลดภาพกิจกรรมจากหน่วยงานของท่าน
-          </p>
-        </div>
-
-        {/* Actions */}
-        <div className="rounded-2xl overflow-hidden shadow-sm mb-3" style={{ background: '#fff' }}>
-          {actions.map((a, i) => (
-            a.primary ? (
-              <ShimmerCard key={a.href}
-                style={{ background: GOLD, borderBottom: '1px solid #e5c46a' }}
-                className="w-full"
-              >
-                <button type="button" onClick={() => router.push(a.href)}
-                  className="w-full flex items-center justify-between px-5 py-4 active:opacity-70 transition-opacity text-left">
-                  <div>
-                    <p className="text-sm font-semibold" style={{ color: '#1c1917' }}>{a.label}</p>
-                    <p className="text-[11px] mt-0.5" style={{ color: '#78613a' }}>{a.sub}</p>
-                  </div>
-                  <ChevronRight className="w-4 h-4 flex-shrink-0 ml-3" style={{ color: '#78613a' }} />
-                </button>
-              </ShimmerCard>
-            ) : (
-              <button key={a.href} type="button" onClick={() => router.push(a.href)}
-                className="w-full flex items-center justify-between px-5 py-4 active:opacity-70 transition-opacity text-left"
-                style={{ background: '#fff', borderBottom: i < actions.length - 1 ? '1px solid #f0ebe4' : 'none' }}>
-                <div>
-                  <p className="text-sm font-semibold" style={{ color: '#44403c' }}>{a.label}</p>
-                  <p className="text-[11px] mt-0.5" style={{ color: '#a8a29e' }}>{a.sub}</p>
-                </div>
-                <ChevronRight className="w-4 h-4 flex-shrink-0 ml-3" style={{ color: '#d6d3d1' }} />
-              </button>
-            )
-          ))}
-        </div>
-
-        {/* How to use */}
-        <div className="rounded-2xl overflow-hidden shadow-sm mb-6" style={{ background: '#fff' }}>
-          <button
-            type="button"
-            onClick={() => setOpen(v => !v)}
-            className="w-full flex items-center justify-between px-5 py-3.5"
-          >
-            <span className="text-[10px] tracking-widest text-stone-400 uppercase">วิธีการใช้งาน · How to Use</span>
-            <ChevronDown className={`w-3.5 h-3.5 text-stone-300 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
-          </button>
-          {open && (
-            <div className="grid grid-cols-4 gap-2 px-5 pb-4 pt-1 border-t border-stone-100">
-              {steps.map((th, i) => (
-                <div key={th} className="text-center">
-                  <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold mx-auto mb-1"
-                    style={{ background: '#fef3c7', color: GOLD }}>
-                    {i + 1}
-                  </div>
-                  <p className="text-[10px] font-medium text-stone-500">{th}</p>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
+    <div className="min-h-screen bg-[#faf9f6] text-stone-900 selection:bg-amber-200/50 overflow-x-hidden">
+      
+      {/* Background Glows */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-amber-300/20 blur-[120px] rounded-full" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-yellow-300/20 blur-[120px] rounded-full" />
       </div>
 
-      {/* ── DESKTOP ── bento */}
-      <div className="hidden md:block max-w-3xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-3 gap-3" style={{ gridAutoRows: '1fr' }}>
+      <div className="relative z-10 max-w-4xl mx-auto px-6 py-8 flex flex-col items-center">
+        
+        {/* Top Logo */}
+        <div className="mb-8 animate-fade-in-down">
+          <img 
+            src="/Buddhist-lent.png" 
+            alt="Buddhist Lent Logo" 
+            className="h-24 md:h-32 w-auto object-contain transition-all duration-500 hover:scale-105"
+          />
+        </div>
 
-          {/* Hero card */}
-          <div className="col-span-2 row-span-1 bg-white rounded-3xl p-7 border border-stone-200/50 shadow-sm flex flex-col justify-between" style={{ minHeight: 200 }}>
-            <div>
-              <p className="text-[10px] text-stone-400 tracking-widest uppercase mb-3">Buddhist Lent · พ.ศ. 2569</p>
-              <h1 className="text-xl font-semibold text-stone-900 leading-snug mb-2">
-                ระบบรายงานผลงดเหล้าเข้าพรรษา
-              </h1>
-              <p className="text-xs text-stone-400 leading-relaxed max-w-xs">
-                รายงานจำนวนสมาชิกที่งดเหล้าและอัปโหลดภาพกิจกรรมจากหน่วยงานของท่าน
-              </p>
-            </div>
-            {lent.pct > 0 && (
-              <div className="mt-5">
-                <div className="flex justify-between text-[10px] text-stone-400 mb-1.5">
-                  <span>ความคืบหน้า</span><span>{lent.pct}%</span>
+        {/* Hero Section */}
+        <div className="text-center mb-12 space-y-4">
+          <div className="inline-flex items-center justify-center px-4 py-1.5 rounded-full bg-white border border-stone-200 text-[10px] tracking-[0.2em] text-stone-500 uppercase shadow-sm animate-pulse">
+            Buddhist Lent · พ.ศ. 2569
+          </div>
+          
+          <h1 className="text-2xl md:text-4xl font-bold tracking-tight">
+            <span className="text-stone-800">ระบบรายงานผล</span>
+            <span className="bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-500 bg-clip-text text-transparent ml-3">
+              งดเหล้าเข้าพรรษา
+            </span>
+          </h1>
+          
+          <p className="text-stone-500 text-sm md:text-base max-w-lg mx-auto leading-relaxed">
+            รายงานงดเหล้าเข้าพรรษา
+          </p>
+        </div>
+
+        {/* Action Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full mb-12">
+          
+          {/* Main CTA: Register */}
+          <button 
+            onClick={() => router.push('/organization/create')}
+            className="md:col-span-2 group relative overflow-hidden rounded-3xl p-[1px] transition-transform active:scale-[0.98] shadow-sm hover:shadow-md"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-amber-400 via-orange-400 to-yellow-300 animate-[gradient_3s_linear_infinite] bg-[length:200%_auto]" />
+            <div className="relative h-full bg-white rounded-[23px] p-6 flex flex-col justify-between items-start text-left min-h-[200px]">
+              <div className="flex items-center justify-between w-full">
+                <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center border border-amber-100 group-hover:bg-amber-100 transition-colors">
+                  <PlusCircle className="w-5 h-5 text-amber-600" />
                 </div>
-                <div className="h-1 bg-stone-100 rounded-full overflow-hidden">
-                  <div className="h-full rounded-full transition-all" style={{ width: `${lent.pct}%`, background: GOLD }} />
-                </div>
+                <ArrowUpRight className="w-5 h-5 text-stone-300 group-hover:text-amber-600 transition-all group-hover:translate-x-1 group-hover:-translate-y-1" />
               </div>
+
+              {/* Top 5 ticker */}
+              {topOrgs.length > 0 && (
+                <div className="w-full">
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <Trophy className="w-3 h-3 text-amber-500" />
+                    <span className="text-[10px] font-semibold text-stone-400 uppercase tracking-widest">5 อันดับหน่วยงานสูงสุด</span>
+                  </div>
+                  <TopOrgTicker items={topOrgs} />
+                </div>
+              )}
+
+              <div>
+                <h3 className="text-xl font-semibold mb-1 text-stone-800 group-hover:text-amber-600 transition-colors">ลงทะเบียนหน่วยงาน</h3>
+                <p className="text-stone-500 text-sm">เริ่มต้นการรายงานข้อมูลของหน่วยงานท่าน</p>
+              </div>
+            </div>
+          </button>
+
+          {/* Countdown Card */}
+          <div className="bg-white border border-stone-200 rounded-3xl p-8 flex flex-col justify-between min-h-[200px] shadow-sm">
+            <div className="text-[10px] text-stone-400 tracking-widest uppercase w-full text-left">Countdown</div>
+            <div className="my-auto text-center flex flex-col items-center justify-center">
+              <div className="text-7xl md:text-8xl font-bold tabular-nums tracking-tighter mb-2 bg-gradient-to-b from-stone-800 to-stone-400 bg-clip-text text-transparent">
+                {lent.days}
+              </div>
+              <p className="text-sm md:text-base text-stone-500 font-medium">{lent.label}</p>
+            </div>
+            {lent.pct > 0 ? (
+              <div className="mt-4 h-1 w-full bg-stone-100 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-gradient-to-r from-amber-500 to-yellow-400 transition-all duration-1000" 
+                  style={{ width: `${lent.pct}%` }} 
+                />
+              </div>
+            ) : (
+              <div className="mt-4 h-1 w-full" />
             )}
           </div>
 
-          {/* Countdown */}
-          <div className="bg-stone-900 rounded-3xl p-6 shadow-sm flex flex-col justify-between" style={{ minHeight: 200 }}>
-            <p className="text-[10px] text-stone-500 tracking-widest uppercase">countdown</p>
-            <div>
-              <div className="text-6xl font-bold text-white tabular-nums leading-none mb-2">{lent.days}</div>
-              <p className="text-xs text-stone-400">{lent.label}</p>
+          {/* Submissions */}
+          <button 
+            onClick={() => router.push('/organization')}
+            className="group bg-white border border-stone-200 rounded-3xl p-6 hover:border-amber-300 hover:shadow-md transition-all flex flex-col justify-between items-start text-left min-h-[160px] shadow-sm"
+          >
+            <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center border border-amber-100">
+              <ClipboardList className="w-4 h-4 text-amber-500" />
             </div>
-          </div>
-
-          {/* Register */}
-          <ShimmerCard className="rounded-3xl shadow-sm cursor-pointer group" style={{ background: GOLD, minHeight: 170 }}>
-            <button type="button" onClick={() => router.push('/organization/create')}
-              className="w-full h-full p-6 text-left flex flex-col justify-between hover:brightness-95 transition-all"
-              style={{ minHeight: 170 }}>
-              <ArrowUpRight className="w-5 h-5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" style={{ color: '#78613a' }} />
-              <div>
-                <p className="text-base font-semibold text-stone-900 leading-snug">ลงทะเบียน<br />หน่วยงาน</p>
-                <p className="text-xs mt-1" style={{ color: '#78613a' }}>Register</p>
-              </div>
-            </button>
-          </ShimmerCard>
-
-          {/* View */}
-          <button type="button" onClick={() => router.push('/organization')}
-            className="group bg-white rounded-3xl p-6 shadow-sm border border-stone-200/50 text-left flex flex-col justify-between hover:bg-stone-50 transition-colors"
-            style={{ minHeight: 170 }}>
-            <ArrowUpRight className="w-4 h-4 text-stone-300 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             <div>
-              <p className="text-sm font-semibold text-stone-800">ดูข้อมูล<br />ที่ส่งแล้ว</p>
-              <p className="text-[10px] text-stone-400 mt-1">Submissions</p>
+              <h4 className="font-medium text-stone-800 group-hover:text-amber-600 transition-colors">ดูข้อมูลที่ส่งแล้ว</h4>
+              <p className="text-[10px] text-stone-500 mt-1">View Submissions</p>
             </div>
           </button>
 
-          {/* Stats */}
-          <button type="button" onClick={() => router.push('/dashboard')}
-            className="group bg-white rounded-3xl p-6 shadow-sm border border-stone-200/50 text-left flex flex-col justify-between hover:bg-stone-50 transition-colors"
-            style={{ minHeight: 170 }}>
-            <ArrowUpRight className="w-4 h-4 text-stone-300 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          {/* Statistics */}
+          <button 
+            onClick={() => router.push('/dashboard')}
+            className="group bg-white border border-stone-200 rounded-3xl p-6 hover:border-amber-300 hover:shadow-md transition-all flex flex-col justify-between items-start text-left min-h-[160px] shadow-sm"
+          >
+            <div className="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center border border-orange-100">
+              <LayoutDashboard className="w-4 h-4 text-orange-500" />
+            </div>
             <div>
-              <p className="text-sm font-semibold text-stone-800">สถิติและ<br />รายงาน</p>
-              <p className="text-[10px] text-stone-400 mt-1">Statistics</p>
+              <h4 className="font-medium text-stone-800 group-hover:text-amber-600 transition-colors">สถิติและรายงาน</h4>
+              <p className="text-[10px] text-stone-500 mt-1">Statistics & Reports</p>
             </div>
           </button>
 
           {/* How to use */}
-          <div className="col-span-3 bg-white rounded-3xl border border-stone-200/50 shadow-sm overflow-hidden">
-            <button type="button" onClick={() => setOpen(v => !v)}
-              className="w-full flex items-center justify-between px-6 py-4 hover:bg-stone-50 transition-colors">
-              <span className="text-[10px] tracking-widest text-stone-400 uppercase">วิธีการใช้งาน · How to Use</span>
-              <ChevronDown className={`w-3.5 h-3.5 text-stone-300 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
+          <div className="bg-white border border-stone-200 rounded-3xl overflow-hidden shadow-sm">
+            <button 
+              type="button" 
+              onClick={() => setOpen(!open)}
+              className="w-full flex items-center justify-between px-6 py-4 hover:bg-stone-50 transition-colors"
+            >
+              <span className="text-[10px] tracking-widest text-stone-500 uppercase">วิธีการใช้งาน</span>
+              <ChevronDown className={`w-4 h-4 text-stone-400 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
             </button>
             {open && (
-              <div className="grid grid-cols-4 gap-6 px-6 pb-6 pt-1 border-t border-stone-100">
+              <div className="px-6 pb-6 pt-2 grid grid-cols-2 gap-4 border-t border-stone-100 animate-fade-in-up">
                 {steps.map((th, i) => (
-                  <div key={th}>
-                    <p className="text-[10px] font-mono text-stone-300 mb-1">0{i + 1}</p>
-                    <p className="text-xs font-medium text-stone-600">{th}</p>
+                  <div key={th} className="flex gap-3 items-center">
+                    <span className="text-[10px] font-mono text-stone-400">0{i + 1}</span>
+                    <span className="text-xs text-stone-600">{th}</span>
                   </div>
                 ))}
               </div>
@@ -246,9 +212,38 @@ export default function Home() {
           </div>
 
         </div>
-        <p className="text-center text-[10px] text-stone-300 tracking-widest uppercase mt-8">© 2569 Healthy Sobriety</p>
+
+        {/* Footer */}
+        <footer className="mt-12 text-center space-y-4">
+          <p className="text-[10px] text-stone-400 tracking-[0.3em] uppercase">
+            © 2569 Buddhist Lent · สำนักงานเครือข่ายองค์กรงดเหล้า
+          </p>
+          <div className="flex gap-4 justify-center">
+             <div className="w-1.5 h-1.5 rounded-full bg-amber-400/50" />
+             <div className="w-1.5 h-1.5 rounded-full bg-yellow-400/50" />
+             <div className="w-1.5 h-1.5 rounded-full bg-orange-400/50" />
+          </div>
+        </footer>
+
       </div>
 
+      <style jsx global>{`
+        @keyframes gradient {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+        @keyframes fade-in-down {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fade-in-up {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-down { animation: fade-in-down 0.8s ease-out forwards; }
+        .animate-fade-in-up { animation: fade-in-up 0.5s ease-out forwards; }
+      `}</style>
     </div>
   );
 }

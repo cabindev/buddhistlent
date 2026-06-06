@@ -250,6 +250,24 @@ export async function getOrganizationCategoryStats() {
     await prisma.$disconnect();
   }
 }
+export async function getTopOrganizations(limit = 5): Promise<{ name: string; categoryType: string; signers: number; rank: number }[]> {
+  try {
+    const rows = await prisma.organization.groupBy({
+      by: ['organizationCategoryId'],
+      _sum: { numberOfSigners: true },
+      orderBy: { _sum: { numberOfSigners: 'desc' } },
+      take: limit,
+    });
+    const catIds = rows.map(r => r.organizationCategoryId).filter(Boolean) as number[];
+    const cats = await prisma.organizationCategory.findMany({ where: { id: { in: catIds } } });
+    const catMap = new Map(cats.map(c => [c.id, c]));
+    return rows.map((r, i) => {
+      const cat = catMap.get(r.organizationCategoryId!);
+      return { name: cat?.name ?? 'ไม่ระบุ', categoryType: cat?.categoryType ?? '', signers: r._sum.numberOfSigners ?? 0, rank: i + 1 };
+    });
+  } catch { return []; } finally { await prisma.$disconnect(); }
+}
+
 export async function getAvailableOrganizationYears(): Promise<number[]> {
   try {
     const rows = await prisma.organization.findMany({
