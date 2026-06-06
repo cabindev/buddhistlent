@@ -285,8 +285,7 @@ export default function Sidebar({ user }: SidebarProps) {
               </button>
 
               {/* Organization submenu */}
-              {(isOrganizationMenuOpen ||
-                pathname?.startsWith("/dashboard/organization")) &&
+              {isOrganizationMenuOpen &&
                 !sidebarCollapsed && (
                   <div className="mt-1 ml-2">
                     <ul className="space-y-1">
@@ -357,9 +356,7 @@ export default function Sidebar({ user }: SidebarProps) {
               </button>
 
               {/* SoberCheers submenu */}
-              {(isSoberMenuOpen ||
-                pathname?.startsWith("/dashboard/soberCheers") ||
-                pathname?.startsWith("/soberCheers")) &&
+              {isSoberMenuOpen &&
                 !sidebarCollapsed && (
                   <div className="mt-1 ml-2">
                     <ul className="space-y-1">
@@ -430,10 +427,7 @@ export default function Sidebar({ user }: SidebarProps) {
               </button>
 
               {/* Form Return submenu */}
-              {(isFormReturnMenuOpen ||
-                pathname?.startsWith("/dashboard/formReturn") ||
-                pathname?.startsWith("/dashboard/form_return") ||
-                pathname?.startsWith("/form_return")) &&
+              {isFormReturnMenuOpen &&
                 !sidebarCollapsed && (
                   <div className="mt-1 ml-2">
                     <ul className="space-y-1">
@@ -503,8 +497,7 @@ export default function Sidebar({ user }: SidebarProps) {
                 </button>
 
                 {/* Settings submenu */}
-                {(isSettingsMenuOpen ||
-                  pathname?.startsWith("/dashboard/setting")) &&
+                {isSettingsMenuOpen &&
                   !sidebarCollapsed && (
                     <div className="mt-1 ml-2">
                       <ul className="space-y-1">
