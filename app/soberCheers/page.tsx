@@ -140,7 +140,7 @@ export default function SoberCheersPage() {
             </button>
             <Link
               href="/soberCheers/create"
-              className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+              className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
             >
               <Plus className="w-4 h-4" />
               ลงทะเบียน
@@ -156,7 +156,7 @@ export default function SoberCheersPage() {
                 key={year}
                 onClick={() => { setYearFilter(year); setPage(1); }}
                 className={`flex-shrink-0 px-4 py-1.5 text-sm font-medium rounded-full transition-colors ${
-                  yearFilter === year ? 'bg-amber-500 text-white' : 'text-gray-500 hover:bg-gray-100'
+                  yearFilter === year ? 'bg-green-500 text-white' : 'text-gray-500 hover:bg-gray-100'
                 }`}
               >
                 {year}
@@ -175,13 +175,13 @@ export default function SoberCheersPage() {
               placeholder="ค้นหาชื่อ, จังหวัด..."
               value={search}
               onChange={e => { setSearch(e.target.value); setPage(1); }}
-              className="w-full pl-10 pr-4 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+              className="w-full pl-10 pr-4 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>
           <select
             value={typeFilter}
             onChange={e => { setTypeFilter(e.target.value); setPage(1); }}
-            className="text-sm bg-white border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="text-sm bg-white border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
           >
             <option value="">ทุกภาค</option>
             {types.map(t => <option key={t} value={t}>{t}</option>)}
@@ -208,7 +208,7 @@ export default function SoberCheersPage() {
                       type="checkbox"
                       checked={selected.size === filtered.length && filtered.length > 0}
                       onChange={() => setSelected(selected.size === filtered.length ? new Set() : new Set(filtered.map(d => d.id)))}
-                      className="rounded border-gray-300 text-amber-500 focus:ring-amber-500"
+                      className="rounded border-gray-300 text-green-500 focus:ring-green-500"
                     />
                   </th>
                 )}
@@ -239,7 +239,7 @@ export default function SoberCheersPage() {
                         type="checkbox"
                         checked={selected.has(item.id)}
                         onChange={() => toggle(item.id)}
-                        className="rounded border-gray-300 text-amber-500 focus:ring-amber-500"
+                        className="rounded border-gray-300 text-green-500 focus:ring-green-500"
                       />
                     </td>
                   )}
@@ -289,7 +289,7 @@ export default function SoberCheersPage() {
                 if (n < 1 || n > totalPages) return null;
                 return (
                   <button key={n} onClick={() => setPage(n)}
-                    className={`w-8 h-8 rounded border text-xs transition-colors ${page === n ? 'bg-amber-500 border-amber-500 text-white' : 'border-gray-200 hover:bg-gray-50 text-gray-700'}`}
+                    className={`w-8 h-8 rounded border text-xs transition-colors ${page === n ? 'bg-green-500 border-green-500 text-white' : 'border-gray-200 hover:bg-gray-50 text-gray-700'}`}
                   >{n}</button>
                 );
               })}
@@ -325,13 +325,13 @@ export default function SoberCheersPage() {
                 onChange={e => setLookupPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
                 onKeyDown={e => e.key === 'Enter' && handleLookup()}
                 placeholder="0812345678"
-                className="flex-1 px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white"
+                className="flex-1 px-3 py-2.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 bg-white"
                 maxLength={10}
               />
               <button
                 onClick={handleLookup}
                 disabled={lookupLoading || lookupPhone.length < 9}
-                className="px-4 py-2.5 text-sm font-medium bg-amber-500 hover:bg-amber-600 text-white rounded-lg disabled:opacity-40 transition-colors"
+                className="px-4 py-2.5 text-sm font-medium bg-green-500 hover:bg-green-600 text-white rounded-lg disabled:opacity-40 transition-colors"
               >
                 {lookupLoading ? '...' : 'ค้นหา'}
               </button>
@@ -342,7 +342,7 @@ export default function SoberCheersPage() {
             )}
 
             {lookupResult && (
-              <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-2">
+              <div className="bg-green-50 border border-green-200 rounded-xl p-4 space-y-2">
                 <p className="text-sm font-semibold text-gray-900">{lookupResult.firstName} {lookupResult.lastName}</p>
                 <p className="text-xs text-gray-500">จังหวัด{lookupResult.province} · {lookupResult.type}</p>
                 <p className="text-xs text-gray-500">อาชีพ: {lookupResult.job}</p>
@@ -350,7 +350,7 @@ export default function SoberCheersPage() {
                 <Link
                   href={`/soberCheers/edit/${lookupResult.id}`}
                   onClick={() => setShowLookup(false)}
-                  className="mt-2 flex items-center justify-center gap-2 w-full py-2 text-sm font-medium bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors"
+                  className="mt-2 flex items-center justify-center gap-2 w-full py-2 text-sm font-medium bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors"
                 >
                   <Pencil className="w-3.5 h-3.5" />
                   แก้ไขข้อมูล

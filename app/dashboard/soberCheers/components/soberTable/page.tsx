@@ -1,8 +1,10 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
-import { Search, Filter, X, Download, FileSpreadsheet, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
+import Link from 'next/link';
+import { Search, Filter, X, Download, FileSpreadsheet, ChevronLeft, ChevronRight, RefreshCw, SquarePen, Trash2, LoaderCircle, AlertTriangle } from 'lucide-react';
 import { getAllSoberCheersForTable } from '@/app/soberCheers/actions/Get';
 import { getAvailableSoberCheersYears } from '@/app/dashboard/soberCheers/actions/GetChartData';
+import { deleteSoberCheers } from '@/app/soberCheers/actions/Delete';
 import Loading from '@/components/ui/Loading';
 import * as XLSX from 'xlsx';
 
@@ -70,6 +72,10 @@ export default function SoberCheersTable() {
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [page, setPage] = useState(1);
 
+  // delete: single row target, or 'bulk' for selected rows
+  const [deleteTarget, setDeleteTarget] = useState<SoberCheersItem | 'bulk' | null>(null);
+  const [deleting, setDeleting] = useState(false);
+
   const loadData = useCallback(async (y: number) => {
     setLoading(true);
     setError(null);
@@ -105,6 +111,22 @@ export default function SoberCheersTable() {
 
   const toggleSelect = (id: number) => setSelected(p => { const n = new Set(p); n.has(id) ? n.delete(id) : n.add(id); return n; });
   const toggleSelectAll = () => setSelected(selected.size === filtered.length ? new Set() : new Set(filtered.map(d => d.id)));
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    const ids = deleteTarget === 'bulk' ? Array.from(selected) : [deleteTarget.id];
+    setDeleting(true);
+    const results = await Promise.all(ids.map(id => deleteSoberCheers(id)));
+    setDeleting(false);
+    const okIds = ids.filter((_, i) => results[i]?.success);
+    if (okIds.length > 0) {
+      setData(prev => prev.filter(d => !okIds.includes(d.id)));
+      setSelected(prev => { const n = new Set(prev); okIds.forEach(id => n.delete(id)); return n; });
+    }
+    const failed = results.filter(r => !r?.success);
+    if (failed.length > 0) alert(failed[0]?.message || `ลบไม่สำเร็จ ${failed.length} รายการ`);
+    setDeleteTarget(null);
+  };
 
   const exportData = filtered.filter(d => selected.size === 0 || selected.has(d.id));
 
@@ -164,7 +186,7 @@ export default function SoberCheersTable() {
           >
             <Filter className="w-3.5 h-3.5" />
             ตัวกรอง
-            {activeFilterCount > 0 && <span className="ml-0.5 bg-amber-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">{activeFilterCount}</span>}
+            {activeFilterCount > 0 && <span className="ml-0.5 bg-green-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">{activeFilterCount}</span>}
           </button>
           <button onClick={handleCSV} disabled={loading || filtered.length === 0}
             className="flex items-center gap-1.5 px-3 py-2 text-sm rounded-lg border border-gray-200 bg-white text-gray-700 hover:border-gray-300 disabled:opacity-40">
@@ -185,20 +207,20 @@ export default function SoberCheersTable() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
               <input type="text" placeholder="ค้นหาชื่อ..." value={filters.name}
                 onChange={e => { setFilters(f => ({ ...f, name: e.target.value })); setPage(1); }}
-                className="pl-9 pr-3 py-2 w-full text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white" />
+                className="pl-9 pr-3 py-2 w-full text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white" />
             </div>
             <select value={filters.province} onChange={e => { setFilters(f => ({ ...f, province: e.target.value })); setPage(1); }}
-              className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white">
+              className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white">
               <option value="">จังหวัด ({getUnique(data, 'province').length})</option>
               {getUnique(data, 'province').map(v => <option key={v} value={v}>{v}</option>)}
             </select>
             <select value={filters.type} onChange={e => { setFilters(f => ({ ...f, type: e.target.value })); setPage(1); }}
-              className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white">
+              className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white">
               <option value="">ภาค ({getUnique(data, 'type').length})</option>
               {getUnique(data, 'type').map(v => <option key={v} value={v}>{v}</option>)}
             </select>
             <select value={filters.job} onChange={e => { setFilters(f => ({ ...f, job: e.target.value })); setPage(1); }}
-              className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white">
+              className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white">
               <option value="">อาชีพ ({getUnique(data, 'job').length})</option>
               {getUnique(data, 'job').map(v => <option key={v} value={v}>{v}</option>)}
             </select>
@@ -214,9 +236,15 @@ export default function SoberCheersTable() {
 
       {/* Selection bar */}
       {selected.size > 0 && (
-        <div className="flex items-center justify-between bg-amber-50 border border-amber-200 rounded-lg px-4 py-2.5">
-          <span className="text-sm text-amber-700">เลือกแล้ว {selected.size.toLocaleString()} รายการ</span>
-          <button onClick={() => setSelected(new Set())} className="text-xs text-amber-600 hover:text-amber-800">ยกเลิก</button>
+        <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-lg px-4 py-2.5">
+          <span className="text-sm text-green-700">เลือกแล้ว {selected.size.toLocaleString()} รายการ</span>
+          <div className="flex items-center gap-3">
+            <button onClick={() => setDeleteTarget('bulk')}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors">
+              <Trash2 className="w-3.5 h-3.5" /> ลบที่เลือก
+            </button>
+            <button onClick={() => setSelected(new Set())} className="text-xs text-green-600 hover:text-green-800">ยกเลิก</button>
+          </div>
         </div>
       )}
 
@@ -224,7 +252,7 @@ export default function SoberCheersTable() {
       {loading ? <Loading size="lg" /> : error ? (
         <div className="flex flex-col items-center justify-center py-16 gap-3">
           <p className="text-red-500 text-sm">{error}</p>
-          <button onClick={() => loadData(year)} className="px-4 py-2 bg-amber-500 text-white text-sm rounded-lg hover:bg-amber-600">ลองใหม่</button>
+          <button onClick={() => loadData(year)} className="px-4 py-2 bg-green-500 text-white text-sm rounded-lg hover:bg-green-600">ลองใหม่</button>
         </div>
       ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-gray-400">
@@ -239,7 +267,7 @@ export default function SoberCheersTable() {
                 <tr className="border-b border-gray-200 bg-gray-50">
                   <th className="w-10 px-4 py-3 text-left">
                     <input type="checkbox" checked={selected.size === filtered.length && filtered.length > 0}
-                      onChange={toggleSelectAll} className="h-4 w-4 rounded border-gray-300 text-amber-500 focus:ring-amber-500" />
+                      onChange={toggleSelectAll} className="h-4 w-4 rounded border-gray-300 text-green-500 focus:ring-green-500" />
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">ชื่อ-นามสกุล</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">เพศ / อายุ</th>
@@ -247,14 +275,15 @@ export default function SoberCheersTable() {
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">อาชีพ</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">สถานะการดื่ม</th>
                   <th className="px-4 py-3 text-right text-xs font-medium text-gray-500">ค่าใช้จ่าย/เดือน</th>
+                  <th className="px-4 py-3 text-right text-xs font-medium text-gray-500">จัดการ</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {paginated.map(item => (
-                  <tr key={item.id} className={`hover:bg-gray-50 transition-colors ${selected.has(item.id) ? 'bg-amber-50' : ''}`}>
+                  <tr key={item.id} className={`hover:bg-gray-50 transition-colors ${selected.has(item.id) ? 'bg-green-50' : ''}`}>
                     <td className="px-4 py-3">
                       <input type="checkbox" checked={selected.has(item.id)} onChange={() => toggleSelect(item.id)}
-                        className="h-4 w-4 rounded border-gray-300 text-amber-500 focus:ring-amber-500" />
+                        className="h-4 w-4 rounded border-gray-300 text-green-500 focus:ring-green-500" />
                     </td>
                     <td className="px-4 py-3">
                       <div className="font-medium text-gray-900">{item.firstName} {item.lastName}</div>
@@ -281,6 +310,18 @@ export default function SoberCheersTable() {
                     <td className="px-4 py-3 text-right text-gray-700">
                       {item.monthlyExpense ? `฿${(item.monthlyExpense as number).toLocaleString()}` : '-'}
                     </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-end gap-1">
+                        <Link href={`/soberCheers/edit/${item.id}`}
+                          className="p-1.5 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors" title="แก้ไข">
+                          <SquarePen className="w-4 h-4" />
+                        </Link>
+                        <button onClick={() => setDeleteTarget(item)}
+                          className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="ลบ">
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -305,7 +346,7 @@ export default function SoberCheersTable() {
               if (n < 1 || n > totalPages) return null;
               return (
                 <button key={n} onClick={() => setPage(n)}
-                  className={`w-8 h-8 text-xs rounded border transition-colors ${page === n ? 'bg-amber-500 border-amber-500 text-white font-medium' : 'border-gray-200 text-gray-700 hover:bg-gray-50'}`}>
+                  className={`w-8 h-8 text-xs rounded border transition-colors ${page === n ? 'bg-green-500 border-green-500 text-white font-medium' : 'border-gray-200 text-gray-700 hover:bg-gray-50'}`}>
                   {n}
                 </button>
               );
@@ -314,6 +355,39 @@ export default function SoberCheersTable() {
               className="p-1.5 rounded border border-gray-200 text-gray-500 hover:bg-gray-50 disabled:opacity-30">
               <ChevronRight className="w-4 h-4" />
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Delete confirmation modal */}
+      {deleteTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+          onClick={() => !deleting && setDeleteTarget(null)}>
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0">
+                <AlertTriangle className="w-5 h-5 text-red-500" />
+              </div>
+              <div>
+                <h3 className="text-base font-semibold text-gray-900">ยืนยันการลบ</h3>
+                <p className="text-sm text-gray-500 mt-0.5">
+                  {deleteTarget === 'bulk'
+                    ? `ลบข้อมูลที่เลือก ${selected.size.toLocaleString()} รายการ?`
+                    : `ลบข้อมูลของ "${deleteTarget.firstName} ${deleteTarget.lastName}"?`}
+                </p>
+              </div>
+            </div>
+            <p className="text-xs text-gray-400 mt-3">การลบไม่สามารถย้อนกลับได้</p>
+            <div className="flex gap-2 mt-5">
+              <button onClick={() => setDeleteTarget(null)} disabled={deleting}
+                className="flex-1 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors disabled:opacity-50">
+                ยกเลิก
+              </button>
+              <button onClick={confirmDelete} disabled={deleting}
+                className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-white bg-red-500 hover:bg-red-600 rounded-xl transition-colors disabled:opacity-50">
+                {deleting ? <><LoaderCircle className="w-4 h-4 animate-spin" /> กำลังลบ...</> : 'ลบ'}
+              </button>
+            </div>
           </div>
         </div>
       )}

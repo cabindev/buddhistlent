@@ -75,9 +75,9 @@ function BirthdayPicker({ value, onChange }: { value: string; onChange: (v: stri
   const maxDay = m && yCE ? new Date(yCE, parseInt(m), 0).getDate() : 31;
   const currentYearBE = new Date().getFullYear() + 543;
   const years = Array.from({ length: currentYearBE - 2472 }, (_, i) => currentYearBE - i);
-  const selBase = "flex-1 px-3 py-2.5 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 cursor-pointer transition";
+  const selBase = "flex-1 px-3 py-2.5 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 cursor-pointer transition";
   const sel = (v: string) => v
-    ? `${selBase} border border-amber-400 bg-amber-50 text-gray-900`
+    ? `${selBase} border border-green-400 bg-green-50 text-gray-900`
     : `${selBase} border border-gray-200 bg-white text-gray-900`;
 
   return (
@@ -98,11 +98,11 @@ function BirthdayPicker({ value, onChange }: { value: string; onChange: (v: stri
   );
 }
 
-const base = "w-full px-3 py-2.5 text-sm text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 bg-white placeholder-gray-300 transition";
+const base = "w-full px-3 py-2.5 text-sm text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 bg-white placeholder-gray-300 transition";
 const inputCls = `${base} border border-gray-200`;
 const selectCls = `${base} border border-gray-200 cursor-pointer`;
-const filledInput = (v: string | number) => v !== '' && v !== 0 ? `${base} border border-amber-400 bg-amber-50` : inputCls;
-const filledSelect = (v: string | number) => v !== '' && v !== 0 ? `${base} border border-amber-400 bg-amber-50 cursor-pointer` : selectCls;
+const filledInput = (v: string | number) => v !== '' && v !== 0 ? `${base} border border-green-400 bg-green-50` : inputCls;
+const filledSelect = (v: string | number) => v !== '' && v !== 0 ? `${base} border border-green-400 bg-green-50 cursor-pointer` : selectCls;
 
 export default function EditSoberCheers({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -272,8 +272,8 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
                     <button key={g} type="button" onClick={() => set('gender', g)}
                       className={`flex-1 py-2 text-sm rounded-lg border transition-colors ${
                         form.gender === g
-                          ? 'bg-amber-500 border-amber-500 text-white font-medium'
-                          : 'border-gray-200 text-gray-600 hover:border-amber-300 hover:text-amber-600'
+                          ? 'bg-green-500 border-green-500 text-white font-medium'
+                          : 'border-gray-200 text-gray-600 hover:border-green-300 hover:text-green-600'
                       }`}
                     >{g}</button>
                   ))}
@@ -301,7 +301,7 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
                     <ul className="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
                       {suggestions.map((s, i) => (
                         <li key={i} onClick={() => pickSuggestion(s)}
-                          className="px-4 py-2.5 text-sm text-gray-700 hover:bg-amber-50 cursor-pointer border-b border-gray-100 last:border-0">
+                          className="px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 cursor-pointer border-b border-gray-100 last:border-0">
                           <span className="font-medium">{s.district}</span>
                           <span className="text-gray-400"> · {s.amphoe} · {s.province} {s.zipcode}</span>
                         </li>
@@ -342,7 +342,7 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
                     <div>
                       <p className="text-[10px] text-gray-400 uppercase tracking-widest mb-1.5">ค่าเดิม</p>
                       <button type="button"
-                        className="w-full px-3 py-2.5 rounded-lg border bg-amber-50 border-amber-400 text-sm font-semibold text-amber-800 text-left">
+                        className="w-full px-3 py-2.5 rounded-lg border bg-green-50 border-green-400 text-sm font-semibold text-green-800 text-left">
                         {form.job}
                       </button>
                     </div>
@@ -355,10 +355,10 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
                           <button key={c.id} type="button" onClick={() => set('job', c.name)}
                             className={`px-3 py-2.5 rounded-lg border text-left transition-colors ${
                               form.job === c.name
-                                ? 'bg-amber-50 border-amber-400'
-                                : 'border-gray-200 hover:border-amber-200'
+                                ? 'bg-green-50 border-green-400'
+                                : 'border-gray-200 hover:border-green-200'
                             }`}>
-                            <span className={`block text-sm font-semibold leading-tight ${form.job === c.name ? 'text-amber-800' : 'text-gray-800'}`}>
+                            <span className={`block text-sm font-semibold leading-tight ${form.job === c.name ? 'text-green-800' : 'text-gray-800'}`}>
                               {c.shortName || c.name}
                             </span>
                             {c.shortName && (
@@ -372,8 +372,8 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
                   <button type="button" onClick={() => set('job', 'อื่น ๆ')}
                     className={`w-full px-3 py-2.5 rounded-lg border text-sm font-medium transition-colors ${
                       form.job === 'อื่น ๆ'
-                        ? 'bg-amber-50 border-amber-400 text-amber-800'
-                        : 'border-gray-200 text-gray-600 hover:border-amber-200'
+                        ? 'bg-green-50 border-green-400 text-green-800'
+                        : 'border-gray-200 text-gray-600 hover:border-green-200'
                     }`}>
                     อื่น ๆ
                   </button>
@@ -396,7 +396,7 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
               </Field>
 
               {isDrinker && (
-                <div className="space-y-4 pl-4 border-l-2 border-amber-200">
+                <div className="space-y-4 pl-4 border-l-2 border-green-200">
                   <Field label="ความถี่การดื่ม" required>
                     <select className={filledSelect(form.drinkingFrequency)} value={form.drinkingFrequency} onChange={e => set('drinkingFrequency', e.target.value)} required>
                       <option value="" disabled>เลือกคำตอบ</option>
@@ -437,8 +437,8 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
                   <button key={m} type="button" onClick={() => toggleMotivation(m)}
                     className={`px-3 py-2.5 text-sm rounded-lg border text-left transition-colors ${
                       motivations.includes(m)
-                        ? 'bg-amber-50 border-amber-400 text-amber-800 font-medium'
-                        : 'border-gray-200 text-gray-600 hover:border-amber-200'
+                        ? 'bg-green-50 border-green-400 text-green-800 font-medium'
+                        : 'border-gray-200 text-gray-600 hover:border-green-200'
                     }`}
                   >
                     {motivations.includes(m) && <span className="mr-1">✓</span>}
@@ -461,8 +461,8 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
                   <button key={opt} type="button" onClick={() => set('healthImpact', opt)}
                     className={`w-full px-4 py-3 text-sm rounded-lg border text-left transition-colors ${
                       form.healthImpact === opt
-                        ? 'bg-amber-50 border-amber-400 text-amber-800 font-medium'
-                        : 'border-gray-200 text-gray-600 hover:border-amber-200'
+                        ? 'bg-green-50 border-green-400 text-green-800 font-medium'
+                        : 'border-gray-200 text-gray-600 hover:border-green-200'
                     }`}
                   >
                     {form.healthImpact === opt && <span className="mr-2">✓</span>}
@@ -486,7 +486,7 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
                 ยกเลิก
               </button>
               <button type="submit" disabled={submitting}
-                className="flex-1 py-3 bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+                className="flex-1 py-3 bg-green-500 hover:bg-green-600 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
                 {submitting ? (
                   <><LoaderCircle className="w-4 h-4 animate-spin" /> กำลังบันทึก...</>
                 ) : 'บันทึกการแก้ไข'}
