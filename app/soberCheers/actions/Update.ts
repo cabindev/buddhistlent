@@ -18,6 +18,7 @@ export interface UpdateSoberCheersData {
   type?: string;
   phone?: string;
   job?: string;
+  affiliation?: string;
   alcoholConsumption?: string;
   drinkingFrequency?: string | null;
   intentPeriod?: string | null;
@@ -52,6 +53,7 @@ export async function updateSoberCheers(id: number, data: UpdateSoberCheersData)
     if (data.type !== undefined) updateData.type = data.type?.trim() || null;
     if (data.phone !== undefined) updateData.phone = data.phone?.trim() || null;
     if (data.job !== undefined) updateData.job = data.job;
+    if (data.affiliation !== undefined) updateData.affiliation = data.affiliation?.trim() || null;
     if (data.alcoholConsumption !== undefined) updateData.alcoholConsumption = data.alcoholConsumption;
     if (data.healthImpact !== undefined) updateData.healthImpact = data.healthImpact;
     if (data.motivations !== undefined) updateData.motivations = data.motivations;

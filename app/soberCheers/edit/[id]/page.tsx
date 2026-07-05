@@ -11,11 +11,19 @@ import Loading from '@/components/ui/Loading';
 
 const DRINKER = ['ดื่ม (ย้อนหลังไป 1 ปี)', 'เลิกดื่มมาแล้วมากกว่า 1 ปี แต่ยังไม่ถึง 3 ปี'];
 
+const OCCUPATIONS = [
+  'ประกอบธุรกิจส่วนตัว', 'ข้าราชการ/ลูกจ้างหน่วยงานราชการ', 'รัฐวิสาหกิจ',
+  'พนักงานเอกชน/ลูกจ้างเอกชน', 'ค้าขาย/งานบริการ', 'เกษตรกร',
+  'รับจ้างทั่วไป', 'นักเรียน/นักศึกษา', 'ข้าราชการเกษียณ', 'แม่บ้าน',
+];
+const OCCUPATION_OTHER = 'อื่นๆ';
+
 const MOTIVATIONS = [
   'เพื่อลูกและครอบครัว', 'เพื่อสุขภาพของตนเอง', 'ได้บุญ/รักษาศีล',
   'ผู้นำชุมชนชักชวน', 'คนรักและเพื่อนชวน', 'ประหยัดเงิน',
-  'เพื่อเป็นแบบอย่างที่ดีให้กับคนอื่น',
+  'เพื่อเป็นแบบอย่างที่ดีให้กับคนอื่น', 'เคยประสบอุบัติเหตุหรือมีการสูญเสียที่มีเหล้าเป็นสาเหตุ',
 ];
+const MOTIVATION_OTHER = 'อื่นๆ';
 
 function calcAge(birthday: string) {
   if (!birthday) return null;
@@ -112,11 +120,13 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
   const [form, setForm] = useState({
     firstName: '', lastName: '', gender: '', birthday: '',
     addressLine1: '', district: '', amphoe: '', province: '', zipcode: '', type: '',
-    phone: '', job: '', alcoholConsumption: '',
+    phone: '', job: '', affiliation: '', alcoholConsumption: '',
     drinkingFrequency: '', intentPeriod: '', monthlyExpense: '',
     healthImpact: 'ไม่มีผลกระทบ',
   });
+  const [jobOtherText, setJobOtherText] = useState('');
   const [motivations, setMotivations] = useState<string[]>([]);
+  const [motivationOtherText, setMotivationOtherText] = useState('');
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [loadError, setLoadError] = useState('');
@@ -162,14 +172,18 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
         zipcode: item.zipcode || '',
         type: item.type || '',
         phone: item.phone || '',
-        job: item.job || '',
+        job: item.job && !OCCUPATIONS.includes(item.job) ? OCCUPATION_OTHER : (item.job || ''),
+        affiliation: item.affiliation || '',
         alcoholConsumption: item.alcoholConsumption || '',
         drinkingFrequency: item.drinkingFrequency || '',
         intentPeriod: item.intentPeriod || '',
         monthlyExpense: item.monthlyExpense?.toString() || '',
         healthImpact: item.healthImpact || 'ไม่มีผลกระทบ',
       });
-      setMotivations(motivationsArr);
+      if (item.job && !OCCUPATIONS.includes(item.job)) setJobOtherText(item.job);
+      setMotivations(motivationsArr.map((m: string) => m.startsWith('อื่นๆ: ') ? MOTIVATION_OTHER : m));
+      const otherMotivation = motivationsArr.find((m: string) => m.startsWith('อื่นๆ: '));
+      if (otherMotivation) setMotivationOtherText(otherMotivation.slice('อื่นๆ: '.length));
     }).catch(() => setLoadError('เกิดข้อผิดพลาดในการโหลดข้อมูล'))
       .finally(() => setLoadingData(false));
   }, [id]);
@@ -200,11 +214,19 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
     if (!form.gender) return setError('กรุณาเลือกเพศ');
     if (form.phone && !/^[0-9]{10}$/.test(form.phone)) return setError('เบอร์โทรศัพท์ต้องเป็นตัวเลข 10 หลัก');
 
+    const finalJob = form.job === OCCUPATION_OTHER
+      ? (jobOtherText.trim() || OCCUPATION_OTHER)
+      : form.job;
+    const finalMotivations = motivations.map(m =>
+      m === MOTIVATION_OTHER && motivationOtherText.trim() ? `อื่นๆ: ${motivationOtherText.trim()}` : m
+    );
+
     setSubmitting(true);
     try {
       const result = await updateSoberCheers(Number(id), {
         ...form,
-        motivations,
+        job: finalJob,
+        motivations: finalMotivations,
         drinkingFrequency: isDrinker ? form.drinkingFrequency || null : null,
         intentPeriod: isDrinker ? form.intentPeriod || null : null,
         monthlyExpense: isDrinker && form.monthlyExpense ? parseInt(form.monthlyExpense) : null,
@@ -335,30 +357,47 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
                   placeholder="0812345678" maxLength={10} />
               </Field>
 
-              <Field label="สังกัด" required hint="หน่วยงาน/องค์กรที่ท่านสังกัด">
+              <Field label="อาชีพ" required>
+                <div className="grid grid-cols-2 gap-2">
+                  {OCCUPATIONS.map(o => (
+                    <button key={o} type="button" onClick={() => set('job', o)}
+                      className={`px-3 py-2.5 text-sm rounded-lg border text-left transition-colors ${
+                        form.job === o
+                          ? 'bg-green-50 border-green-400 text-green-800 font-medium'
+                          : 'border-gray-200 text-gray-600 hover:border-green-200'
+                      }`}>
+                      {o}
+                    </button>
+                  ))}
+                  <button type="button" onClick={() => set('job', OCCUPATION_OTHER)}
+                    className={`px-3 py-2.5 text-sm rounded-lg border text-left transition-colors ${
+                      form.job === OCCUPATION_OTHER
+                        ? 'bg-green-50 border-green-400 text-green-800 font-medium'
+                        : 'border-gray-200 text-gray-600 hover:border-green-200'
+                    }`}>
+                    อื่นๆ
+                  </button>
+                </div>
+                {form.job === OCCUPATION_OTHER && (
+                  <input className={`${inputCls} mt-2`} value={jobOtherText} onChange={e => setJobOtherText(e.target.value)}
+                    placeholder="ระบุอาชีพ" />
+                )}
+              </Field>
+
+              <Field label="สังกัด" hint="หน่วยงาน/องค์กรที่ท่านสังกัด (ไม่บังคับ)">
                 <div className="space-y-3">
-                  {/* ค่าเดิมที่ไม่อยู่ในรายการสังกัดปัจจุบัน (เช่น อาชีพเก่า) */}
-                  {form.job && !orgCategories.some(c => c.name === form.job) && form.job !== 'อื่น ๆ' && (
-                    <div>
-                      <p className="text-[10px] text-gray-400 uppercase tracking-widest mb-1.5">ค่าเดิม</p>
-                      <button type="button"
-                        className="w-full px-3 py-2.5 rounded-lg border bg-green-50 border-green-400 text-sm font-semibold text-green-800 text-left">
-                        {form.job}
-                      </button>
-                    </div>
-                  )}
                   {Object.entries(orgGroups).map(([type, items]) => (
                     <div key={type}>
                       <p className="text-[10px] text-gray-400 uppercase tracking-widest mb-1.5">{type}</p>
                       <div className="grid grid-cols-2 gap-2">
                         {items.map(c => (
-                          <button key={c.id} type="button" onClick={() => set('job', c.name)}
+                          <button key={c.id} type="button" onClick={() => set('affiliation', form.affiliation === c.name ? '' : c.name)}
                             className={`px-3 py-2.5 rounded-lg border text-left transition-colors ${
-                              form.job === c.name
+                              form.affiliation === c.name
                                 ? 'bg-green-50 border-green-400'
                                 : 'border-gray-200 hover:border-green-200'
                             }`}>
-                            <span className={`block text-sm font-semibold leading-tight ${form.job === c.name ? 'text-green-800' : 'text-gray-800'}`}>
+                            <span className={`block text-sm font-semibold leading-tight ${form.affiliation === c.name ? 'text-green-800' : 'text-gray-800'}`}>
                               {c.shortName || c.name}
                             </span>
                             {c.shortName && (
@@ -369,9 +408,9 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
                       </div>
                     </div>
                   ))}
-                  <button type="button" onClick={() => set('job', 'อื่น ๆ')}
+                  <button type="button" onClick={() => set('affiliation', form.affiliation === 'อื่น ๆ' ? '' : 'อื่น ๆ')}
                     className={`w-full px-3 py-2.5 rounded-lg border text-sm font-medium transition-colors ${
-                      form.job === 'อื่น ๆ'
+                      form.affiliation === 'อื่น ๆ'
                         ? 'bg-green-50 border-green-400 text-green-800'
                         : 'border-gray-200 text-gray-600 hover:border-green-200'
                     }`}>
@@ -445,7 +484,21 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
                     {m}
                   </button>
                 ))}
+                <button type="button" onClick={() => toggleMotivation(MOTIVATION_OTHER)}
+                  className={`px-3 py-2.5 text-sm rounded-lg border text-left transition-colors ${
+                    motivations.includes(MOTIVATION_OTHER)
+                      ? 'bg-green-50 border-green-400 text-green-800 font-medium'
+                      : 'border-gray-200 text-gray-600 hover:border-green-200'
+                  }`}
+                >
+                  {motivations.includes(MOTIVATION_OTHER) && <span className="mr-1">✓</span>}
+                  อื่นๆ
+                </button>
               </div>
+              {motivations.includes(MOTIVATION_OTHER) && (
+                <input className={inputCls} value={motivationOtherText} onChange={e => setMotivationOtherText(e.target.value)}
+                  placeholder="ระบุแรงจูงใจอื่นๆ" />
+              )}
             </Section>
           </div>
 

@@ -19,14 +19,16 @@ model SoberCheers {
   province          String
   zipcode           String
   type              String?
-  phone             String?    
+  phone             String?
   job               String
+  affiliation       String?
   alcoholConsumption String
   drinkingFrequency String?
   intentPeriod      String?
   monthlyExpense    Int?
   motivations       Json
   healthImpact      String
+  previousYearParticipant Boolean?
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 }

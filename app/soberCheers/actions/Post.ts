@@ -18,6 +18,7 @@ export interface CreateSoberCheersData {
   type: string;
   phone?: string;
   job: string;
+  affiliation?: string;
   alcoholConsumption: string;
   drinkingFrequency?: string | null;
   intentPeriod?: string | null;
@@ -42,26 +43,44 @@ export async function createSoberCheers(data: CreateSoberCheersData): Promise<{ 
 
     const isDrinker = DRINKER_STATUSES.includes(data.alcoholConsumption);
 
+    const birthdayDate = new Date(data.birthday);
+    const phone = data.phone?.trim() || null;
+    const lastYear = new Date().getFullYear() - 1;
+    const lastYearMatch = await prisma.soberCheers.findFirst({
+      where: {
+        createdAt: {
+          gte: new Date(`${lastYear}-01-01`),
+          lt: new Date(`${lastYear + 1}-01-01`),
+        },
+        OR: [
+          ...(phone ? [{ phone }] : []),
+          { firstName: data.firstName.trim(), lastName: data.lastName.trim(), birthday: birthdayDate },
+        ],
+      },
+    });
+
     await prisma.soberCheers.create({
       data: {
         firstName: data.firstName.trim(),
         lastName: data.lastName.trim(),
         gender: data.gender,
-        birthday: new Date(data.birthday),
+        birthday: birthdayDate,
         addressLine1: data.addressLine1.trim(),
         district: data.district.trim(),
         amphoe: data.amphoe.trim(),
         province: data.province.trim(),
         zipcode: data.zipcode.trim(),
         type: data.type?.trim() || null,
-        phone: data.phone?.trim() || null,
+        phone,
         job: data.job,
+        affiliation: data.affiliation?.trim() || null,
         alcoholConsumption: data.alcoholConsumption,
         drinkingFrequency: isDrinker ? (data.drinkingFrequency || null) : null,
         intentPeriod: isDrinker ? (data.intentPeriod || null) : null,
         monthlyExpense: isDrinker ? (data.monthlyExpense || null) : null,
         motivations: data.motivations,
         healthImpact: data.healthImpact,
+        previousYearParticipant: !!lastYearMatch,
       },
     });
 
