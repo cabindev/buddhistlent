@@ -27,21 +27,21 @@ const HealthImpactChart: React.FC<{ year?: number }> = ({ year }) => {
 
   if (!data) return (
     <div className="flex justify-center items-center h-64">
-      <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-green-600"></div>
     </div>
   );
 
   const levels = [
-    { key: 'ไม่มีผลกระทบ', color: 'bg-green-500' },
-    { key: 'มีผลกระทบแต่ไม่ต้องการช่วยเหลือ', color: 'bg-yellow-500' },
-    { key: 'มีผลกระทบและควรได้รับการช่วยเหลือจากแพทย์หรือผู้เชี่ยวชาญด้านการบำบัดฯ', color: 'bg-red-500' }
+    { key: 'ไม่มีผลกระทบ', color: 'bg-green-300' },
+    { key: 'มีผลกระทบแต่ไม่ต้องการช่วยเหลือ', color: 'bg-green-500' },
+    { key: 'มีผลกระทบและควรได้รับการช่วยเหลือจากแพทย์หรือผู้เชี่ยวชาญด้านการบำบัดฯ', color: 'bg-green-800' }
   ];
 
   const total = Object.values(data).reduce((sum, value) => sum + value, 0);
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">ผลกระทบต่อสุขภาพ</h2>
+      <h2 className="text-xl font-medium text-center text-gray-800 mb-8">ผลกระทบต่อสุขภาพ</h2>
       <div className="space-y-6">
         {levels.map((level) => {
           const count = data[level.key] || 0;
@@ -65,7 +65,7 @@ const HealthImpactChart: React.FC<{ year?: number }> = ({ year }) => {
         })}
       </div>
       <p className="text-center mt-8 text-gray-600">
-        จำนวนผู้ตอบแบบสอบถามทั้งหมด: <span className="font-semibold">{total.toLocaleString()}</span> คน
+        จำนวนผู้ตอบแบบสอบถามทั้งหมด: <span className="font-medium">{total.toLocaleString()}</span> คน
       </p>
     </div>
   );

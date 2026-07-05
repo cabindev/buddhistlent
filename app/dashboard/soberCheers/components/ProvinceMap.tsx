@@ -51,7 +51,7 @@ const Map = dynamic(
     loading: () => (
       <div className="w-full h-96 bg-gray-100 rounded-lg flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-amber-500 mx-auto mb-2"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-green-600 mx-auto mb-2"></div>
           <p className="text-gray-600">กำลังโหลดแผนที่...</p>
         </div>
       </div>
@@ -93,13 +93,13 @@ const ProvinceMap: React.FC<{ year?: number }> = ({ year }) => {
 
  const getColor = (count: number) => {
    if (count === 0) return '#f3f4f6';
-   if (count > 1000) return '#7c2d12';
-   if (count > 500) return '#dc2626';
-   if (count > 200) return '#ef4444';
-   if (count > 100) return '#f97316';
-   if (count > 50) return '#f59e0b';
-   if (count > 20) return '#fbbf24';
-   return '#fde68a';
+   if (count > 1000) return '#052e16';
+   if (count > 500) return '#14532D';
+   if (count > 200) return '#166534';
+   if (count > 100) return '#15803D';
+   if (count > 50) return '#16A34A';
+   if (count > 20) return '#22C55E';
+   return '#86EFAC';
  };
 
  const getColorIntensity = (count: number) => {
@@ -116,7 +116,7 @@ const ProvinceMap: React.FC<{ year?: number }> = ({ year }) => {
      fillColor: getColor(count),
      weight: selectedProvince === provinceName ? 3 : 1,
      opacity: 1,
-     color: selectedProvince === provinceName ? '#f59e0b' : '#ffffff',
+     color: selectedProvince === provinceName ? '#16A34A' : '#ffffff',
      dashArray: selectedProvince === provinceName ? '0' : '2',
      fillOpacity: getColorIntensity(count)
    };
@@ -129,8 +129,8 @@ const ProvinceMap: React.FC<{ year?: number }> = ({ year }) => {
    
    layer.bindTooltip(
      `<div class="text-center p-2">
-       <div class="font-bold text-amber-700">${provinceName}</div>
-       <div class="text-lg font-semibold">${count.toLocaleString()} คน</div>
+       <div class="font-medium text-green-700">${provinceName}</div>
+       <div class="text-lg font-medium">${count.toLocaleString()} คน</div>
        <div class="text-xs text-gray-600">ผู้ลงทะเบียน</div>
      </div>`,
      { 
@@ -145,7 +145,7 @@ const ProvinceMap: React.FC<{ year?: number }> = ({ year }) => {
        setSelectedProvince(provinceName);
        layer.setStyle({
          weight: 3,
-         color: '#f59e0b',
+         color: '#16A34A',
          dashArray: '0',
          fillOpacity: 0.9
        });
@@ -198,15 +198,15 @@ const ProvinceMap: React.FC<{ year?: number }> = ({ year }) => {
      <div className="p-4 border-b border-gray-200">
        <div className="flex items-center justify-between">
          <div>
-           <h3 className="text-lg font-semibold text-gray-900">
-             🗺️ แผนที่การกระจายตามจังหวัด
+           <h3 className="text-lg font-medium text-gray-900">
+             แผนที่การกระจายตามจังหวัด
            </h3>
            <p className="text-sm text-gray-600">
              การแสดงผลข้อมูลบนแผนที่ประเทศไทย
            </p>
          </div>
          <div className="text-right">
-           <div className="text-lg font-bold text-amber-600">
+           <div className="text-sm font-medium text-green-600">
              {provinceData.reduce((sum, p) => sum + p.count, 0).toLocaleString()}
            </div>
            <div className="text-xs text-gray-600">ผู้ลงทะเบียนทั้งหมด</div>
@@ -235,31 +235,31 @@ const ProvinceMap: React.FC<{ year?: number }> = ({ year }) => {
                <span>0 คน</span>
              </div>
              <div className="flex items-center">
-               <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: '#fde68a' }}></div>
+               <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: '#86EFAC' }}></div>
                <span>1-20 คน</span>
              </div>
              <div className="flex items-center">
-               <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: '#fbbf24' }}></div>
+               <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: '#22C55E' }}></div>
                <span>21-50 คน</span>
              </div>
              <div className="flex items-center">
-               <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: '#f59e0b' }}></div>
+               <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: '#16A34A' }}></div>
                <span>51-100 คน</span>
              </div>
              <div className="flex items-center">
-               <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: '#f97316' }}></div>
+               <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: '#15803D' }}></div>
                <span>101-200 คน</span>
              </div>
              <div className="flex items-center">
-               <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: '#ef4444' }}></div>
+               <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: '#166534' }}></div>
                <span>201-500 คน</span>
              </div>
              <div className="flex items-center">
-               <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: '#dc2626' }}></div>
+               <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: '#14532D' }}></div>
                <span>501-1000 คน</span>
              </div>
              <div className="flex items-center">
-               <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: '#7c2d12' }}></div>
+               <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: '#052e16' }}></div>
                <span>1000+ คน</span>
              </div>
            </div>
@@ -269,8 +269,8 @@ const ProvinceMap: React.FC<{ year?: number }> = ({ year }) => {
        {/* Top 10 Provinces */}
        <div className="lg:col-span-1">
          <div className="bg-gray-50 rounded-lg p-4">
-           <h4 className="text-sm font-semibold text-gray-700 mb-4 flex items-center">
-             🏆 Top 10 จังหวัด
+           <h4 className="text-sm font-medium text-gray-700 mb-4 flex items-center">
+             Top 10 จังหวัด
            </h4>
            <div className="space-y-2">
              {sortedProvinces.map((province, index) => {
@@ -279,20 +279,20 @@ const ProvinceMap: React.FC<{ year?: number }> = ({ year }) => {
                  <div
                    key={province.province}
                    className={`flex items-center justify-between p-2 rounded-lg transition-colors ${
-                     isSelected ? 'bg-amber-100 border border-amber-300' : 'bg-white hover:bg-gray-100'
+                     isSelected ? 'bg-green-50 border border-green-200' : 'bg-white hover:bg-gray-100'
                    }`}
                  >
                    <div className="flex items-center">
-                     <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold mr-2 ${
-                       index === 0 ? 'bg-yellow-400 text-yellow-900' :
-                       index === 1 ? 'bg-gray-400 text-gray-900' :
-                       index === 2 ? 'bg-orange-400 text-orange-900' :
-                       'bg-blue-100 text-blue-700'
+                     <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium mr-2 ${
+                       index === 0 ? 'bg-green-600 text-white' :
+                       index === 1 ? 'bg-green-400 text-white' :
+                       index === 2 ? 'bg-green-200 text-black' :
+                       'bg-green-50 text-green-700'
                      }`}>
                        {index + 1}
                      </div>
                      <div>
-                       <div className={`text-sm font-medium ${isSelected ? 'text-amber-800' : 'text-gray-900'}`}>
+                       <div className={`text-sm font-medium ${isSelected ? 'text-green-800' : 'text-gray-900'}`}>
                          {province.province}
                        </div>
                        <div className="text-xs text-gray-600">
@@ -311,7 +311,7 @@ const ProvinceMap: React.FC<{ year?: number }> = ({ year }) => {
          <div className="mt-4 space-y-3">
            <div className="bg-white p-3 rounded-lg border border-gray-200">
              <div className="text-sm text-gray-600">จังหวัดที่มีผู้ลงทะเบียน</div>
-             <div className="text-xl font-bold text-gray-900">
+             <div className="text-base font-medium text-gray-900">
                {provinceData.filter(p => p.count > 0).length}
              </div>
              <div className="text-xs text-gray-500">จาก {provinceData.length} จังหวัด</div>
@@ -319,7 +319,7 @@ const ProvinceMap: React.FC<{ year?: number }> = ({ year }) => {
            
            <div className="bg-white p-3 rounded-lg border border-gray-200">
              <div className="text-sm text-gray-600">ค่าเฉลี่ยต่อจังหวัด</div>
-             <div className="text-xl font-bold text-gray-900">
+             <div className="text-base font-medium text-gray-900">
                {Math.round(provinceData.reduce((sum, p) => sum + p.count, 0) / provinceData.length).toLocaleString()}
              </div>
              <div className="text-xs text-gray-500">คน/จังหวัด</div>

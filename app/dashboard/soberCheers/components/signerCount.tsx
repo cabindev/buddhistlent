@@ -35,7 +35,7 @@ const SignerCount: React.FC = () => {
             <div className="text-purple-700 font-medium text-lg mb-2">
               ยอดรวมคนเข้าร่วม: คืนข้อมูลเข้าพรรษา
             </div>
-            <div className="text-3xl font-bold text-gray-900">
+            <div className="text-xl font-medium text-gray-900">
               {loading ? (
                 <div className="animate-pulse bg-gray-200 h-10 w-24 rounded"></div>
               ) : (

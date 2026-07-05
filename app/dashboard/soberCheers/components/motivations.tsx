@@ -1,24 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { getMotivationsChartData } from '../actions/GetChartData';
-import { FaChild, FaHeartbeat, FaPray, FaUsers, FaHeart, FaMoneyBillWave, FaStar } from 'react-icons/fa';
 
 interface MotivationData {
   label: string;
   count: number;
   percentage: number;
-  icon: JSX.Element;
 }
-
-const motivationIcons = {
-  'เพื่อลูกและครอบครัว': <FaChild />,
-  'เพื่อสุขภาพของตนเอง': <FaHeartbeat />,
-  'ได้บุญ/รักษาศีล': <FaPray />,
-  'ผู้นำชุมชนชักชวน': <FaUsers />,
-  'คนรักและเพื่อนชวน': <FaHeart />,
-  'ประหยัดเงิน': <FaMoneyBillWave />,
-  'เพื่อเป็นแบบอย่างที่ดีให้กับคนอื่น': <FaStar />,
-};
 
 const MotivationChart: React.FC<{ year?: number }> = ({ year }) => {
   const [motivationsData, setMotivationsData] = useState<MotivationData[]>([]);
@@ -38,7 +26,6 @@ const MotivationChart: React.FC<{ year?: number }> = ({ year }) => {
               label: key,
               count: value,
               percentage: (value / totalResponses) * 100,
-              icon: motivationIcons[key as keyof typeof motivationIcons],
             }))
             .sort((a, b) => b.count - a.count);
           setMotivationsData(processedData);
@@ -75,8 +62,8 @@ const MotivationChart: React.FC<{ year?: number }> = ({ year }) => {
       left: 'center',
       top: 20,
       textStyle: {
-        fontSize: 16,
-        fontWeight: 'bold',
+        fontSize: 12,
+        fontWeight: 'normal',
         color: '#374151'
       }
     },
@@ -149,14 +136,14 @@ const MotivationChart: React.FC<{ year?: number }> = ({ year }) => {
         }
       }
     ],
-    color: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#E91E63', '#795548']
+    color: ['#166534', '#15803D', '#16A34A', '#22C55E', '#4ADE80', '#86EFAC', '#111111', '#14532D']
   };
 
   if (loading) {
     return (
       <div className="h-full flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-amber-500 mx-auto mb-2"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-green-600 mx-auto mb-2"></div>
           <span className="text-gray-600">กำลังโหลด...</span>
         </div>
       </div>
@@ -174,23 +161,23 @@ const MotivationChart: React.FC<{ year?: number }> = ({ year }) => {
   return (
     <div className="h-full">
       {/* Header Stats */}
-      <div className="mb-6 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
+      <div className="mb-6 p-4 bg-green-50 rounded-lg border border-green-100">
         <div className="text-center">
-          <h3 className="text-lg font-bold text-gray-800 mb-2">💡 แรงจูงใจในการงดเหล้า</h3>
+          <h3 className="text-sm font-medium text-gray-800 mb-2">แรงจูงใจในการงดเหล้า</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-white p-3 rounded-lg border border-purple-100">
-              <div className="text-2xl font-bold text-purple-600">{totalResponses.toLocaleString()}</div>
-              <div className="text-sm text-gray-600">ผู้ตอบแบบสอบถาม</div>
+            <div className="bg-white p-3 rounded-lg border border-green-100">
+              <div className="text-lg font-medium text-green-600">{totalResponses.toLocaleString()}</div>
+              <div className="text-xs text-gray-600">ผู้ตอบแบบสอบถาม</div>
             </div>
-            <div className="bg-white p-3 rounded-lg border border-purple-100">
-              <div className="text-2xl font-bold text-blue-600">{motivationsData.length}</div>
-              <div className="text-sm text-gray-600">ประเภทแรงจูงใจ</div>
+            <div className="bg-white p-3 rounded-lg border border-green-100">
+              <div className="text-lg font-medium text-black">{motivationsData.length}</div>
+              <div className="text-xs text-gray-600">ประเภทแรงจูงใจ</div>
             </div>
-            <div className="bg-white p-3 rounded-lg border border-purple-100">
-              <div className="text-2xl font-bold text-green-600">
+            <div className="bg-white p-3 rounded-lg border border-green-100">
+              <div className="text-lg font-medium text-black">
                 {motivationsData.length > 0 ? motivationsData[0].count.toLocaleString() : 0}
               </div>
-              <div className="text-sm text-gray-600">แรงจูงใจสูงสุด</div>
+              <div className="text-xs text-gray-600">แรงจูงใจสูงสุด</div>
             </div>
           </div>
         </div>
@@ -210,29 +197,23 @@ const MotivationChart: React.FC<{ year?: number }> = ({ year }) => {
         {/* Legend with icons - ใช้พื้นที่ 2 columns */}
         <div className="xl:col-span-2">
           <div className="bg-gray-50 rounded-lg p-4 h-96">
-            <h4 className="text-sm font-semibold text-gray-700 mb-4">รายละเอียดแรงจูงใจ</h4>
+            <h4 className="text-xs font-medium text-gray-700 mb-4">รายละเอียดแรงจูงใจ</h4>
             <div className="space-y-3 overflow-y-auto h-80">
               {motivationsData.map((item, index) => {
-                const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#E91E63', '#795548'];
+                const colors = ['#166534', '#15803D', '#16A34A', '#22C55E', '#4ADE80', '#86EFAC', '#111111', '#14532D'];
                 const color = colors[index % colors.length];
                 
                 return (
-                  <div key={index} className="bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 border-l-4" style={{ borderLeftColor: color }}>
-                    <div className="flex items-start space-x-3">
-                      <div className="flex-shrink-0">
-                        <div className="w-10 h-10 rounded-full flex items-center justify-center text-white" style={{ backgroundColor: color }}>
-                          {item.icon}
-                        </div>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h5 className="text-sm font-medium text-gray-900 mb-1 leading-tight">
+                  <div key={index} className="bg-white p-4 rounded-lg border border-gray-200 transition-all duration-200 hover:shadow-md">
+                    <div className="flex-1 min-w-0">
+                        <h5 className="text-xs font-medium text-gray-900 mb-1 leading-tight">
                           {item.label}
                         </h5>
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-lg font-bold text-gray-900">
+                          <span className="text-sm font-medium text-gray-900">
                             {item.count.toLocaleString()} คน
                           </span>
-                          <span className="text-sm font-medium text-gray-600">
+                          <span className="text-xs font-normal text-gray-600">
                             {item.percentage.toFixed(1)}%
                           </span>
                         </div>
@@ -246,7 +227,6 @@ const MotivationChart: React.FC<{ year?: number }> = ({ year }) => {
                             }}
                           ></div>
                         </div>
-                      </div>
                     </div>
                   </div>
                 );
@@ -257,9 +237,9 @@ const MotivationChart: React.FC<{ year?: number }> = ({ year }) => {
       </div>
 
       {/* Footer Note */}
-      <div className="mt-6 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-        <p className="text-sm text-yellow-800 text-center">
-          📝 <strong>หมายเหตุ:</strong> ผู้ลงทะเบียนสามารถเลือกแรงจูงใจได้มากกว่าหนึ่งข้อ
+      <div className="mt-6 p-3 bg-green-50 border border-green-100 rounded-lg">
+        <p className="text-xs text-green-800 text-center">
+          <strong className="font-medium">หมายเหตุ:</strong> ผู้ลงทะเบียนสามารถเลือกแรงจูงใจได้มากกว่าหนึ่งข้อ
         </p>
       </div>
     </div>

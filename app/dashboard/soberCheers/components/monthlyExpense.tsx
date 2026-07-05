@@ -25,7 +25,7 @@ const MonthlyExpenseSummary: React.FC<{ year?: number }> = ({ year }) => {
 
   if (!summary) {
     return <div className="flex justify-center items-center h-64">
-      <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-green-600"></div>
     </div>;
   }
 
@@ -38,49 +38,49 @@ const MonthlyExpenseSummary: React.FC<{ year?: number }> = ({ year }) => {
 
   return (
     <div className="max-w-4xl mx-auto p-4 bg-white shadow-lg rounded-lg">
-      <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+      <h2 className="text-lg font-medium text-center text-gray-800 mb-6">
         สรุปค่าใช้จ่ายรายเดือนในการดื่มแอลกอฮอล์
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div className="bg-gradient-to-r from-purple-400 to-pink-500 p-4 rounded-lg shadow-md">
-          <h3 className="text-lg font-semibold text-white mb-1">
+        <div className="bg-green-600 p-4 rounded-lg shadow-md">
+          <h3 className="text-lg font-medium text-white mb-1">
             ยอดรวมทั้งหมด
           </h3>
-          <p className="text-2xl font-bold text-white">
+          <p className="text-lg font-medium text-white">
             {formatCurrency(summary.total)}
           </p>
         </div>
-        <div className="bg-gradient-to-r from-cyan-400 to-blue-500 p-4 rounded-lg shadow-md">
-          <h3 className="text-lg font-semibold text-white mb-1">
+        <div className="bg-black p-4 rounded-lg shadow-md">
+          <h3 className="text-lg font-medium text-white mb-1">
             ค่าเฉลี่ยต่อคน
           </h3>
-          <p className="text-2xl font-bold text-white">
+          <p className="text-lg font-medium text-white">
             {formatCurrency(summary.average)}
           </p>
         </div>
       </div>
       <p className="text-center text-base text-gray-600 mb-6">
         จำนวนผู้ให้ข้อมูล:{" "}
-        <span className="font-semibold">
+        <span className="font-medium">
           {new Intl.NumberFormat("th-TH").format(summary.participantCount)}
         </span>{" "}
         คน
       </p>
       <div className="bg-slate-50 p-4 rounded-lg">
-        <h3 className="text-xl font-bold text-gray-800 mb-3">
+        <h3 className="text-base font-medium text-gray-800 mb-3">
           ข้อมูลน่าสนใจ :
         </h3>
         <p className="text-base text-gray-700 mb-2">
           หากทุกคนเลิกดื่ม 3 เดือนช่วงเข้าพรรษานี้ จะประหยัดเงินได้{" "}
           
-          <span className="font-bold text-emerald-600 bg-emerald-100 px-2 py-1 rounded">
+          <span className="font-medium text-green-700 bg-green-100 px-2 py-1 rounded">
             {formatCurrency(campaignSavings)}
           </span>
 
         </p>
         <p className="text-base text-gray-700">
           และหากทุกคนเลิกดื่มต่อเนื่อง จะประหยัดได้{" "}
-          <span className="font-bold text-amber-600 bg-amber-100 px-2 py-1 rounded">
+          <span className="font-medium text-black bg-green-50 px-2 py-1 rounded">
             {formatCurrency(annualSavings)}
           </span>{" "}
           ต่อปี

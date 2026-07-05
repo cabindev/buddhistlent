@@ -41,7 +41,7 @@ const DrinkingFrequencyChart: React.FC<{ year?: number }> = ({ year }) => {
  if (loading) {
    return (
      <div className="h-96 flex items-center justify-center">
-       <div className="animate-spin rounded-full h-8 w-8 border-2 border-orange-500 border-t-transparent"></div>
+       <div className="animate-spin rounded-full h-8 w-8 border-2 border-green-600 border-t-transparent"></div>
        <span className="ml-3 text-gray-600">กำลังโหลดข้อมูลความถี่การดื่ม...</span>
      </div>
    );
@@ -51,8 +51,7 @@ const DrinkingFrequencyChart: React.FC<{ year?: number }> = ({ year }) => {
    return (
      <div className="h-96 flex items-center justify-center">
        <div className="text-center text-gray-500">
-         <div className="text-lg mb-2">📊</div>
-         <div>ไม่พบข้อมูลความถี่การดื่ม</div>
+                  <div>ไม่พบข้อมูลความถี่การดื่ม</div>
        </div>
      </div>
    );
@@ -75,8 +74,8 @@ const DrinkingFrequencyChart: React.FC<{ year?: number }> = ({ year }) => {
      left: 'center',
      top: 20,
      textStyle: {
-       fontSize: 16,
-       fontWeight: 'bold',
+       fontSize: 12,
+       fontWeight: 'normal',
        color: '#374151'
      }
    },
@@ -150,25 +149,25 @@ const DrinkingFrequencyChart: React.FC<{ year?: number }> = ({ year }) => {
        }
      }
    ],
-   color: ['#f97316', '#ea580c', '#dc2626', '#b91c1c', '#991b1b', '#7f1d1d', '#6b7280', '#4b5563']
+   color: ['#86EFAC', '#4ADE80', '#22C55E', '#16A34A', '#15803D', '#166534', '#14532D', '#111111']
  };
 
  return (
    <div className="bg-white">
      {/* Header Stats */}
-     <div className="mb-6 p-4 bg-gradient-to-r from-orange-50 to-amber-50 rounded-lg border border-orange-200">
-       <h2 className="text-lg font-bold text-gray-800 mb-3 text-center">📊 สถิติความถี่การดื่มแอลกอฮอล์</h2>
+     <div className="mb-6 p-4 bg-green-50 rounded-lg border border-green-100">
+       <h2 className="text-sm font-medium text-gray-800 mb-3 text-center">สถิติความถี่การดื่มแอลกอฮอล์</h2>
        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-         <div className="bg-white p-3 rounded-lg border border-orange-100">
-           <div className="text-2xl font-bold text-orange-600">{totalCount.toLocaleString()}</div>
+         <div className="bg-white p-3 rounded-lg border border-green-100">
+           <div className="text-lg font-medium text-green-600">{totalCount.toLocaleString()}</div>
            <div className="text-sm text-gray-600">ผู้ตอบแบบสอบถาม</div>
          </div>
-         <div className="bg-white p-3 rounded-lg border border-orange-100">
-           <div className="text-2xl font-bold text-blue-600">{frequencyData.length}</div>
+         <div className="bg-white p-3 rounded-lg border border-green-100">
+           <div className="text-lg font-medium text-black">{frequencyData.length}</div>
            <div className="text-sm text-gray-600">ระดับความถี่</div>
          </div>
-         <div className="bg-white p-3 rounded-lg border border-orange-100">
-           <div className="text-2xl font-bold text-green-600">
+         <div className="bg-white p-3 rounded-lg border border-green-100">
+           <div className="text-lg font-medium text-black">
              {Math.round(totalCount / frequencyData.length).toLocaleString()}
            </div>
            <div className="text-sm text-gray-600">ค่าเฉลี่ย/ระดับ</div>
@@ -193,10 +192,10 @@ const DrinkingFrequencyChart: React.FC<{ year?: number }> = ({ year }) => {
        <div className="xl:col-span-1 space-y-4">
          {/* Custom Legend */}
          <div className="bg-gray-50 rounded-lg p-4">
-           <h4 className="text-sm font-semibold text-gray-700 mb-3">รายละเอียดข้อมูล</h4>
+           <h4 className="text-sm font-medium text-gray-700 mb-3">รายละเอียดข้อมูล</h4>
            <div className="space-y-2 max-h-80 overflow-y-auto">
              {frequencyData.map((item, index) => {
-               const colors = ['#f97316', '#ea580c', '#dc2626', '#b91c1c', '#991b1b', '#7f1d1d', '#6b7280', '#4b5563'];
+               const colors = ['#86EFAC', '#4ADE80', '#22C55E', '#16A34A', '#15803D', '#166534', '#14532D', '#111111'];
                const color = colors[index % colors.length];
                const percentage = calculatePercentage(item.value, totalCount);
                
@@ -232,7 +231,7 @@ const DrinkingFrequencyChart: React.FC<{ year?: number }> = ({ year }) => {
 
          {/* Summary Stats */}
          <div className="bg-gray-50 rounded-lg p-4">
-           <h4 className="text-sm font-semibold text-gray-700 mb-3">สรุปสถิติ</h4>
+           <h4 className="text-sm font-medium text-gray-700 mb-3">สรุปสถิติ</h4>
            <div className="space-y-3 text-sm">
              <div className="flex justify-between">
                <span className="text-gray-600">ประเภทความถี่:</span>
@@ -261,11 +260,11 @@ const DrinkingFrequencyChart: React.FC<{ year?: number }> = ({ year }) => {
 
          {/* Top 3 Summary */}
          {frequencyData.length >= 3 && (
-           <div className="bg-orange-50 rounded-lg p-4 border border-orange-200">
-             <h4 className="text-sm font-semibold text-orange-800 mb-3">🏆 อันดับต้น 3</h4>
+           <div className="bg-green-50 rounded-lg p-4 border border-green-100">
+             <h4 className="text-xs font-medium text-green-800 mb-3">อันดับต้น 3</h4>
              <div className="space-y-2">
                {frequencyData.slice(0, 3).map((item, index) => {
-                 const medals = ['🥇', '🥈', '🥉'];
+                 const medals = ['1', '2', '3'];
                  const percentage = calculatePercentage(item.value, totalCount);
                  
                  return (
@@ -277,10 +276,10 @@ const DrinkingFrequencyChart: React.FC<{ year?: number }> = ({ year }) => {
                        </span>
                      </div>
                      <div className="text-right">
-                       <div className="text-sm font-bold text-orange-700">
+                       <div className="text-sm font-medium text-green-700">
                          {item.value.toLocaleString()}
                        </div>
-                       <div className="text-xs text-orange-600">
+                       <div className="text-xs text-green-600">
                          {percentage}%
                        </div>
                      </div>
@@ -288,7 +287,7 @@ const DrinkingFrequencyChart: React.FC<{ year?: number }> = ({ year }) => {
                  );
                })}
              </div>
-             <div className="mt-3 pt-3 border-t border-orange-200 text-xs text-orange-700 text-center">
+             <div className="mt-3 pt-3 border-t border-green-100 text-xs text-green-700 text-center">
                รวม 3 อันดับแรก: {calculatePercentage(
                  frequencyData.slice(0, 3).reduce((sum, item) => sum + item.value, 0), 
                  totalCount

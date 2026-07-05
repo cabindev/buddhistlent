@@ -35,7 +35,7 @@ const ClientCount: React.FC = () => {
             <div className="text-amber-700 font-medium text-lg mb-2">
               องค์กร: คืนข้อมูลเข้าพรรษา
             </div>
-            <div className="text-3xl font-bold text-gray-900">
+            <div className="text-xl font-medium text-gray-900">
               {loading ? (
                 <div className="animate-pulse bg-gray-200 h-10 w-32 rounded"></div>
               ) : (

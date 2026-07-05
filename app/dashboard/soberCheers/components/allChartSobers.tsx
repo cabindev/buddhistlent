@@ -1,6 +1,5 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Users, MapPin, Globe, TrendingUp, RefreshCw } from 'lucide-react';
 import { getDashboardSummary, getTotalCount, getAvailableSoberCheersYears } from '../actions/GetChartData';
 import AlcoholConsumptionChart from './consumptionChart';
 import GenderChart from './genderChart';
@@ -12,23 +11,22 @@ import HealthImpactChart from './healthyImpact';
 import MotiVation from './motivations';
 import ProvinceCount from './ProvinceCount';
 import ProvinceMap from './ProvinceMap';
+import JobChart from './jobChart';
+import AffiliationChart from './affiliationChart';
 
 // ── Stat Card ──────────────────────────────────────────────────────────────
-function StatCard({ icon, label, value, unit, loading }: { icon: React.ReactNode; label: string; value: string | number; unit: string; loading?: boolean }) {
+function StatCard({ label, value, unit, loading }: { label: string; value: string | number; unit: string; loading?: boolean }) {
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-5 flex items-center gap-4">
-      <div className="p-2.5 bg-gray-50 rounded-lg text-gray-500">{icon}</div>
-      <div>
-        <p className="text-xs text-gray-500 mb-1">{label}</p>
-        {loading ? (
-          <div className="h-6 w-16 bg-gray-200 rounded animate-pulse" />
-        ) : (
-          <p className="text-xl font-semibold text-gray-900">
-            {typeof value === 'number' ? value.toLocaleString() : value}
-            <span className="text-sm font-normal text-gray-400 ml-1">{unit}</span>
-          </p>
-        )}
-      </div>
+    <div className="bg-white border border-green-100 rounded-lg px-4 py-3">
+      <p className="text-[11px] font-normal text-black/50 mb-1">{label}</p>
+      {loading ? (
+        <div className="h-5 w-14 bg-green-50 rounded animate-pulse" />
+      ) : (
+        <p className="text-base font-medium text-black">
+          {typeof value === 'number' ? value.toLocaleString() : value}
+          <span className="text-xs font-normal text-black/40 ml-1">{unit}</span>
+        </p>
+      )}
     </div>
   );
 }
@@ -38,9 +36,9 @@ function ChartCard({ title, children, className = '', minHeight = 'min-h-[360px]
   title: string; children: React.ReactNode; className?: string; minHeight?: string;
 }) {
   return (
-    <div className={`bg-white border border-gray-200 rounded-lg overflow-hidden ${className}`}>
-      <div className="px-5 py-3.5 border-b border-gray-100">
-        <h3 className="text-sm font-medium text-gray-700">{title}</h3>
+    <div className={`bg-white border border-green-100 rounded-lg overflow-hidden ${className}`}>
+      <div className="px-5 py-3 border-b border-green-50">
+        <h3 className="text-xs font-medium text-black">{title}</h3>
       </div>
       <div className={`p-4 ${minHeight}`}>{children}</div>
     </div>
@@ -71,37 +69,37 @@ export default function DashboardSober() {
   const handleYearChange = (y: number) => { setYear(y); loadStats(y); };
 
   return (
-    <div className="p-6 space-y-5">
+    <div className="p-6 space-y-5 bg-white">
 
       {/* Header + Year tabs */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold text-gray-900">Sober Cheers Dashboard</h1>
-          <p className="text-sm text-gray-500 mt-0.5">ข้อมูลผู้เข้าร่วมโครงการงดเหล้าเข้าพรรษา</p>
+          <h1 className="text-base font-medium text-black">Sober Cheers Dashboard</h1>
+          <p className="text-xs text-black/50 mt-0.5">ข้อมูลผู้เข้าร่วมโครงการงดเหล้าเข้าพรรษา</p>
         </div>
         <div className="flex items-center gap-2">
-          <div className="flex bg-gray-100 rounded-lg p-1 gap-1">
+          <div className="flex bg-green-50 rounded-lg p-1 gap-1">
             {years.map(y => (
               <button key={y} onClick={() => handleYearChange(y)}
-                className={`px-4 py-1.5 text-sm rounded-md font-medium transition-colors ${
-                  year === y ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                className={`px-3 py-1 text-xs rounded-md font-medium transition-colors ${
+                  year === y ? 'bg-green-600 text-white' : 'text-black/50 hover:text-black'
                 }`}
               >{y}</button>
             ))}
           </div>
           <button onClick={() => loadStats(year)}
-            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-            <RefreshCw className="w-4 h-4" />
+            className="px-2.5 py-1 text-xs text-black/40 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors">
+            รีเฟรช
           </button>
         </div>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon={<Users className="w-5 h-5" />} label="ผู้ลงทะเบียนทั้งหมด" value={stats.totalParticipants} unit="คน" loading={loading} />
-        <StatCard icon={<MapPin className="w-5 h-5" />} label="จังหวัดที่เข้าร่วม" value={stats.totalProvinces} unit="จังหวัด" loading={loading} />
-        <StatCard icon={<Globe className="w-5 h-5" />} label="ภูมิภาคที่เข้าร่วม" value={stats.totalRegions} unit="ภาค" loading={loading} />
-        <StatCard icon={<TrendingUp className="w-5 h-5" />} label="อายุเฉลี่ย" value={stats.avgAge} unit="ปี" loading={loading} />
+        <StatCard label="ผู้ลงทะเบียนทั้งหมด" value={stats.totalParticipants} unit="คน" loading={loading} />
+        <StatCard label="จังหวัดที่เข้าร่วม" value={stats.totalProvinces} unit="จังหวัด" loading={loading} />
+        <StatCard label="ภูมิภาคที่เข้าร่วม" value={stats.totalRegions} unit="ภาค" loading={loading} />
+        <StatCard label="อายุเฉลี่ย" value={stats.avgAge} unit="ปี" loading={loading} />
       </div>
 
       {/* Charts — ส่ง year ให้ทุก component, key={year} บังคับ re-mount เมื่อเปลี่ยนปี */}
@@ -155,6 +153,16 @@ export default function DashboardSober() {
         <ChartCard title="แรงจูงใจในการงดเหล้า" minHeight="min-h-[420px]">
           <MotiVation year={year} />
         </ChartCard>
+
+        {/* Row 8 — Occupation + Affiliation */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+          <ChartCard title="อาชีพ" minHeight="min-h-[420px]">
+            <JobChart year={year} />
+          </ChartCard>
+          <ChartCard title="สังกัด" minHeight="min-h-[420px]">
+            <AffiliationChart year={year} />
+          </ChartCard>
+        </div>
       </div>
     </div>
   );
