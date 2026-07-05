@@ -235,6 +235,36 @@ export async function getHealthImpactChartData(year?: number): Promise<ChartResu
   }
 }
 
+// ── Occupation (อาชีพ) ──────────────────────────────────────────────────────
+export async function getJobChartData(year?: number): Promise<ChartResult<{ name: string; value: number }[]>> {
+  try {
+    const rows = await prisma.soberCheers.groupBy({
+      by: ['job'], where: yearWhere(year),
+      _count: { job: true },
+      orderBy: { _count: { job: 'desc' } },
+    });
+    return { success: true, data: rows.map(r => ({ name: r.job, value: r._count.job })) };
+  } catch (error) {
+    return { success: false, error: error instanceof Error ? error.message : 'Failed' };
+  }
+}
+
+// ── Affiliation (สังกัด) ─────────────────────────────────────────────────────
+export async function getAffiliationChartData(year?: number): Promise<ChartResult<{ name: string; value: number }[]>> {
+  try {
+    const where = { ...yearWhere(year), affiliation: { not: null } } as any;
+    const rows = await prisma.soberCheers.groupBy({
+      by: ['affiliation'], where,
+      _count: { affiliation: true },
+      orderBy: { _count: { affiliation: 'desc' } },
+      take: 15,
+    });
+    return { success: true, data: rows.map(r => ({ name: r.affiliation!, value: r._count.affiliation })) };
+  } catch (error) {
+    return { success: false, error: error instanceof Error ? error.message : 'Failed' };
+  }
+}
+
 // ── Motivations ────────────────────────────────────────────────────────────
 export async function getMotivationsChartData(year?: number): Promise<ChartResult<{ motivationCounts: Record<string, number>; totalResponses: number }>> {
   try {

@@ -243,6 +243,7 @@ export default function OrganizationCategoryList() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100 text-xs text-gray-400 font-medium">
+                <th className="px-5 py-3 text-center w-16">ลำดับ</th>
                 <th className="px-5 py-3 text-left">องค์กร</th>
                 <th className="px-5 py-3 text-left">ประเภท</th>
                 <th className="px-5 py-3 text-left hidden md:table-cell">คำอธิบาย</th>
@@ -254,6 +255,11 @@ export default function OrganizationCategoryList() {
             <tbody>
               {filteredCategories.map((category) => (
                 <tr key={category.id} className="border-t border-gray-50 hover:bg-gray-50 transition-colors">
+                  <td className="px-5 py-3.5 text-center">
+                    <span className="inline-flex items-center justify-center min-w-6 h-6 px-1.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-600">
+                      {category.sortOrder ?? '—'}
+                    </span>
+                  </td>
                   <td className="px-5 py-3.5">
                     <div className="font-medium text-gray-900">{category.name}</div>
                     {category.shortName && <div className="text-xs text-gray-400 mt-0.5">{category.shortName}</div>}

@@ -17,6 +17,7 @@ interface SoberCheersItem {
   province: string;
   type: string;
   job: string;
+  affiliation: string;
   phone: string;
   alcoholConsumption: string;
   monthlyExpense: number | null;
@@ -26,7 +27,7 @@ interface SoberCheersItem {
   healthImpact: string;
 }
 
-interface Filters { name: string; province: string; type: string; job: string; }
+interface Filters { name: string; province: string; type: string; job: string; affiliation: string; }
 
 const PAGE_SIZE = 20;
 
@@ -52,7 +53,7 @@ function clean(items: any[]): SoberCheersItem[] {
     monthlyExpense: item.monthlyExpense != null ? Number(item.monthlyExpense) || 0 : 0,
     firstName: item.firstName || '', lastName: item.lastName || '',
     gender: item.gender || '', province: item.province || '',
-    type: item.type || '', job: item.job || '', phone: item.phone || '',
+    type: item.type || '', job: item.job || '', affiliation: item.affiliation || '', phone: item.phone || '',
     drinkingFrequency: item.drinkingFrequency || '', intentPeriod: item.intentPeriod || '',
     healthImpact: item.healthImpact || '', birthday: item.birthday || new Date().toISOString(),
   }));
@@ -67,7 +68,7 @@ export default function SoberCheersTable() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [filters, setFilters] = useState<Filters>({ name: '', province: '', type: '', job: '' });
+  const [filters, setFilters] = useState<Filters>({ name: '', province: '', type: '', job: '', affiliation: '' });
   const [showFilters, setShowFilters] = useState(false);
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [page, setPage] = useState(1);
@@ -80,7 +81,7 @@ export default function SoberCheersTable() {
     setLoading(true);
     setError(null);
     setSelected(new Set());
-    setFilters({ name: '', province: '', type: '', job: '' });
+    setFilters({ name: '', province: '', type: '', job: '', affiliation: '' });
     setPage(1);
 
     const [res, availYears] = await Promise.all([
@@ -102,7 +103,8 @@ export default function SoberCheersTable() {
     (!filters.name || `${item.firstName} ${item.lastName}`.toLowerCase().includes(filters.name.toLowerCase())) &&
     (!filters.province || item.province === filters.province) &&
     (!filters.type || item.type === filters.type) &&
-    (!filters.job || item.job === filters.job)
+    (!filters.job || item.job === filters.job) &&
+    (!filters.affiliation || item.affiliation === filters.affiliation)
   );
 
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
@@ -131,10 +133,10 @@ export default function SoberCheersTable() {
   const exportData = filtered.filter(d => selected.size === 0 || selected.has(d.id));
 
   const handleCSV = () => {
-    const headers = ['ชื่อ-นามสกุล', 'เพศ', 'อายุ', 'จังหวัด', 'ภาค', 'อาชีพ', 'การดื่ม', 'ค่าใช้จ่าย/เดือน', 'แรงจูงใจ'];
+    const headers = ['ชื่อ-นามสกุล', 'เพศ', 'อายุ', 'จังหวัด', 'ภาค', 'อาชีพ', 'สังกัด', 'การดื่ม', 'ค่าใช้จ่าย/เดือน', 'แรงจูงใจ'];
     const rows = exportData.map(d => [
       `"${d.firstName} ${d.lastName}"`, `"${d.gender}"`, calcAge(d.birthday),
-      `"${d.province}"`, `"${d.type}"`, `"${d.job}"`, `"${d.alcoholConsumption}"`,
+      `"${d.province}"`, `"${d.type}"`, `"${d.job}"`, `"${d.affiliation}"`, `"${d.alcoholConsumption}"`,
       d.monthlyExpense || 0, `"${parseMotivations(d.motivations)}"`,
     ].join(','));
     const blob = new Blob(['﻿' + [headers.join(','), ...rows].join('\n')], { type: 'text/csv;charset=utf-8;' });
@@ -146,7 +148,7 @@ export default function SoberCheersTable() {
     const ws = XLSX.utils.json_to_sheet(exportData.map(d => ({
       'ชื่อ-นามสกุล': `${d.firstName} ${d.lastName}`, 'เพศ': d.gender,
       'อายุ': `${calcAge(d.birthday)} ปี`, 'จังหวัด': d.province, 'ภาค': d.type,
-      'อาชีพ': d.job, 'การดื่มแอลกอฮอล์': d.alcoholConsumption,
+      'อาชีพ': d.job, 'สังกัด': d.affiliation, 'การดื่มแอลกอฮอล์': d.alcoholConsumption,
       'ค่าใช้จ่าย/เดือน (฿)': d.monthlyExpense || 0, 'แรงจูงใจ': parseMotivations(d.motivations),
     })));
     const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'SoberCheers');
@@ -202,7 +204,7 @@ export default function SoberCheersTable() {
       {/* Filters panel */}
       {showFilters && (
         <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-3">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
               <input type="text" placeholder="ค้นหาชื่อ..." value={filters.name}
@@ -224,9 +226,14 @@ export default function SoberCheersTable() {
               <option value="">อาชีพ ({getUnique(data, 'job').length})</option>
               {getUnique(data, 'job').map(v => <option key={v} value={v}>{v}</option>)}
             </select>
+            <select value={filters.affiliation} onChange={e => { setFilters(f => ({ ...f, affiliation: e.target.value })); setPage(1); }}
+              className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white">
+              <option value="">สังกัด ({getUnique(data, 'affiliation').length})</option>
+              {getUnique(data, 'affiliation').map(v => <option key={v} value={v}>{v}</option>)}
+            </select>
           </div>
           {activeFilterCount > 0 && (
-            <button onClick={() => { setFilters({ name: '', province: '', type: '', job: '' }); setPage(1); }}
+            <button onClick={() => { setFilters({ name: '', province: '', type: '', job: '', affiliation: '' }); setPage(1); }}
               className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700">
               <X className="w-3 h-3" /> ล้างตัวกรอง
             </button>
@@ -273,6 +280,7 @@ export default function SoberCheersTable() {
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">เพศ / อายุ</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">จังหวัด / ภาค</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">อาชีพ</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">สังกัด</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">สถานะการดื่ม</th>
                   <th className="px-4 py-3 text-right text-xs font-medium text-gray-500">ค่าใช้จ่าย/เดือน</th>
                   <th className="px-4 py-3 text-right text-xs font-medium text-gray-500">จัดการ</th>
@@ -298,6 +306,7 @@ export default function SoberCheersTable() {
                       <div className="text-xs text-gray-400">{item.type}</div>
                     </td>
                     <td className="px-4 py-3 text-gray-700">{item.job}</td>
+                    <td className="px-4 py-3 text-gray-700">{item.affiliation || '-'}</td>
                     <td className="px-4 py-3">
                       <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${
                         item.alcoholConsumption.includes('ดื่ม (ย้อนหลัง') ? 'bg-red-100 text-red-700'
