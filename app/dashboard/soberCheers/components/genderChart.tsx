@@ -8,7 +8,7 @@ interface SoberCheersData {
   gender: string;
 }
 
-const GenderChart: React.FC<{ year?: number }> = ({ year }) => {
+const GenderChart: React.FC<{ year?: number; zone?: string }> = ({ year, zone }) => {
   const [chartData, setChartData] = useState<Record<string, number>>({});
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -17,7 +17,7 @@ const GenderChart: React.FC<{ year?: number }> = ({ year }) => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const result = await getGenderChartData(year);
+        const result = await getGenderChartData(year, zone);
         if (result.success && result.data) {
           const map: Record<string, number> = {};
           result.data.forEach(r => { map[r.name] = r.value; });
@@ -97,7 +97,7 @@ const GenderChart: React.FC<{ year?: number }> = ({ year }) => {
 
   if (loading) {
     return (
-      <div className="bg-white p-6 rounded-lg shadow-md">
+      <div className="bg-white p-6 rounded-lg">
         <div className="flex items-center justify-center h-64">
           <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-green-600"></div>
           <span className="ml-2 text-gray-600">กำลังโหลด...</span>
@@ -108,7 +108,7 @@ const GenderChart: React.FC<{ year?: number }> = ({ year }) => {
 
   if (error) {
     return (
-      <div className="bg-white p-6 rounded-lg shadow-md">
+      <div className="bg-white p-6 rounded-lg">
         <div className="text-center text-red-500 py-8">{error}</div>
       </div>
     );
@@ -116,14 +116,14 @@ const GenderChart: React.FC<{ year?: number }> = ({ year }) => {
 
   if (Object.values(chartData).reduce((s,v) => s+v, 0) === 0) {
     return (
-      <div className="bg-white p-6 rounded-lg shadow-md">
+      <div className="bg-white p-6 rounded-lg">
         <div className="text-center text-gray-500 py-8">ไม่มีข้อมูล</div>
       </div>
     );
   }
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md relative">
+    <div className="bg-white p-6 rounded-lg relative">
 
       {/* Chart */}
       <div className="mb-6">
@@ -141,7 +141,7 @@ const GenderChart: React.FC<{ year?: number }> = ({ year }) => {
           return (
             <div
               key={gender}
-              className="text-center p-4 rounded-lg border border-gray-200 transition-all duration-200 hover:shadow-md"
+              className="text-center p-4 rounded-lg border border-gray-200"
             >
               <div className="mb-2">
                 <span className="text-sm font-medium text-gray-800">{gender}</span>

@@ -5,13 +5,13 @@ interface HealthImpactData {
   [key: string]: number;
 }
 
-const HealthImpactChart: React.FC<{ year?: number }> = ({ year }) => {
+const HealthImpactChart: React.FC<{ year?: number; zone?: string }> = ({ year, zone }) => {
   const [data, setData] = useState<HealthImpactData | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await getHealthImpactChartData(year);
+        const result = await getHealthImpactChartData(year, zone);
         if (result.success && result.data) {
           const map: HealthImpactData = {};
           result.data.forEach(r => { map[r.name] = r.value; });
@@ -40,23 +40,23 @@ const HealthImpactChart: React.FC<{ year?: number }> = ({ year }) => {
   const total = Object.values(data).reduce((sum, value) => sum + value, 0);
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <h2 className="text-xl font-medium text-center text-gray-800 mb-8">ผลกระทบต่อสุขภาพ</h2>
+    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg">
+      <h2 className="text-sm font-medium text-center text-gray-800 mb-8">ผลกระทบต่อสุขภาพ</h2>
       <div className="space-y-6">
         {levels.map((level) => {
           const count = data[level.key] || 0;
           const percentage = (count / total) * 100;
           return (
             <div key={level.key} className="flex flex-col md:flex-row items-center gap-4">
-              <div className="w-full md:w-1/2 text-sm md:text-base">{level.key}</div>
+              <div className="w-full md:w-1/2 text-xs">{level.key}</div>
               <div className="w-full md:w-1/2 flex items-center gap-4">
                 <div className="flex-grow h-6 bg-gray-200 rounded-full overflow-hidden">
-                  <div 
-                    className={`h-full ${level.color} transition-all duration-500 ease-out`} 
+                  <div
+                    className={`h-full ${level.color} transition-all duration-500 ease-out`}
                     style={{ width: `${percentage}%` }}
                   ></div>
                 </div>
-                <div className="min-w-[100px] text-right text-sm">
+                <div className="min-w-[100px] text-right text-xs">
                   {count.toLocaleString()} คน ({percentage.toFixed(1)}%)
                 </div>
               </div>
@@ -64,7 +64,7 @@ const HealthImpactChart: React.FC<{ year?: number }> = ({ year }) => {
           );
         })}
       </div>
-      <p className="text-center mt-8 text-gray-600">
+      <p className="text-center mt-8 text-xs text-gray-600">
         จำนวนผู้ตอบแบบสอบถามทั้งหมด: <span className="font-medium">{total.toLocaleString()}</span> คน
       </p>
     </div>

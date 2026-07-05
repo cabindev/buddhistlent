@@ -1,14 +1,20 @@
 // IntentPeriodChart.tsx
+'use client';
 import React, { useEffect, useState } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { getIntentPeriodChartData } from '../actions/GetChartData';
 
-interface IntentPeriodData {
-  [key: string]: number;
-}
+const ORDER = [
+  '1 เดือน',
+  '2 เดือน',
+  '3 เดือน',
+  'ลดปริมาณการดื่ม',
+  'ตลอดชีวิต',
+  'เลิกดื่มมาแล้วมากกว่า 3 ปี หรือ ไม่เคยดื่มเลยตลอดชีวิต',
+];
 
-const IntentPeriodChart: React.FC<{ year?: number }> = ({ year }) => {
-  const [chartData, setChartData] = useState<any>(null);
+const IntentPeriodChart: React.FC<{ year?: number; zone?: string }> = ({ year, zone }) => {
+  const [chartData, setChartData] = useState<{ labels: string[]; data: number[] } | null>(null);
   const [totalResponded, setTotalResponded] = useState(0);
   const [loading, setLoading] = useState(true);
 
@@ -16,9 +22,10 @@ const IntentPeriodChart: React.FC<{ year?: number }> = ({ year }) => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const result = await getIntentPeriodChartData(year);
+        const result = await getIntentPeriodChartData(year, zone);
         if (result.success && result.data) {
-          setChartData(result.data.data);
+          const sorted = [...result.data.data].sort((a, b) => ORDER.indexOf(a.name) - ORDER.indexOf(b.name));
+          setChartData({ labels: sorted.map(r => r.name), data: sorted.map(r => r.value) });
           setTotalResponded(result.data.total);
         }
       } catch (error) {
@@ -29,56 +36,55 @@ const IntentPeriodChart: React.FC<{ year?: number }> = ({ year }) => {
     };
 
     fetchData();
-  }, []);
+  }, [year, zone]);
 
   const option = {
     title: {
-      text: '',
+      text: 'ระยะเวลาที่ตั้งใจงด',
       left: 'center',
-      textStyle: {
-        fontSize: 12,
-        fontWeight: 'normal'
-      }
+      textStyle: { fontSize: 13, fontWeight: 'normal' }
     },
     tooltip: {
-      trigger: 'item',
+      trigger: 'axis',
+      axisPointer: { type: 'shadow' },
       formatter: (params: any) => {
-        const percentage = ((params.value / totalResponded) * 100).toFixed(1);
-        return `${params.name}: ${params.value} คน (${percentage}%)`;
+        const p = params[0];
+        const pct = totalResponded ? ((p.value / totalResponded) * 100).toFixed(1) : '0.0';
+        return `${p.name}: ${p.value.toLocaleString()} คน (${pct}%)`;
       }
     },
-    legend: {
-      orient: 'horizontal',
-      bottom: 0,
-      type: 'scroll',
-      textStyle: {
-        fontSize: 10
-      }
+    grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+    xAxis: {
+      type: 'value',
+      name: 'จำนวนคน',
+      nameLocation: 'middle',
+      nameGap: 30,
+      nameTextStyle: { fontSize: 11, fontWeight: 'normal' }
+    },
+    yAxis: {
+      type: 'category',
+      data: chartData?.labels || [],
+      inverse: true,
+      axisLabel: { fontSize: 11 }
     },
     series: [
       {
-        name: 'ระยะเวลาที่ตั้งใจจะเลิกดื่ม',
-        type: 'pie',
-        radius: ['30%', '70%'],
-        center: ['50%', '45%'],
-        data: chartData || [],
-        emphasis: {
-          itemStyle: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)'
-          }
-        },
+        name: 'จำนวนคน',
+        type: 'bar',
+        data: chartData?.data || [],
         itemStyle: {
-          borderRadius: 5,
-          borderColor: '#fff',
-          borderWidth: 2
+          color: (params: any) => {
+            const colors = ['#166534', '#16A34A', '#22C55E', '#4ADE80', '#86EFAC', '#111111'];
+            return colors[params.dataIndex % colors.length];
+          },
+          borderRadius: [0, 4, 4, 0]
+        },
+        emphasis: {
+          itemStyle: { shadowBlur: 10, shadowColor: 'rgba(0, 0, 0, 0.3)' }
         }
       }
-    ],
-    color: ['#166534', '#16A34A', '#22C55E', '#4ADE80', '#86EFAC', '#111111']
+    ]
   };
-
 
   if (loading) {
     return (
@@ -91,15 +97,7 @@ const IntentPeriodChart: React.FC<{ year?: number }> = ({ year }) => {
 
   return (
     <div className="relative h-80">
-      
-      <ReactECharts
-        option={option}
-        style={{ height: '320px', width: '100%' }}
-      />
-      
-      <p className="text-xs text-center text-gray-600 mt-2">
-        จำนวนผู้ตอบแบบสอบถามทั้งหมด: {totalResponded.toLocaleString()} คน
-      </p>
+      <ReactECharts option={option} style={{ height: '100%', width: '100%' }} />
     </div>
   );
 };

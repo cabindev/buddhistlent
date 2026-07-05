@@ -7,13 +7,13 @@ interface ExpenseSummary {
   participantCount: number;
 }
 
-const MonthlyExpenseSummary: React.FC<{ year?: number }> = ({ year }) => {
+const MonthlyExpenseSummary: React.FC<{ year?: number; zone?: string }> = ({ year, zone }) => {
   const [summary, setSummary] = useState<ExpenseSummary | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await getMonthlyExpenseSummary(year);
+        const result = await getMonthlyExpenseSummary(year, zone);
         if (result.success && result.data) setSummary(result.data);
       } catch (error) {
         console.error('Error fetching monthly expense data:', error);
@@ -21,70 +21,45 @@ const MonthlyExpenseSummary: React.FC<{ year?: number }> = ({ year }) => {
     };
 
     fetchData();
-  }, []);
+  }, [year, zone]);
 
   if (!summary) {
-    return <div className="flex justify-center items-center h-64">
-      <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-green-600"></div>
-    </div>;
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-green-600 border-t-transparent"></div>
+      </div>
+    );
   }
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB' }).format(amount);
-  };
-
-  const campaignSavings = summary.total * 3; // 3 เดือนของแคมเปญ
-  const annualSavings = summary.total * 12; // 1 ปีเต็ม
+  const formatCurrency = (amount: number) =>
+    new Intl.NumberFormat('th-TH', { style: 'currency', currency: 'THB', maximumFractionDigits: 0 }).format(amount);
 
   return (
-    <div className="max-w-4xl mx-auto p-4 bg-white shadow-lg rounded-lg">
-      <h2 className="text-lg font-medium text-center text-gray-800 mb-6">
-        สรุปค่าใช้จ่ายรายเดือนในการดื่มแอลกอฮอล์
-      </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div className="bg-green-600 p-4 rounded-lg shadow-md">
-          <h3 className="text-lg font-medium text-white mb-1">
-            ยอดรวมทั้งหมด
-          </h3>
-          <p className="text-lg font-medium text-white">
-            {formatCurrency(summary.total)}
-          </p>
+    <div className="h-full flex flex-col justify-center gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="bg-white p-4 rounded-lg border border-green-100 text-center">
+          <div className="text-lg font-medium text-black">{formatCurrency(summary.total)}</div>
+          <div className="text-xs text-gray-500 mt-1">ยอดรวมทั้งหมด</div>
         </div>
-        <div className="bg-black p-4 rounded-lg shadow-md">
-          <h3 className="text-lg font-medium text-white mb-1">
-            ค่าเฉลี่ยต่อคน
-          </h3>
-          <p className="text-lg font-medium text-white">
-            {formatCurrency(summary.average)}
-          </p>
+        <div className="bg-white p-4 rounded-lg border border-green-100 text-center">
+          <div className="text-lg font-medium text-green-600">{formatCurrency(summary.average)}</div>
+          <div className="text-xs text-gray-500 mt-1">ค่าเฉลี่ยต่อคน</div>
+        </div>
+        <div className="bg-white p-4 rounded-lg border border-green-100 text-center">
+          <div className="text-lg font-medium text-black">{summary.participantCount.toLocaleString()}</div>
+          <div className="text-xs text-gray-500 mt-1">จำนวนผู้ให้ข้อมูล</div>
         </div>
       </div>
-      <p className="text-center text-base text-gray-600 mb-6">
-        จำนวนผู้ให้ข้อมูล:{" "}
-        <span className="font-medium">
-          {new Intl.NumberFormat("th-TH").format(summary.participantCount)}
-        </span>{" "}
-        คน
-      </p>
-      <div className="bg-slate-50 p-4 rounded-lg">
-        <h3 className="text-base font-medium text-gray-800 mb-3">
-          ข้อมูลน่าสนใจ :
-        </h3>
-        <p className="text-base text-gray-700 mb-2">
-          หากทุกคนเลิกดื่ม 3 เดือนช่วงเข้าพรรษานี้ จะประหยัดเงินได้{" "}
-          
-          <span className="font-medium text-green-700 bg-green-100 px-2 py-1 rounded">
-            {formatCurrency(campaignSavings)}
-          </span>
 
-        </p>
-        <p className="text-base text-gray-700">
-          และหากทุกคนเลิกดื่มต่อเนื่อง จะประหยัดได้{" "}
-          <span className="font-medium text-black bg-green-50 px-2 py-1 rounded">
-            {formatCurrency(annualSavings)}
-          </span>{" "}
-          ต่อปี
-        </p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="bg-green-50 p-4 rounded-lg border border-green-100 text-center">
+          <div className="text-lg font-medium text-green-700">{formatCurrency(summary.total * 3)}</div>
+          <div className="text-xs text-gray-500 mt-1">ประหยัดได้ ถ้างดตลอด 3 เดือน (เข้าพรรษา)</div>
+        </div>
+        <div className="bg-green-50 p-4 rounded-lg border border-green-100 text-center">
+          <div className="text-lg font-medium text-green-700">{formatCurrency(summary.total * 12)}</div>
+          <div className="text-xs text-gray-500 mt-1">ประหยัดได้ ถ้างดตลอดปี</div>
+        </div>
       </div>
     </div>
   );

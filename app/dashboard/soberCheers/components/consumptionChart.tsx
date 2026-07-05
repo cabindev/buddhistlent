@@ -1,14 +1,19 @@
 // AlcoholConsumptionChart.tsx
-import React, { useEffect, useState, useMemo } from 'react';
+'use client';
+import React, { useEffect, useState } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { getAlcoholConsumptionChartData } from '../actions/GetChartData';
 
-interface SoberCheersData {
-  alcoholConsumption: string;
-}
+const ORDER = [
+  'ดื่ม (ย้อนหลังไป 1 ปี)',
+  'เลิกดื่มมาแล้วมากกว่า 1 ปี แต่ยังไม่ถึง 3 ปี',
+  'เลิกดื่มมาแล้วมากกว่า 3 ปี',
+  'ไม่เคยดื่มเลยตลอดชีวิต',
+];
 
-const AlcoholConsumptionChart: React.FC<{ year?: number }> = ({ year }) => {
-  const [chartData, setChartData] = useState<{ data: { name: string; value: number }[]; totalResponded: number }>({ data: [], totalResponded: 0 });
+const AlcoholConsumptionChart: React.FC<{ year?: number; zone?: string }> = ({ year, zone }) => {
+  const [chartData, setChartData] = useState<{ labels: string[]; data: number[] } | null>(null);
+  const [totalResponded, setTotalResponded] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -16,10 +21,11 @@ const AlcoholConsumptionChart: React.FC<{ year?: number }> = ({ year }) => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const result = await getAlcoholConsumptionChartData(year);
+        const result = await getAlcoholConsumptionChartData(year, zone);
         if (result.success && result.data) {
-          const totalResponded = result.data.reduce((s, r) => s + r.value, 0);
-          setChartData({ data: result.data, totalResponded });
+          const sorted = [...result.data].sort((a, b) => ORDER.indexOf(a.name) - ORDER.indexOf(b.name));
+          setChartData({ labels: sorted.map(r => r.name), data: sorted.map(r => r.value) });
+          setTotalResponded(sorted.reduce((s, r) => s + r.value, 0));
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -29,56 +35,55 @@ const AlcoholConsumptionChart: React.FC<{ year?: number }> = ({ year }) => {
       }
     };
     fetchData();
-  }, []);
+  }, [year, zone]);
 
   const option = {
     title: {
-      text: '',
+      text: 'ปริมาณการบริโภคแอลกอฮอล์',
       left: 'center',
-      textStyle: {
-        fontSize: 12,
-        fontWeight: 'normal'
-      }
+      textStyle: { fontSize: 13, fontWeight: 'normal' }
     },
     tooltip: {
-      trigger: 'item',
+      trigger: 'axis',
+      axisPointer: { type: 'shadow' },
       formatter: (params: any) => {
-        const percentage = ((params.value / chartData.totalResponded) * 100).toFixed(1);
-        return `${params.name}: ${params.value} คน (${percentage}%)`;
+        const p = params[0];
+        const pct = totalResponded ? ((p.value / totalResponded) * 100).toFixed(1) : '0.0';
+        return `${p.name}: ${p.value.toLocaleString()} คน (${pct}%)`;
       }
     },
-    legend: {
-      orient: 'horizontal',
-      bottom: 0,
-      type: 'scroll',
-      textStyle: {
-        fontSize: 10
-      }
+    grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+    xAxis: {
+      type: 'value',
+      name: 'จำนวนคน',
+      nameLocation: 'middle',
+      nameGap: 30,
+      nameTextStyle: { fontSize: 11, fontWeight: 'normal' }
+    },
+    yAxis: {
+      type: 'category',
+      data: chartData?.labels || [],
+      inverse: true,
+      axisLabel: { fontSize: 11 }
     },
     series: [
       {
-        name: 'การบริโภคแอลกอฮอล์',
-        type: 'pie',
-        radius: ['30%', '70%'],
-        center: ['50%', '45%'],
-        data: chartData.data,
-        emphasis: {
-          itemStyle: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)'
-          }
-        },
+        name: 'จำนวนคน',
+        type: 'bar',
+        data: chartData?.data || [],
         itemStyle: {
-          borderRadius: 5,
-          borderColor: '#fff',
-          borderWidth: 2
+          color: (params: any) => {
+            const colors = ['#166534', '#16A34A', '#22C55E', '#4ADE80'];
+            return colors[params.dataIndex % colors.length];
+          },
+          borderRadius: [0, 4, 4, 0]
+        },
+        emphasis: {
+          itemStyle: { shadowBlur: 10, shadowColor: 'rgba(0, 0, 0, 0.3)' }
         }
       }
-    ],
-    color: ['#166534', '#16A34A', '#22C55E', '#4ADE80', '#86EFAC', '#111111']
+    ]
   };
-
 
   if (loading) {
     return (
@@ -99,15 +104,7 @@ const AlcoholConsumptionChart: React.FC<{ year?: number }> = ({ year }) => {
 
   return (
     <div className="relative h-80">
-      
-      <ReactECharts
-        option={option}
-        style={{ height: '320px', width: '100%' }}
-      />
-      
-      <p className="text-xs text-center text-gray-600 mt-2">
-        จำนวนผู้ตอบแบบสอบถามทั้งหมด: {chartData.totalResponded.toLocaleString()} คน
-      </p>
+      <ReactECharts option={option} style={{ height: '100%', width: '100%' }} />
     </div>
   );
 };
