@@ -59,7 +59,7 @@ const Map = dynamic(
   }
 );
 
-const ProvinceMap: React.FC<{ year?: number }> = ({ year }) => {
+const ProvinceMap: React.FC<{ year?: number; zone?: string }> = ({ year, zone }) => {
   const [provinceData, setProvinceData] = useState<ProvinceData[]>([]);
   const [geoData, setGeoData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -72,7 +72,7 @@ const ProvinceMap: React.FC<{ year?: number }> = ({ year }) => {
         setIsLoading(true);
         
         const [provinceResult, geoResponse] = await Promise.all([
-          getProvincesWithData(year),
+          getProvincesWithData(year, zone),
           import('../../../data/thailand.json'),
         ]);
 

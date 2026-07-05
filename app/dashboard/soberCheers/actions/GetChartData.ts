@@ -11,14 +11,16 @@ export interface DashboardSummaryData {
   avgAge: number;
 }
 
-function yearWhere(year?: number) {
-  if (!year) return {};
-  return {
-    createdAt: {
+function baseWhere(year?: number, zone?: string) {
+  const where: any = {};
+  if (year) {
+    where.createdAt = {
       gte: new Date(`${year}-01-01T00:00:00.000Z`),
       lt: new Date(`${year + 1}-01-01T00:00:00.000Z`),
-    },
-  };
+    };
+  }
+  if (zone) where.type = zone;
+  return where;
 }
 
 // ── Available years ────────────────────────────────────────────────────────
@@ -37,9 +39,9 @@ export async function getAvailableSoberCheersYears(): Promise<number[]> {
 }
 
 // ── Summary ────────────────────────────────────────────────────────────────
-export async function getDashboardSummary(year?: number): Promise<ChartResult<DashboardSummaryData>> {
+export async function getDashboardSummary(year?: number, zone?: string): Promise<ChartResult<DashboardSummaryData>> {
   try {
-    const where = yearWhere(year);
+    const where = baseWhere(year, zone);
     const [totalParticipants, provinces, all] = await Promise.all([
       prisma.soberCheers.count({ where }),
       prisma.soberCheers.findMany({ select: { province: true }, distinct: ['province'], where }),
@@ -60,9 +62,9 @@ export async function getDashboardSummary(year?: number): Promise<ChartResult<Da
 }
 
 // ── Total count ────────────────────────────────────────────────────────────
-export async function getTotalCount(year?: number): Promise<ChartResult<number>> {
+export async function getTotalCount(year?: number, zone?: string): Promise<ChartResult<number>> {
   try {
-    const count = await prisma.soberCheers.count({ where: yearWhere(year) });
+    const count = await prisma.soberCheers.count({ where: baseWhere(year, zone) });
     return { success: true, data: count };
   } catch (error) {
     return { success: false, error: error instanceof Error ? error.message : 'Failed' };
@@ -70,10 +72,10 @@ export async function getTotalCount(year?: number): Promise<ChartResult<number>>
 }
 
 // ── Gender ─────────────────────────────────────────────────────────────────
-export async function getGenderChartData(year?: number): Promise<ChartResult<{ name: string; value: number }[]>> {
+export async function getGenderChartData(year?: number, zone?: string): Promise<ChartResult<{ name: string; value: number }[]>> {
   try {
     const rows = await prisma.soberCheers.groupBy({
-      by: ['gender'], where: yearWhere(year),
+      by: ['gender'], where: baseWhere(year, zone),
       _count: { gender: true },
       orderBy: { _count: { gender: 'desc' } },
     });
@@ -84,10 +86,10 @@ export async function getGenderChartData(year?: number): Promise<ChartResult<{ n
 }
 
 // ── Top 10 Provinces ───────────────────────────────────────────────────────
-export async function getTop10ProvincesChartData(year?: number): Promise<ChartResult<{ name: string; value: number }[]>> {
+export async function getTop10ProvincesChartData(year?: number, zone?: string): Promise<ChartResult<{ name: string; value: number }[]>> {
   try {
     const rows = await prisma.soberCheers.groupBy({
-      by: ['province'], where: yearWhere(year),
+      by: ['province'], where: baseWhere(year, zone),
       _count: { province: true },
       orderBy: { _count: { province: 'desc' } },
       take: 10,
@@ -99,9 +101,9 @@ export async function getTop10ProvincesChartData(year?: number): Promise<ChartRe
 }
 
 // ── Age groups ─────────────────────────────────────────────────────────────
-export async function getAgeGroupChartData(year?: number): Promise<ChartResult<{ name: string; value: number }[]>> {
+export async function getAgeGroupChartData(year?: number, zone?: string): Promise<ChartResult<{ name: string; value: number }[]>> {
   try {
-    const rows = await prisma.soberCheers.findMany({ select: { birthday: true }, where: yearWhere(year) });
+    const rows = await prisma.soberCheers.findMany({ select: { birthday: true }, where: baseWhere(year, zone) });
     const groups: Record<string, number> = {
       'น้อยกว่า 20': 0, '20-29': 0, '30-39': 0, '40-49': 0, '50-59': 0, '60 ขึ้นไป': 0,
     };
@@ -122,9 +124,9 @@ export async function getAgeGroupChartData(year?: number): Promise<ChartResult<{
 }
 
 // ── Drinking frequency ─────────────────────────────────────────────────────
-export async function getDrinkingFrequencyChartData(year?: number): Promise<ChartResult<{ name: string; value: number }[]>> {
+export async function getDrinkingFrequencyChartData(year?: number, zone?: string): Promise<ChartResult<{ name: string; value: number }[]>> {
   try {
-    const where = { ...yearWhere(year), drinkingFrequency: { not: null } } as any;
+    const where = { ...baseWhere(year, zone), drinkingFrequency: { not: null } } as any;
     const rows = await prisma.soberCheers.groupBy({
       by: ['drinkingFrequency'], where,
       _count: { drinkingFrequency: true },
@@ -137,10 +139,10 @@ export async function getDrinkingFrequencyChartData(year?: number): Promise<Char
 }
 
 // ── Alcohol consumption ────────────────────────────────────────────────────
-export async function getAlcoholConsumptionChartData(year?: number): Promise<ChartResult<{ name: string; value: number }[]>> {
+export async function getAlcoholConsumptionChartData(year?: number, zone?: string): Promise<ChartResult<{ name: string; value: number }[]>> {
   try {
     const rows = await prisma.soberCheers.groupBy({
-      by: ['alcoholConsumption'], where: yearWhere(year),
+      by: ['alcoholConsumption'], where: baseWhere(year, zone),
       _count: { alcoholConsumption: true },
       orderBy: { _count: { alcoholConsumption: 'desc' } },
     });
@@ -151,10 +153,10 @@ export async function getAlcoholConsumptionChartData(year?: number): Promise<Cha
 }
 
 // ── Provinces with data ────────────────────────────────────────────────────
-export async function getProvincesWithData(year?: number): Promise<ChartResult<{ province: string; count: number }[]>> {
+export async function getProvincesWithData(year?: number, zone?: string): Promise<ChartResult<{ province: string; count: number }[]>> {
   try {
     const rows = await prisma.soberCheers.groupBy({
-      by: ['province'], where: yearWhere(year),
+      by: ['province'], where: baseWhere(year, zone),
       _count: { province: true },
       orderBy: { _count: { province: 'desc' } },
     });
@@ -165,9 +167,10 @@ export async function getProvincesWithData(year?: number): Promise<ChartResult<{
 }
 
 // ── Type/Region counts ─────────────────────────────────────────────────────
-export async function getTypeRegionCounts(year?: number): Promise<ChartResult<{ name: string; value: number }[]>> {
+export async function getTypeRegionCounts(year?: number, zone?: string): Promise<ChartResult<{ name: string; value: number }[]>> {
   try {
-    const where = { ...yearWhere(year), type: { not: null } } as any;
+    const where: any = baseWhere(year, zone);
+    if (!zone) where.type = { not: null };
     const rows = await prisma.soberCheers.groupBy({
       by: ['type'], where,
       _count: { type: true },
@@ -180,9 +183,9 @@ export async function getTypeRegionCounts(year?: number): Promise<ChartResult<{ 
 }
 
 // ── Intent period ──────────────────────────────────────────────────────────
-export async function getIntentPeriodChartData(year?: number): Promise<ChartResult<{ data: { name: string; value: number }[]; total: number }>> {
+export async function getIntentPeriodChartData(year?: number, zone?: string): Promise<ChartResult<{ data: { name: string; value: number }[]; total: number }>> {
   try {
-    const where = { ...yearWhere(year), intentPeriod: { not: null } } as any;
+    const where = { ...baseWhere(year, zone), intentPeriod: { not: null } } as any;
     const rows = await prisma.soberCheers.groupBy({
       by: ['intentPeriod'], where,
       _count: { intentPeriod: true },
@@ -199,9 +202,9 @@ export async function getIntentPeriodChartData(year?: number): Promise<ChartResu
 }
 
 // ── Monthly expense ────────────────────────────────────────────────────────
-export async function getMonthlyExpenseSummary(year?: number): Promise<ChartResult<{ total: number; average: number; participantCount: number }>> {
+export async function getMonthlyExpenseSummary(year?: number, zone?: string): Promise<ChartResult<{ total: number; average: number; participantCount: number }>> {
   try {
-    const where = { ...yearWhere(year), monthlyExpense: { not: null, gt: 0 } } as any;
+    const where = { ...baseWhere(year, zone), monthlyExpense: { not: null, gt: 0 } } as any;
     const result = await prisma.soberCheers.aggregate({
       _sum: { monthlyExpense: true },
       _avg: { monthlyExpense: true },
@@ -222,10 +225,10 @@ export async function getMonthlyExpenseSummary(year?: number): Promise<ChartResu
 }
 
 // ── Health impact ──────────────────────────────────────────────────────────
-export async function getHealthImpactChartData(year?: number): Promise<ChartResult<{ name: string; value: number }[]>> {
+export async function getHealthImpactChartData(year?: number, zone?: string): Promise<ChartResult<{ name: string; value: number }[]>> {
   try {
     const rows = await prisma.soberCheers.groupBy({
-      by: ['healthImpact'], where: yearWhere(year),
+      by: ['healthImpact'], where: baseWhere(year, zone),
       _count: { healthImpact: true },
       orderBy: { _count: { healthImpact: 'desc' } },
     });
@@ -236,10 +239,10 @@ export async function getHealthImpactChartData(year?: number): Promise<ChartResu
 }
 
 // ── Occupation (อาชีพ) ──────────────────────────────────────────────────────
-export async function getJobChartData(year?: number): Promise<ChartResult<{ name: string; value: number }[]>> {
+export async function getJobChartData(year?: number, zone?: string): Promise<ChartResult<{ name: string; value: number }[]>> {
   try {
     const rows = await prisma.soberCheers.groupBy({
-      by: ['job'], where: yearWhere(year),
+      by: ['job'], where: baseWhere(year, zone),
       _count: { job: true },
       orderBy: { _count: { job: 'desc' } },
     });
@@ -250,9 +253,9 @@ export async function getJobChartData(year?: number): Promise<ChartResult<{ name
 }
 
 // ── Affiliation (สังกัด) ─────────────────────────────────────────────────────
-export async function getAffiliationChartData(year?: number): Promise<ChartResult<{ name: string; value: number }[]>> {
+export async function getAffiliationChartData(year?: number, zone?: string): Promise<ChartResult<{ name: string; value: number }[]>> {
   try {
-    const where = { ...yearWhere(year), affiliation: { not: null } } as any;
+    const where = { ...baseWhere(year, zone), affiliation: { not: null } } as any;
     const rows = await prisma.soberCheers.groupBy({
       by: ['affiliation'], where,
       _count: { affiliation: true },
@@ -266,9 +269,9 @@ export async function getAffiliationChartData(year?: number): Promise<ChartResul
 }
 
 // ── Motivations ────────────────────────────────────────────────────────────
-export async function getMotivationsChartData(year?: number): Promise<ChartResult<{ motivationCounts: Record<string, number>; totalResponses: number }>> {
+export async function getMotivationsChartData(year?: number, zone?: string): Promise<ChartResult<{ motivationCounts: Record<string, number>; totalResponses: number }>> {
   try {
-    const rows = await prisma.soberCheers.findMany({ select: { motivations: true }, where: yearWhere(year) });
+    const rows = await prisma.soberCheers.findMany({ select: { motivations: true }, where: baseWhere(year, zone) });
     const counts: Record<string, number> = {};
     let totalResponses = 0;
     rows.forEach(r => {

@@ -13,7 +13,7 @@ interface ApiResponse {
  provinces: Omit<ProvinceData, 'id'>[];
 }
 
-const ProvinceCount: React.FC<{ year?: number }> = ({ year }) => {
+const ProvinceCount: React.FC<{ year?: number; zone?: string }> = ({ year, zone }) => {
  const [provinceData, setProvinceData] = useState<ProvinceData[]>([]);
  const [isLoading, setIsLoading] = useState(true);
  const [showAllCards, setShowAllCards] = useState(false);
@@ -22,7 +22,7 @@ const ProvinceCount: React.FC<{ year?: number }> = ({ year }) => {
    const fetchProvinceData = async () => {
      try {
        setIsLoading(true);
-       const result = await getProvincesWithData(year);
+       const result = await getProvincesWithData(year, zone);
        if (result.success && result.data) {
          const sortedData = result.data
            .sort((a, b) => b.count - a.count)

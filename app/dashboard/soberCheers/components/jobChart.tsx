@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { getJobChartData } from '../actions/GetChartData';
 
-const JobChart: React.FC<{ year?: number }> = ({ year }) => {
+const JobChart: React.FC<{ year?: number; zone?: string }> = ({ year, zone }) => {
   const [chartData, setChartData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -11,7 +11,7 @@ const JobChart: React.FC<{ year?: number }> = ({ year }) => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const result = await getJobChartData(year);
+        const result = await getJobChartData(year, zone);
         if (result.success && result.data) {
           const sorted = [...result.data].sort((a, b) => b.value - a.value);
           setChartData({ labels: sorted.map(r => r.name), data: sorted.map(r => r.value) });
@@ -24,7 +24,7 @@ const JobChart: React.FC<{ year?: number }> = ({ year }) => {
     };
 
     fetchData();
-  }, [year]);
+  }, [year, zone]);
 
   const option = {
     title: {
