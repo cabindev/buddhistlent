@@ -293,7 +293,7 @@ export default function OrganizationCategoryList() {
                   <td className="px-5 py-3.5">
                     <div className="flex justify-end items-center gap-1">
                       <Link
-                        href={`/organization-category/edit/${category.id}`}
+                        href={`/dashboard/organization-category/edit/${category.id}`}
                         className="p-1.5 text-gray-400 hover:text-amber-600 hover:bg-amber-50 rounded transition-colors"
                         title="แก้ไข"
                       >
