@@ -326,8 +326,8 @@ export default function OrganizationForm({ organizationCategories, initialData, 
   const inputCls = (value: string | number, hasError?: boolean) => {
     const base = 'w-full px-3 py-2 text-sm text-gray-900 bg-white rounded-lg border transition-colors focus:outline-none focus:ring-2';
     if (hasError) return `${base} border-red-300 focus:ring-red-200 focus:border-red-400`;
-    if (value !== '' && value !== 0) return `${base} border-yellow-400 bg-yellow-50 focus:ring-yellow-200 focus:border-yellow-500`;
-    return `${base} border-gray-200 focus:ring-yellow-200 focus:border-yellow-400`;
+    if (value !== '' && value !== 0) return `${base} border-green-400 bg-green-50 focus:ring-green-200 focus:border-green-500`;
+    return `${base} border-gray-200 focus:ring-green-200 focus:border-green-400`;
   };
 
   const sectionCls = 'bg-white rounded-2xl border border-gray-100';
@@ -366,7 +366,7 @@ export default function OrganizationForm({ organizationCategories, initialData, 
           {/* 1 — ข้อมูลผู้ส่ง */}
           <div className={sectionCls}>
             <div className="px-5 py-3 border-b border-gray-100 flex items-center gap-2">
-              <span className="w-5 h-5 rounded-full bg-yellow-400 text-gray-900 text-[10px] font-bold flex items-center justify-center">1</span>
+              <span className="w-5 h-5 rounded-full bg-green-400 text-gray-900 text-[10px] font-bold flex items-center justify-center">1</span>
               <h2 className="text-sm font-semibold text-gray-800">ข้อมูลผู้ส่ง</h2>
             </div>
             <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -390,7 +390,7 @@ export default function OrganizationForm({ organizationCategories, initialData, 
           {/* 2 — องค์กร */}
           <div className={sectionCls}>
             <div className="px-5 py-3 border-b border-gray-100 flex items-center gap-2">
-              <span className="w-5 h-5 rounded-full bg-yellow-400 text-gray-900 text-[10px] font-bold flex items-center justify-center">2</span>
+              <span className="w-5 h-5 rounded-full bg-green-400 text-gray-900 text-[10px] font-bold flex items-center justify-center">2</span>
               <h2 className="text-sm font-semibold text-gray-800">องค์กร / หน่วยงาน</h2>
             </div>
             <div className="p-5">
@@ -402,7 +402,7 @@ export default function OrganizationForm({ organizationCategories, initialData, 
           {/* 3 — ที่อยู่ */}
           <div className={sectionCls}>
             <div className="px-5 py-3 border-b border-gray-100 flex items-center gap-2">
-              <span className="w-5 h-5 rounded-full bg-yellow-400 text-gray-900 text-[10px] font-bold flex items-center justify-center">3</span>
+              <span className="w-5 h-5 rounded-full bg-green-400 text-gray-900 text-[10px] font-bold flex items-center justify-center">3</span>
               <h2 className="text-sm font-semibold text-gray-800">ที่อยู่องค์กร</h2>
             </div>
             <div className="p-5 space-y-3">
@@ -423,7 +423,7 @@ export default function OrganizationForm({ organizationCategories, initialData, 
           {/* 4 — ข้อมูลติดต่อ */}
           <div className={sectionCls}>
             <div className="px-5 py-3 border-b border-gray-100 flex items-center gap-2">
-              <span className="w-5 h-5 rounded-full bg-yellow-400 text-gray-900 text-[10px] font-bold flex items-center justify-center">4</span>
+              <span className="w-5 h-5 rounded-full bg-green-400 text-gray-900 text-[10px] font-bold flex items-center justify-center">4</span>
               <h2 className="text-sm font-semibold text-gray-800">ข้อมูลติดต่อ</h2>
             </div>
             <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -448,7 +448,7 @@ export default function OrganizationForm({ organizationCategories, initialData, 
           {/* 5 — รูปภาพ */}
           <div className={sectionCls}>
             <div className="px-5 py-3 border-b border-gray-100 flex items-center gap-2">
-              <span className="w-5 h-5 rounded-full bg-yellow-400 text-gray-900 text-[10px] font-bold flex items-center justify-center">5</span>
+              <span className="w-5 h-5 rounded-full bg-green-400 text-gray-900 text-[10px] font-bold flex items-center justify-center">5</span>
               <div>
                 <h2 className="text-sm font-semibold text-gray-800">รูปภาพประกอบ</h2>
                 <p className="text-[10px] text-gray-400">รูปที่ 1–2 บังคับ · JPG, PNG, WebP · ≤200KB</p>
@@ -477,7 +477,7 @@ export default function OrganizationForm({ organizationCategories, initialData, 
                           className="absolute top-1.5 right-1.5 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-sm border border-gray-200 hover:border-gray-400 transition-colors z-10">
                           <X className="h-3 w-3 text-gray-500" />
                         </button>
-                        <div className="absolute bottom-1.5 left-1.5 w-5 h-5 bg-yellow-400 rounded-full flex items-center justify-center z-10">
+                        <div className="absolute bottom-1.5 left-1.5 w-5 h-5 bg-green-400 rounded-full flex items-center justify-center z-10">
                           <Check className="h-3 w-3 text-gray-900" />
                         </div>
                       </div>
@@ -488,9 +488,9 @@ export default function OrganizationForm({ organizationCategories, initialData, 
                           className="hidden" id={`image-${index}`} />
                         <label htmlFor={`image-${index}`}
                           className={`flex flex-col items-center justify-center w-full aspect-square rounded-xl border-2 border-dashed cursor-pointer transition-colors
-                            ${isUploading ? 'border-yellow-400 bg-yellow-50' : 'border-gray-200 bg-white hover:border-yellow-400 hover:bg-yellow-50'}`}>
+                            ${isUploading ? 'border-green-400 bg-green-50' : 'border-gray-200 bg-white hover:border-green-400 hover:bg-green-50'}`}>
                           {isUploading
-                            ? <div className="animate-spin h-5 w-5 border-2 border-yellow-500 border-t-transparent rounded-full" />
+                            ? <div className="animate-spin h-5 w-5 border-2 border-green-500 border-t-transparent rounded-full" />
                             : <><Upload className="w-5 h-5 text-gray-300 mb-1" /><span className="text-[10px] text-gray-400">อัปโหลด</span></>}
                         </label>
                       </>
@@ -514,7 +514,7 @@ export default function OrganizationForm({ organizationCategories, initialData, 
           </button>
           <button type="submit" onClick={handleSubmit as unknown as React.MouseEventHandler}
             disabled={isSubmitting || Object.values(uploadingImages).some(Boolean)}
-            className="flex-[2] flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-gray-900 bg-yellow-400 hover:bg-yellow-500 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+            className="flex-[2] flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-gray-900 bg-green-400 hover:bg-green-500 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
             {isSubmitting
               ? <><div className="animate-spin h-4 w-4 border-2 border-gray-900 border-t-transparent rounded-full" />กำลังส่ง...</>
               : <><Save className="h-4 w-4" />{isEdit ? 'บันทึกการแก้ไข' : 'ส่งข้อมูล'}</>}
