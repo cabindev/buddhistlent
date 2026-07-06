@@ -53,31 +53,8 @@ export async function createOrganization(data: CreateOrganizationData): Promise<
       throw new Error('รูปภาพที่ 1 และ 2 เป็นข้อมูลที่จำเป็น');
     }
 
-    // ทำความสะอาดเบอร์โทรศัพท์
+    // ทำความสะอาดเบอร์โทรศัพท์ (อนุญาตให้ใช้เบอร์เดิมซ้ำกับองค์กรอื่นได้)
     const cleanPhoneNumber = data.phoneNumber.replace(/[-\s]/g, '');
-
-    // ตรวจสอบเบอร์โทรศัพท์ซ้ำ (สำหรับการสร้างใหม่ ต้องเช็คทั้งหมด)
-    console.log('Checking phone duplicate for new organization:', cleanPhoneNumber);
-    
-    const phoneExists = await prisma.organization.findFirst({
-      where: { 
-        phoneNumber: cleanPhoneNumber
-      },
-      select: {
-        id: true,
-        firstName: true,
-        lastName: true,
-        phoneNumber: true
-      }
-    });
-
-    if (phoneExists) {
-      console.log('Phone already exists:', phoneExists);
-      return {
-        success: false,
-        message: `เบอร์โทรศัพท์ ${cleanPhoneNumber} ถูกใช้แล้วโดย ${phoneExists.firstName} ${phoneExists.lastName}`
-      };
-    }
 
     // ตรวจสอบหมวดหมู่องค์กร
     const organizationCategory = await prisma.organizationCategory.findUnique({
@@ -145,16 +122,6 @@ export async function createOrganization(data: CreateOrganizationData): Promise<
 
   } catch (error) {
     console.error('Error creating organization:', error);
-    
-    // จัดการข้อผิดพลาดเฉพาะของ Prisma
-    if (error instanceof Error) {
-      if (error.message.includes('Unique constraint')) {
-        return {
-          success: false,
-          message: 'เบอร์โทรศัพท์นี้ถูกใช้แล้ว กรุณาใช้เบอร์อื่น'
-        };
-      }
-    }
 
     const errorMessage = error instanceof Error ? error.message : 'ไม่สามารถสร้างข้อมูลได้';
 

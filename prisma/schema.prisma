@@ -150,7 +150,7 @@ model Organization {
   type                  String                   // ประเภทพื้นที่ (ภูมิภาค/)
   
   // ข้อมูลติดต่อ
-  phoneNumber           String                   @unique // เบอร์โทรศัพท์
+  phoneNumber           String                   // เบอร์โทรศัพท์ (ไม่บังคับห้ามซ้ำ)
   
   // ข้อมูลการดำเนินงาน
   numberOfSigners       Int                      // จำนวนผู้ลงนาม

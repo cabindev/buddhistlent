@@ -54,39 +54,7 @@ export async function updateOrganization(id: number, data: UpdateOrganizationDat
       throw new Error('จำนวนผู้ลงนามต้องมากกว่า 0');
     }
 
-    // ตรวจสอบเบอร์โทรศัพท์ซ้ำ (ไม่รวมข้อมูลของตัวเอง)
-    if (data.phoneNumber && data.phoneNumber.trim() !== '') {
-      // ทำความสะอาดเบอร์โทรศัพท์ (เอาเฉพาะตัวเลข)
-      const cleanPhone = data.phoneNumber.replace(/[-\s]/g, '');
-      
-      console.log('Checking phone duplicate for update:', {
-        organizationId: id,
-        phoneNumber: cleanPhone
-      });
-      
-      // ตรวจสอบเบอร์โทรซ้ำ โดยไม่รวมข้อมูลของตัวเอง (id ปัจจุบัน)
-      const phoneExists = await prisma.organization.findFirst({
-        where: { 
-          phoneNumber: cleanPhone,
-          id: { not: id } // ไม่รวมข้อมูลของตัวเอง
-        },
-        select: {
-          id: true,
-          firstName: true,
-          lastName: true,
-          phoneNumber: true
-        }
-      });
-      
-      console.log('Phone duplicate check result:', phoneExists);
-      
-      if (phoneExists) {
-        return {
-          success: false,
-          message: `เบอร์โทรศัพท์ ${cleanPhone} ถูกใช้แล้วโดย ${phoneExists.firstName} ${phoneExists.lastName}`
-        };
-      }
-    }
+    // หมายเหตุ: อนุญาตให้ใช้เบอร์โทรศัพท์ซ้ำกับองค์กรอื่นได้ ไม่ต้องตรวจสอบซ้ำอีกต่อไป
 
     // ตรวจสอบหมวดหมู่องค์กร (ถ้ามีการเปลี่ยนแปลง)
     if (data.organizationCategoryId) {
@@ -162,16 +130,6 @@ export async function updateOrganization(id: number, data: UpdateOrganizationDat
 
   } catch (error) {
     console.error('Error updating organization:', error);
-    
-    // จัดการข้อผิดพลาดเฉพาะของ Prisma
-    if (error instanceof Error) {
-      if (error.message.includes('Unique constraint')) {
-        return {
-          success: false,
-          message: 'เบอร์โทรศัพท์นี้ถูกใช้แล้ว กรุณาใช้เบอร์อื่น'
-        };
-      }
-    }
 
     const errorMessage = error instanceof Error ? error.message : 'ไม่สามารถแก้ไขข้อมูลได้';
 
