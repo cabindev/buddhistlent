@@ -11,6 +11,8 @@ export interface CreateSoberCheersData {
   gender: string;
   birthday: string;
   addressLine1: string;
+  village?: string;
+  moo?: string;
   district: string;
   amphoe: string;
   province: string;
@@ -66,6 +68,8 @@ export async function createSoberCheers(data: CreateSoberCheersData): Promise<{ 
         gender: data.gender,
         birthday: birthdayDate,
         addressLine1: data.addressLine1.trim(),
+        village: data.village?.trim() || null,
+        moo: data.moo?.trim() || null,
         district: data.district.trim(),
         amphoe: data.amphoe.trim(),
         province: data.province.trim(),

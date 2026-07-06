@@ -14,6 +14,8 @@ model SoberCheers {
   lastName          String
   birthday          DateTime
   addressLine1      String
+  village           String?   // ชื่อหมู่บ้าน
+  moo               String?   // หมู่ที่
   district          String
   amphoe            String
   province          String

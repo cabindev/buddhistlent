@@ -11,6 +11,8 @@ export interface UpdateSoberCheersData {
   gender?: string;
   birthday?: string;
   addressLine1?: string;
+  village?: string;
+  moo?: string;
   district?: string;
   amphoe?: string;
   province?: string;
@@ -46,6 +48,8 @@ export async function updateSoberCheers(id: number, data: UpdateSoberCheersData)
     if (data.gender !== undefined) updateData.gender = data.gender;
     if (data.birthday !== undefined) updateData.birthday = new Date(data.birthday);
     if (data.addressLine1 !== undefined) updateData.addressLine1 = data.addressLine1.trim();
+    if (data.village !== undefined) updateData.village = data.village?.trim() || null;
+    if (data.moo !== undefined) updateData.moo = data.moo?.trim() || null;
     if (data.district !== undefined) updateData.district = data.district.trim();
     if (data.amphoe !== undefined) updateData.amphoe = data.amphoe.trim();
     if (data.province !== undefined) updateData.province = data.province.trim();

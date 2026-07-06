@@ -130,7 +130,7 @@ export default function CreateSoberCheers() {
 
   const [form, setForm] = useState({
     firstName: '', lastName: '', gender: '', birthday: '',
-    addressLine1: '', district: '', amphoe: '', province: '', zipcode: '', type: '',
+    addressLine1: '', village: '', moo: '', district: '', amphoe: '', province: '', zipcode: '', type: '',
     phone: '', job: '', affiliation: '', alcoholConsumption: '',
     drinkingFrequency: '', intentPeriod: '', monthlyExpense: '',
     healthImpact: 'ไม่มีผลกระทบ',
@@ -295,9 +295,18 @@ export default function CreateSoberCheers() {
           {/* Section 2 — ที่อยู่ */}
           <div className="p-6">
             <Section n={2} title="ที่อยู่">
-              <Field label="ที่อยู่ (บ้านเลขที่/หมู่บ้าน)" required>
-                <input className={filledInput(form.addressLine1)} value={form.addressLine1} onChange={e => set('addressLine1', e.target.value)} placeholder="บ้านเลขที่ หมู่..." required />
+              <Field label="ที่อยู่ (บ้านเลขที่/ถนน)" required>
+                <input className={filledInput(form.addressLine1)} value={form.addressLine1} onChange={e => set('addressLine1', e.target.value)} placeholder="บ้านเลขที่ ถนน..." required />
               </Field>
+
+              <div className="grid grid-cols-2 gap-3">
+                <Field label="หมู่ที่">
+                  <input className={filledInput(form.moo)} value={form.moo} onChange={e => set('moo', e.target.value)} placeholder="เช่น 4" />
+                </Field>
+                <Field label="ชื่อหมู่บ้าน">
+                  <input className={filledInput(form.village)} value={form.village} onChange={e => set('village', e.target.value)} placeholder="เช่น บ้านสวนดอก" />
+                </Field>
+              </div>
 
               <Field label="ตำบล/แขวง" required hint="พิมพ์ชื่อตำบลโดยไม่ต้องมีคำนำหน้า ระบบจะแนะนำข้อมูลอัตโนมัติ">
                 <div className="relative" ref={districtRef}>

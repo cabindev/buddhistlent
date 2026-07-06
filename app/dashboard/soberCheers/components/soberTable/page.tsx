@@ -14,6 +14,8 @@ interface SoberCheersItem {
   lastName: string;
   gender: string;
   birthday: string | Date;
+  village: string;
+  moo: string;
   province: string;
   type: string;
   job: string;
@@ -27,7 +29,7 @@ interface SoberCheersItem {
   healthImpact: string;
 }
 
-interface Filters { name: string; province: string; type: string; job: string; affiliation: string; }
+interface Filters { name: string; village: string; moo: string; province: string; type: string; job: string; affiliation: string; }
 
 const PAGE_SIZE = 20;
 
@@ -52,7 +54,7 @@ function clean(items: any[]): SoberCheersItem[] {
     ...item,
     monthlyExpense: item.monthlyExpense != null ? Number(item.monthlyExpense) || 0 : 0,
     firstName: item.firstName || '', lastName: item.lastName || '',
-    gender: item.gender || '', province: item.province || '',
+    gender: item.gender || '', village: item.village || '', moo: item.moo || '', province: item.province || '',
     type: item.type || '', job: item.job || '', affiliation: item.affiliation || '', phone: item.phone || '',
     drinkingFrequency: item.drinkingFrequency || '', intentPeriod: item.intentPeriod || '',
     healthImpact: item.healthImpact || '', birthday: item.birthday || new Date().toISOString(),
@@ -68,7 +70,7 @@ export default function SoberCheersTable() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [filters, setFilters] = useState<Filters>({ name: '', province: '', type: '', job: '', affiliation: '' });
+  const [filters, setFilters] = useState<Filters>({ name: '', village: '', moo: '', province: '', type: '', job: '', affiliation: '' });
   const [showFilters, setShowFilters] = useState(false);
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [page, setPage] = useState(1);
@@ -81,7 +83,7 @@ export default function SoberCheersTable() {
     setLoading(true);
     setError(null);
     setSelected(new Set());
-    setFilters({ name: '', province: '', type: '', job: '', affiliation: '' });
+    setFilters({ name: '', village: '', moo: '', province: '', type: '', job: '', affiliation: '' });
     setPage(1);
 
     const [res, availYears] = await Promise.all([
@@ -101,6 +103,8 @@ export default function SoberCheersTable() {
 
   const filtered = data.filter(item =>
     (!filters.name || `${item.firstName} ${item.lastName}`.toLowerCase().includes(filters.name.toLowerCase())) &&
+    (!filters.village || item.village === filters.village) &&
+    (!filters.moo || item.moo === filters.moo) &&
     (!filters.province || item.province === filters.province) &&
     (!filters.type || item.type === filters.type) &&
     (!filters.job || item.job === filters.job) &&
@@ -133,9 +137,10 @@ export default function SoberCheersTable() {
   const exportData = filtered.filter(d => selected.size === 0 || selected.has(d.id));
 
   const handleCSV = () => {
-    const headers = ['ชื่อ-นามสกุล', 'เพศ', 'อายุ', 'จังหวัด', 'ภาค', 'อาชีพ', 'สังกัด', 'การดื่ม', 'ค่าใช้จ่าย/เดือน', 'แรงจูงใจ'];
+    const headers = ['ชื่อ-นามสกุล', 'เพศ', 'อายุ', 'หมู่ที่', 'ชื่อหมู่บ้าน', 'จังหวัด', 'ภาค', 'อาชีพ', 'สังกัด', 'การดื่ม', 'ค่าใช้จ่าย/เดือน', 'แรงจูงใจ'];
     const rows = exportData.map(d => [
       `"${d.firstName} ${d.lastName}"`, `"${d.gender}"`, calcAge(d.birthday),
+      `"${d.moo || '-'}"`, `"${d.village || '-'}"`,
       `"${d.province}"`, `"${d.type}"`, `"${d.job}"`, `"${d.affiliation}"`, `"${d.alcoholConsumption}"`,
       d.monthlyExpense || 0, `"${parseMotivations(d.motivations)}"`,
     ].join(','));
@@ -147,7 +152,8 @@ export default function SoberCheersTable() {
   const handleExcel = () => {
     const ws = XLSX.utils.json_to_sheet(exportData.map(d => ({
       'ชื่อ-นามสกุล': `${d.firstName} ${d.lastName}`, 'เพศ': d.gender,
-      'อายุ': `${calcAge(d.birthday)} ปี`, 'จังหวัด': d.province, 'ภาค': d.type,
+      'อายุ': `${calcAge(d.birthday)} ปี`, 'หมู่ที่': d.moo || '-', 'ชื่อหมู่บ้าน': d.village || '-',
+      'จังหวัด': d.province, 'ภาค': d.type,
       'อาชีพ': d.job, 'สังกัด': d.affiliation, 'การดื่มแอลกอฮอล์': d.alcoholConsumption,
       'ค่าใช้จ่าย/เดือน (฿)': d.monthlyExpense || 0, 'แรงจูงใจ': parseMotivations(d.motivations),
     })));
@@ -211,6 +217,16 @@ export default function SoberCheersTable() {
                 onChange={e => { setFilters(f => ({ ...f, name: e.target.value })); setPage(1); }}
                 className="pl-9 pr-3 py-2 w-full text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white" />
             </div>
+            <select value={filters.village} onChange={e => { setFilters(f => ({ ...f, village: e.target.value })); setPage(1); }}
+              className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white">
+              <option value="">ชื่อหมู่บ้าน ({getUnique(data, 'village').length})</option>
+              {getUnique(data, 'village').map(v => <option key={v} value={v}>{v}</option>)}
+            </select>
+            <select value={filters.moo} onChange={e => { setFilters(f => ({ ...f, moo: e.target.value })); setPage(1); }}
+              className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white">
+              <option value="">หมู่ที่ ({getUnique(data, 'moo').length})</option>
+              {getUnique(data, 'moo').map(v => <option key={v} value={v}>{v}</option>)}
+            </select>
             <select value={filters.province} onChange={e => { setFilters(f => ({ ...f, province: e.target.value })); setPage(1); }}
               className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white">
               <option value="">จังหวัด ({getUnique(data, 'province').length})</option>
@@ -233,7 +249,7 @@ export default function SoberCheersTable() {
             </select>
           </div>
           {activeFilterCount > 0 && (
-            <button onClick={() => { setFilters({ name: '', province: '', type: '', job: '', affiliation: '' }); setPage(1); }}
+            <button onClick={() => { setFilters({ name: '', village: '', moo: '', province: '', type: '', job: '', affiliation: '' }); setPage(1); }}
               className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700">
               <X className="w-3 h-3" /> ล้างตัวกรอง
             </button>
@@ -278,6 +294,7 @@ export default function SoberCheersTable() {
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">ชื่อ-นามสกุล</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">เพศ / อายุ</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">หมู่บ้าน</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">จังหวัด / ภาค</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">อาชีพ</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">สังกัด</th>
@@ -300,6 +317,10 @@ export default function SoberCheersTable() {
                     <td className="px-4 py-3 text-gray-700">
                       <div>{item.gender}</div>
                       <div className="text-xs text-gray-400">{calcAge(item.birthday)} ปี</div>
+                    </td>
+                    <td className="px-4 py-3 text-gray-700">
+                      <div>{item.village || '-'}</div>
+                      {item.moo && <div className="text-xs text-gray-400">หมู่ {item.moo}</div>}
                     </td>
                     <td className="px-4 py-3 text-gray-700">
                       <div>{item.province}</div>
