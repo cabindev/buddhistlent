@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createOrganizationCategory } from '../actions/Post';
 import { updateOrganizationCategory } from '../actions/Update';
-import { ArrowLeft, Save, X, AlertCircle, Building2, CheckCircle, Sparkles } from 'lucide-react';
+import { ArrowLeft, Save, X, AlertCircle, CheckCircle } from 'lucide-react';
 
 interface OrganizationCategoryFormData {
   id?: number;
@@ -118,18 +118,13 @@ export default function OrganizationCategoryForm({ initialData, isEdit = false }
             ย้อนกลับ
           </button>
 
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-r from-orange-400 to-amber-500 rounded-lg flex items-center justify-center">
-              <Building2 className="h-6 w-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-gray-900">
-                {isEdit ? 'แก้ไขข้อมูลองค์กร' : 'เพิ่มองค์กรใหม่'}
-              </h1>
-              <p className="text-sm text-gray-500 font-light">
-                {isEdit ? 'แก้ไขข้อมูลองค์กรในระบบ' : 'เพิ่มองค์กรใหม่เข้าสู่ระบบ'}
-              </p>
-            </div>
+          <div>
+            <h1 className="text-xl font-bold text-gray-900">
+              {isEdit ? 'แก้ไขข้อมูลองค์กร' : 'เพิ่มองค์กรใหม่'}
+            </h1>
+            <p className="text-sm text-gray-500 font-light">
+              {isEdit ? 'แก้ไขข้อมูลองค์กรในระบบ' : 'เพิ่มองค์กรใหม่เข้าสู่ระบบ'}
+            </p>
           </div>
         </div>
       </div>
@@ -153,15 +148,8 @@ export default function OrganizationCategoryForm({ initialData, isEdit = false }
         {/* Form */}
         <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
           <div className="p-6 border-b border-gray-100">
-            <div className="flex items-center">
-              <div className="w-10 h-10 bg-gradient-to-r from-emerald-400 to-green-500 rounded-lg flex items-center justify-center mr-3">
-                <Sparkles className="h-5 w-5 text-white" />
-              </div>
-              <div>
-                <h2 className="text-lg font-light text-gray-900">ข้อมูลองค์กร</h2>
-                <p className="text-sm text-gray-500 font-light">กรอกข้อมูลรายละเอียดองค์กร</p>
-              </div>
-            </div>
+            <h2 className="text-lg font-light text-gray-900">ข้อมูลองค์กร</h2>
+            <p className="text-sm text-gray-500 font-light">กรอกข้อมูลรายละเอียดองค์กร</p>
           </div>
 
           <form onSubmit={handleSubmit} className="p-6 space-y-6">
@@ -177,7 +165,7 @@ export default function OrganizationCategoryForm({ initialData, isEdit = false }
                 onChange={(e) => handleInputChange('name', e.target.value)}
                 required
                 maxLength={200}
-                className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:border-orange-400 focus:ring-1 focus:ring-orange-200 transition-colors duration-200 text-sm"
+                className="w-full px-3 py-2.5 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:border-orange-400 focus:ring-1 focus:ring-orange-200 transition-colors duration-200 text-sm"
                 placeholder="เช่น โรงพยาบาลสมเด็จพระเทพรัตน์, เทศบาลตำบลบางไผ่"
               />
               {errors.name && (
@@ -202,7 +190,7 @@ export default function OrganizationCategoryForm({ initialData, isEdit = false }
                 value={formData.shortName || ''}
                 onChange={(e) => handleInputChange('shortName', e.target.value)}
                 maxLength={50}
-                className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:border-orange-400 focus:ring-1 focus:ring-orange-200 transition-colors duration-200 text-sm"
+                className="w-full px-3 py-2.5 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:border-orange-400 focus:ring-1 focus:ring-orange-200 transition-colors duration-200 text-sm"
                 placeholder="เช่น รพ.สมเด็จ, ทต.บางไผ่"
               />
               {errors.shortName && (
@@ -227,7 +215,7 @@ export default function OrganizationCategoryForm({ initialData, isEdit = false }
                 value={formData.categoryType}
                 onChange={(e) => handleInputChange('categoryType', e.target.value)}
                 required
-                className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:border-orange-400 focus:ring-1 focus:ring-orange-200 transition-colors duration-200 text-sm"
+                className="w-full px-3 py-2.5 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:border-orange-400 focus:ring-1 focus:ring-orange-200 transition-colors duration-200 text-sm"
                 placeholder="เช่น โรงพยาบาล, เทศบาล, โรงเรียน, วัด, ชุมชน,บริษัท ,NGO"
               />
               {errors.categoryType && (
@@ -252,7 +240,7 @@ export default function OrganizationCategoryForm({ initialData, isEdit = false }
                 onChange={(e) => handleInputChange('description', e.target.value)}
                 rows={4}
                 maxLength={1000}
-                className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:border-orange-400 focus:ring-1 focus:ring-orange-200 transition-colors duration-200 text-sm resize-none"
+                className="w-full px-3 py-2.5 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:border-orange-400 focus:ring-1 focus:ring-orange-200 transition-colors duration-200 text-sm resize-none"
                 placeholder="คำอธิบายเพิ่มเติมเกี่ยวกับองค์กรนี้ เช่น ลักษณะเฉพาะ หน้าที่รับผิดชอบ"
               />
               {errors.description && (
@@ -277,7 +265,7 @@ export default function OrganizationCategoryForm({ initialData, isEdit = false }
                 value={formData.sortOrder}
                 onChange={(e) => handleInputChange('sortOrder', parseInt(e.target.value) || 0)}
                 min={0}
-                className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:border-orange-400 focus:ring-1 focus:ring-orange-200 transition-colors duration-200 text-sm"
+                className="w-full px-3 py-2.5 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder:text-gray-400 focus:border-orange-400 focus:ring-1 focus:ring-orange-200 transition-colors duration-200 text-sm"
                 placeholder="เช่น 1, 2, 3"
               />
               <p className="mt-1 text-xs text-gray-500">
@@ -365,14 +353,9 @@ export default function OrganizationCategoryForm({ initialData, isEdit = false }
 
         {/* Tips Section */}
         <div className="mt-6 bg-white rounded-lg border border-gray-200 p-6">
-          <div className="flex items-center mb-4">
-            <div className="w-10 h-10 bg-gradient-to-r from-emerald-400 to-green-500 rounded-lg flex items-center justify-center mr-3">
-              <CheckCircle className="h-5 w-5 text-white" />
-            </div>
-            <div>
-              <h4 className="text-lg font-light text-gray-900">คำแนะนำการสร้างองค์กร</h4>
-              <p className="text-sm text-gray-500 font-light">เทิปสำหรับการสร้างองค์กรที่มีประสิทธิภาพ</p>
-            </div>
+          <div className="mb-4">
+            <h4 className="text-lg font-light text-gray-900">คำแนะนำการสร้างองค์กร</h4>
+            <p className="text-sm text-gray-500 font-light">เทิปสำหรับการสร้างองค์กรที่มีประสิทธิภาพ</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
