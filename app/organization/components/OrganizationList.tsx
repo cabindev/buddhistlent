@@ -47,6 +47,7 @@ export default function OrganizationList() {
       const currentYear = new Date().getFullYear();
       const merged = [...new Set([...years, currentYear])].sort((a, b) => b - a);
       setAvailableYears(merged);
+      setSelectedYear(merged[0]);
     } catch (e) {
       console.error(e);
     }

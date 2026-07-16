@@ -2,7 +2,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { ArrowUpRight, ChevronDown, ChevronRight, LayoutDashboard, ClipboardList, PlusCircle } from 'lucide-react';
+import { ArrowUpRight, ChevronDown, ChevronRight, LayoutDashboard, ClipboardList, PlusCircle, Phone } from 'lucide-react';
 
 function useLentCountdown() {
   const [info, setInfo] = React.useState({ days: '—', label: '', pct: 0 });
@@ -222,6 +222,15 @@ export default function HomeClient({ orgNames }: { orgNames: { name: string }[] 
           </div>
 
         </div>
+
+        {/* Contact Admin */}
+        <a
+          href="tel:0859387714"
+          className="mt-8 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-stone-200 text-stone-600 text-xs shadow-sm hover:border-amber-300 hover:text-amber-600 transition-colors"
+        >
+          <Phone className="w-3.5 h-3.5 text-amber-500" />
+          ติดต่อผู้ดูแลระบบ: 085-938-7714
+        </a>
 
         {/* Footer */}
         <footer className="mt-12 text-center space-y-4">
