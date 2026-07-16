@@ -2,10 +2,8 @@
 // ระบบดึงข้อมูลองค์กร - แก้ไขแบบง่ายหลังจากปรับ schema
 'use server';
 
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/app/lib/db';
 import { Organization } from '@/types/organization';
-
-const prisma = new PrismaClient();
 
 export interface OrganizationFilters {
   search?: string;
@@ -101,8 +99,6 @@ export async function getAllOrganizations(filters?: OrganizationFilters): Promis
       page: filters?.page || 1,
       totalPages: 0
     };
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -120,8 +116,6 @@ export async function getOrganizationById(id: number): Promise<Organization | nu
   } catch (error) {
     console.error('Error fetching organization by ID:', error);
     throw new Error('Failed to fetch organization');
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -182,8 +176,6 @@ export async function getOrganizationStats() {
   } catch (error) {
     console.error('Error fetching organization stats:', error);
     throw new Error('Failed to fetch organization stats');
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -209,8 +201,6 @@ export async function getProvincesWithData(): Promise<string[]> {
   } catch (error) {
     console.error('Error fetching provinces:', error);
     throw new Error('Failed to fetch provinces');
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -246,8 +236,6 @@ export async function getOrganizationCategoryStats() {
   } catch (error) {
     console.error('Error fetching organization category stats:', error);
     throw new Error('Failed to fetch organization category stats');
-  } finally {
-    await prisma.$disconnect();
   }
 }
 export async function getTopOrganizations(limit = 5): Promise<{ name: string; categoryType: string; signers: number; rank: number }[]> {
@@ -265,7 +253,7 @@ export async function getTopOrganizations(limit = 5): Promise<{ name: string; ca
       const cat = catMap.get(r.organizationCategoryId!);
       return { name: cat?.name ?? 'ไม่ระบุ', categoryType: cat?.categoryType ?? '', signers: r._sum.numberOfSigners ?? 0, rank: i + 1 };
     });
-  } catch { return []; } finally { await prisma.$disconnect(); }
+  } catch { return []; }
 }
 
 export async function getAllOrganizationCategoryNames(): Promise<string[]> {
@@ -276,7 +264,7 @@ export async function getAllOrganizationCategoryNames(): Promise<string[]> {
       orderBy: { sortOrder: 'asc' },
     });
     return cats.map(c => c.name);
-  } catch { return []; } finally { await prisma.$disconnect(); }
+  } catch { return []; }
 }
 
 export async function getAvailableOrganizationYears(): Promise<number[]> {
@@ -290,7 +278,5 @@ export async function getAvailableOrganizationYears(): Promise<number[]> {
     return [...new Set([...years, current])].sort();
   } catch {
     return [new Date().getFullYear()];
-  } finally {
-    await prisma.$disconnect();
   }
 }

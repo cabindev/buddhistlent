@@ -135,13 +135,18 @@ export default function HomeClient({ orgNames }: { orgNames: { name: string }[] 
                 <ArrowUpRight className="w-5 h-5 text-stone-300 group-hover:text-amber-600 transition-all group-hover:translate-x-1 group-hover:-translate-y-1" />
               </div>
 
-              {/* Typewriter */}
-              {orgNames.length > 0 && (
-                <div className="w-full">
-                  <p className="text-[10px] text-stone-400 uppercase tracking-widest mb-1">หน่วยงานร่วม</p>
-                  <TypewriterOrg items={orgNames} />
+              {/* Typewriter + Sign Booklet */}
+              <div className="w-full flex items-center justify-between gap-3">
+                {orgNames.length > 0 && (
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[10px] text-stone-400 uppercase tracking-widest mb-1">หน่วยงานร่วม</p>
+                    <TypewriterOrg items={orgNames} />
+                  </div>
+                )}
+                <div className="relative w-40 sm:w-56 h-[70px] sm:h-24 flex-shrink-0 rounded-lg overflow-hidden border border-stone-200 shadow-md bg-white">
+                  <Image src="/signBU.png" alt="สมุดลงนามปฏิญาณตน" fill className="object-cover" />
                 </div>
-              )}
+              </div>
 
               <div>
                 <h3 className="text-xl font-semibold mb-1 text-stone-800 group-hover:text-amber-600 transition-colors">ลงทะเบียนหน่วยงาน</h3>
