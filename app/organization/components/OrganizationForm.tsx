@@ -410,7 +410,7 @@ export default function OrganizationForm({ organizationCategories, initialData, 
                 <label className="block text-xs font-medium text-gray-600 mb-1.5">ที่อยู่ / ชื่อองค์กร / ชื่อสถานศึกษา <span className="text-red-400">*</span></label>
                 <input type="text" value={formData.addressLine1}
                   onChange={(e) => handleInputChange('addressLine1', e.target.value)}
-                  className={inputCls(formData.addressLine1, !!errors.addressLine1)} placeholder="เลขที่ / หมู่ / ถนน / ชื่อองค์กร / ชื่อสถานศึกษา" />
+                  className={inputCls(formData.addressLine1, !!errors.addressLine1)} placeholder="ชื่อองค์กร / ชื่อสถานศึกษา" />
                 {errors.addressLine1 && <p className="mt-1 text-xs text-red-500">{errors.addressLine1}</p>}
               </div>
               <TambonSearch onSelectLocation={handleLocationSelect}

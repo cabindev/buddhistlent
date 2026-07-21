@@ -36,7 +36,7 @@ function Section({ n, title, children }: { n: number; title: string; children: R
   return (
     <div>
       <div className="flex items-center gap-2.5 mb-4">
-        <span className="w-5 h-5 rounded-full bg-green-400 text-gray-900 text-[10px] font-bold flex items-center justify-center flex-shrink-0">{n}</span>
+        <span className="w-5 h-5 rounded-full bg-[oklch(89.7%_0.196_126.665)] text-gray-900 text-[10px] font-bold flex items-center justify-center flex-shrink-0">{n}</span>
         <h2 className="text-sm font-semibold text-gray-700">{title}</h2>
       </div>
       <div className="space-y-4">{children}</div>
@@ -56,18 +56,18 @@ function Field({ label, required, hint, children }: { label: string; required?: 
   );
 }
 
-const base = "w-full px-3 py-2.5 text-sm text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 bg-white placeholder-gray-300 transition";
+const base = "w-full px-3 py-2.5 text-sm text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-[oklch(89.7%_0.196_126.665)] bg-white placeholder-gray-300 transition";
 const inputCls = `${base} border border-gray-200`;
 const selectCls = `${base} border border-gray-200 cursor-pointer`;
 
 const filledInput = (value: string | number) =>
   value !== '' && value !== 0
-    ? `${base} border border-green-400 bg-green-50`
+    ? `${base} border border-[oklch(89.7%_0.196_126.665)] bg-[oklch(97%_0.196_126.665)]`
     : inputCls;
 
 const filledSelect = (value: string | number) =>
   value !== '' && value !== 0
-    ? `${base} border border-green-400 bg-green-50 cursor-pointer`
+    ? `${base} border border-[oklch(89.7%_0.196_126.665)] bg-[oklch(97%_0.196_126.665)] cursor-pointer`
     : selectCls;
 
 const MONTHS_TH = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน',
@@ -101,9 +101,9 @@ function BirthdayPicker({ value, onChange }: { value: string; onChange: (v: stri
   const currentYearBE = new Date().getFullYear() + 543;
   const years = Array.from({ length: currentYearBE - 2472 }, (_, i) => currentYearBE - i);
 
-  const selBase = "flex-1 px-3 py-2.5 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 cursor-pointer transition";
+  const selBase = "flex-1 px-3 py-2.5 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-[oklch(89.7%_0.196_126.665)] cursor-pointer transition";
   const sel = (v: string) => v
-    ? `${selBase} border border-green-400 bg-green-50 text-gray-900`
+    ? `${selBase} border border-[oklch(89.7%_0.196_126.665)] bg-[oklch(97%_0.196_126.665)] text-gray-900`
     : `${selBase} border border-gray-200 bg-white text-gray-900`;
 
   return (
@@ -225,7 +225,7 @@ export default function CreateSoberCheers() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center space-y-3">
-          <CheckCircle2 className="w-12 h-12 text-green-500 mx-auto" />
+          <CheckCircle2 className="w-12 h-12 text-[oklch(80%_0.196_126.665)] mx-auto" />
           <p className="text-gray-700 font-medium">ลงทะเบียนสำเร็จ</p>
           <p className="text-sm text-gray-400">กำลังกลับสู่หน้าหลัก...</p>
         </div>
@@ -273,8 +273,8 @@ export default function CreateSoberCheers() {
                     <button key={g} type="button" onClick={() => set('gender', g)}
                       className={`flex-1 py-2 text-sm rounded-lg border transition-colors ${
                         form.gender === g
-                          ? 'bg-green-400 border-green-400 text-gray-900 font-semibold'
-                          : 'border-gray-200 text-gray-600 hover:border-green-300 hover:text-green-600'
+                          ? 'bg-[oklch(89.7%_0.196_126.665)] border-[oklch(89.7%_0.196_126.665)] text-gray-900 font-semibold'
+                          : 'border-gray-200 text-gray-600 hover:border-[oklch(91.5%_0.196_126.665)] hover:text-[oklch(68%_0.196_126.665)]'
                       }`}
                     >{g}</button>
                   ))}
@@ -284,7 +284,7 @@ export default function CreateSoberCheers() {
               <Field label="วันเกิด (พ.ศ.)" required>
                 <BirthdayPicker value={form.birthday} onChange={v => set('birthday', v)} />
                 {age !== null && (
-                  <p className="mt-1.5 text-xs text-green-600 font-medium flex items-center gap-1">
+                  <p className="mt-1.5 text-xs text-[oklch(68%_0.196_126.665)] font-medium flex items-center gap-1">
                     <CheckCircle2 className="w-3.5 h-3.5" /> อายุ {age} ปี
                   </p>
                 )}
@@ -303,8 +303,8 @@ export default function CreateSoberCheers() {
                 <Field label="หมู่ที่">
                   <input className={filledInput(form.moo)} value={form.moo} onChange={e => set('moo', e.target.value)} placeholder="เช่น 4" />
                 </Field>
-                <Field label="ชื่อหมู่บ้าน">
-                  <input className={filledInput(form.village)} value={form.village} onChange={e => set('village', e.target.value)} placeholder="เช่น บ้านสวนดอก" />
+                <Field label="ชื่อหมู่บ้าน" hint="หากอยู่ในเขตเมือง ไม่มีชื่อหมู่บ้าน ไม่ต้องกรอก">
+                  <input className={filledInput(form.village)} value={form.village} onChange={e => set('village', e.target.value)} placeholder="เช่น บ้านสวนดอก (เว้นว่างได้หากอยู่ในเมือง)" />
                 </Field>
               </div>
 
@@ -315,7 +315,7 @@ export default function CreateSoberCheers() {
                     <ul className="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
                       {suggestions.map((s, i) => (
                         <li key={i} onClick={() => pickSuggestion(s)}
-                          className="px-4 py-2.5 text-sm text-gray-700 hover:bg-green-50 cursor-pointer border-b border-gray-100 last:border-0">
+                          className="px-4 py-2.5 text-sm text-gray-700 hover:bg-[oklch(97%_0.196_126.665)] cursor-pointer border-b border-gray-100 last:border-0">
                           <span className="font-medium">{s.district}</span>
                           <span className="text-gray-400"> · {s.amphoe} · {s.province} {s.zipcode}</span>
                         </li>
@@ -356,8 +356,8 @@ export default function CreateSoberCheers() {
                     <button key={o} type="button" onClick={() => set('job', o)}
                       className={`px-3 py-2.5 text-sm rounded-lg border text-left transition-colors ${
                         form.job === o
-                          ? 'bg-green-50 border-green-400 text-green-800 font-medium'
-                          : 'border-gray-200 text-gray-600 hover:border-green-200'
+                          ? 'bg-[oklch(97%_0.196_126.665)] border-[oklch(89.7%_0.196_126.665)] text-[oklch(45%_0.196_126.665)] font-medium'
+                          : 'border-gray-200 text-gray-600 hover:border-[oklch(93%_0.196_126.665)]'
                       }`}>
                       {o}
                     </button>
@@ -365,8 +365,8 @@ export default function CreateSoberCheers() {
                   <button type="button" onClick={() => set('job', OCCUPATION_OTHER)}
                     className={`px-3 py-2.5 text-sm rounded-lg border text-left transition-colors ${
                       form.job === OCCUPATION_OTHER
-                        ? 'bg-green-50 border-green-400 text-green-800 font-medium'
-                        : 'border-gray-200 text-gray-600 hover:border-green-200'
+                        ? 'bg-[oklch(97%_0.196_126.665)] border-[oklch(89.7%_0.196_126.665)] text-[oklch(45%_0.196_126.665)] font-medium'
+                        : 'border-gray-200 text-gray-600 hover:border-[oklch(93%_0.196_126.665)]'
                     }`}>
                     อื่นๆ
                   </button>
@@ -387,10 +387,10 @@ export default function CreateSoberCheers() {
                           <button key={c.id} type="button" onClick={() => set('affiliation', form.affiliation === c.name ? '' : c.name)}
                             className={`px-3 py-2.5 rounded-lg border text-left transition-colors ${
                               form.affiliation === c.name
-                                ? 'bg-green-50 border-green-400'
-                                : 'border-gray-200 hover:border-green-200'
+                                ? 'bg-[oklch(97%_0.196_126.665)] border-[oklch(89.7%_0.196_126.665)]'
+                                : 'border-gray-200 hover:border-[oklch(93%_0.196_126.665)]'
                             }`}>
-                            <span className={`block text-sm font-semibold leading-tight ${form.affiliation === c.name ? 'text-green-800' : 'text-gray-800'}`}>
+                            <span className={`block text-sm font-semibold leading-tight ${form.affiliation === c.name ? 'text-[oklch(45%_0.196_126.665)]' : 'text-gray-800'}`}>
                               {c.shortName || c.name}
                             </span>
                             {c.shortName && (
@@ -404,8 +404,8 @@ export default function CreateSoberCheers() {
                   <button type="button" onClick={() => set('affiliation', form.affiliation === 'อื่น ๆ' ? '' : 'อื่น ๆ')}
                     className={`w-full px-3 py-2.5 rounded-lg border text-sm font-medium transition-colors ${
                       form.affiliation === 'อื่น ๆ'
-                        ? 'bg-green-50 border-green-400 text-green-800'
-                        : 'border-gray-200 text-gray-600 hover:border-green-200'
+                        ? 'bg-[oklch(97%_0.196_126.665)] border-[oklch(89.7%_0.196_126.665)] text-[oklch(45%_0.196_126.665)]'
+                        : 'border-gray-200 text-gray-600 hover:border-[oklch(93%_0.196_126.665)]'
                     }`}>
                     อื่น ๆ
                   </button>
@@ -428,7 +428,7 @@ export default function CreateSoberCheers() {
               </Field>
 
               {isDrinker && (
-                <div className="space-y-4 pl-4 border-l-2 border-green-200">
+                <div className="space-y-4 pl-4 border-l-2 border-[oklch(93%_0.196_126.665)]">
                   <Field label="ความถี่การดื่ม" required>
                     <select className={filledSelect(form.drinkingFrequency)} value={form.drinkingFrequency} onChange={e => set('drinkingFrequency', e.target.value)} required>
                       <option value="" disabled>เลือกคำตอบ</option>
@@ -469,8 +469,8 @@ export default function CreateSoberCheers() {
                   <button key={m} type="button" onClick={() => toggleMotivation(m)}
                     className={`px-3 py-2.5 text-sm rounded-lg border text-left transition-colors ${
                       motivations.includes(m)
-                        ? 'bg-green-50 border-green-400 text-green-800 font-medium'
-                        : 'border-gray-200 text-gray-600 hover:border-green-200'
+                        ? 'bg-[oklch(97%_0.196_126.665)] border-[oklch(89.7%_0.196_126.665)] text-[oklch(45%_0.196_126.665)] font-medium'
+                        : 'border-gray-200 text-gray-600 hover:border-[oklch(93%_0.196_126.665)]'
                     }`}
                   >
                     {motivations.includes(m) && <span className="mr-1">✓</span>}
@@ -480,8 +480,8 @@ export default function CreateSoberCheers() {
                 <button type="button" onClick={() => toggleMotivation(MOTIVATION_OTHER)}
                   className={`px-3 py-2.5 text-sm rounded-lg border text-left transition-colors ${
                     motivations.includes(MOTIVATION_OTHER)
-                      ? 'bg-green-50 border-green-400 text-green-800 font-medium'
-                      : 'border-gray-200 text-gray-600 hover:border-green-200'
+                      ? 'bg-[oklch(97%_0.196_126.665)] border-[oklch(89.7%_0.196_126.665)] text-[oklch(45%_0.196_126.665)] font-medium'
+                      : 'border-gray-200 text-gray-600 hover:border-[oklch(93%_0.196_126.665)]'
                   }`}
                 >
                   {motivations.includes(MOTIVATION_OTHER) && <span className="mr-1">✓</span>}
@@ -507,8 +507,8 @@ export default function CreateSoberCheers() {
                   <button key={opt.value} type="button" onClick={() => set('healthImpact', opt.value)}
                     className={`w-full px-4 py-3 text-sm rounded-lg border text-left transition-colors ${
                       form.healthImpact === opt.value
-                        ? 'bg-green-50 border-green-400 text-green-800 font-medium'
-                        : 'border-gray-200 text-gray-600 hover:border-green-200'
+                        ? 'bg-[oklch(97%_0.196_126.665)] border-[oklch(89.7%_0.196_126.665)] text-[oklch(45%_0.196_126.665)] font-medium'
+                        : 'border-gray-200 text-gray-600 hover:border-[oklch(93%_0.196_126.665)]'
                     }`}
                   >
                     {form.healthImpact === opt.value && <span className="mr-2">✓</span>}
@@ -538,7 +538,7 @@ export default function CreateSoberCheers() {
             ยกเลิก
           </button>
           <button type="button" onClick={handleSubmit as unknown as React.MouseEventHandler} disabled={submitting}
-            className="flex-[2] flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-gray-900 bg-green-400 hover:bg-green-500 rounded-xl transition-colors disabled:opacity-50">
+            className="flex-[2] flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-gray-900 bg-[oklch(89.7%_0.196_126.665)] hover:bg-[oklch(80%_0.196_126.665)] rounded-xl transition-colors disabled:opacity-50">
             {submitting ? (
               <><LoaderCircle className="w-4 h-4 animate-spin" /> กำลังบันทึก...</>
             ) : 'ลงทะเบียน'}
