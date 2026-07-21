@@ -27,14 +27,14 @@ const HealthImpactChart: React.FC<{ year?: number; zone?: string }> = ({ year, z
 
   if (!data) return (
     <div className="flex justify-center items-center h-64">
-      <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-green-600"></div>
+      <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-[oklch(68%_0.196_126.665)]"></div>
     </div>
   );
 
   const levels = [
-    { key: 'ไม่มีผลกระทบ', color: 'bg-green-300' },
-    { key: 'มีผลกระทบแต่ไม่ต้องการช่วยเหลือ', color: 'bg-green-500' },
-    { key: 'มีผลกระทบและควรได้รับการช่วยเหลือจากแพทย์หรือผู้เชี่ยวชาญด้านการบำบัดฯ', color: 'bg-green-800' }
+    { key: 'ไม่มีผลกระทบ', color: 'bg-[oklch(91.5%_0.196_126.665)]' },
+    { key: 'มีผลกระทบแต่ไม่ต้องการช่วยเหลือ', color: 'bg-[oklch(80%_0.196_126.665)]' },
+    { key: 'มีผลกระทบและควรได้รับการช่วยเหลือจากแพทย์หรือผู้เชี่ยวชาญด้านการบำบัดฯ', color: 'bg-[oklch(45%_0.196_126.665)]' }
   ];
 
   const total = Object.values(data).reduce((sum, value) => sum + value, 0);

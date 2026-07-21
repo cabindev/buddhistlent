@@ -84,7 +84,7 @@ const MotivationChart: React.FC<{ year?: number; zone?: string }> = ({ year, zon
         data: chartData?.data || [],
         itemStyle: {
           color: (params: any) => {
-            const colors = ['#166534', '#15803D', '#16A34A', '#22C55E', '#4ADE80', '#86EFAC', '#111111', '#14532D', '#052e16'];
+            const colors = ['#386500', '#568600', '#78AC00', '#9CD324', '#BBF451', '#C1FA58', '#052C00', '#1E4800', '#052C00'];
             return colors[params.dataIndex % colors.length];
           },
           borderRadius: [0, 4, 4, 0]
@@ -100,7 +100,7 @@ const MotivationChart: React.FC<{ year?: number; zone?: string }> = ({ year, zon
     return (
       <div className="h-full flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-green-600 mx-auto mb-2"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-[oklch(68%_0.196_126.665)] mx-auto mb-2"></div>
           <span className="text-gray-600">กำลังโหลด...</span>
         </div>
       </div>

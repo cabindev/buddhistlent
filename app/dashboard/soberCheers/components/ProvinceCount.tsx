@@ -40,10 +40,10 @@ const ProvinceCount: React.FC<{ year?: number; zone?: string }> = ({ year, zone 
  }, []);
 
  const getCardColor = (rank: number) => {
-   if (rank === 1) return 'bg-green-600 text-white border-green-700';
-   if (rank === 2) return 'bg-green-400 text-white border-green-500';
-   if (rank === 3) return 'bg-green-200 text-black border-green-300';
-   if (rank === 4 || rank === 5) return 'bg-green-50 text-green-800 border-green-100';
+   if (rank === 1) return 'bg-[oklch(68%_0.196_126.665)] text-white border-[oklch(56%_0.196_126.665)]';
+   if (rank === 2) return 'bg-[oklch(89.7%_0.196_126.665)] text-white border-[oklch(80%_0.196_126.665)]';
+   if (rank === 3) return 'bg-[oklch(93%_0.196_126.665)] text-black border-[oklch(91.5%_0.196_126.665)]';
+   if (rank === 4 || rank === 5) return 'bg-[oklch(97%_0.196_126.665)] text-[oklch(45%_0.196_126.665)] border-[oklch(95%_0.196_126.665)]';
    return 'bg-white text-gray-800 border-gray-200';
  };
 
@@ -56,7 +56,7 @@ const ProvinceCount: React.FC<{ year?: number; zone?: string }> = ({ year, zone 
      render: (value: number) => (
        <div className="flex items-center space-x-2">
          <span className={`font-medium text-sm ${
-           value <= 3 ? 'text-green-600' : 'text-gray-700'
+           value <= 3 ? 'text-[oklch(68%_0.196_126.665)]' : 'text-gray-700'
          }`}>
            {value}
          </span>
@@ -69,7 +69,7 @@ const ProvinceCount: React.FC<{ year?: number; zone?: string }> = ({ year, zone 
      sortable: true,
      render: (value: string, row: ProvinceData) => (
        <span className={`font-medium ${
-         row.id <= 3 ? 'text-green-800 font-medium' : 'text-gray-900'
+         row.id <= 3 ? 'text-[oklch(45%_0.196_126.665)] font-medium' : 'text-gray-900'
        }`}>
          {value}
        </span>
@@ -82,10 +82,10 @@ const ProvinceCount: React.FC<{ year?: number; zone?: string }> = ({ year, zone 
      render: (value: number, row: ProvinceData) => (
        <div className="flex items-center">
          <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-           row.id === 1 ? 'bg-green-600 text-white' :
-           row.id === 2 ? 'bg-green-400 text-white' :
-           row.id === 3 ? 'bg-green-200 text-black' :
-           row.id <= 5 ? 'bg-green-50 text-green-800' :
+           row.id === 1 ? 'bg-[oklch(68%_0.196_126.665)] text-white' :
+           row.id === 2 ? 'bg-[oklch(89.7%_0.196_126.665)] text-white' :
+           row.id === 3 ? 'bg-[oklch(93%_0.196_126.665)] text-black' :
+           row.id <= 5 ? 'bg-[oklch(97%_0.196_126.665)] text-[oklch(45%_0.196_126.665)]' :
            'bg-gray-100 text-gray-700'
          }`}>
            {value.toLocaleString()} คน
@@ -103,7 +103,7 @@ const ProvinceCount: React.FC<{ year?: number; zone?: string }> = ({ year, zone 
          <div className="h-4 bg-gray-200 rounded w-2/3 animate-pulse"></div>
        </div>
        <div className="flex justify-center items-center h-64">
-         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-600"></div>
+         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[oklch(68%_0.196_126.665)]"></div>
          <span className="ml-3 text-gray-600">กำลังโหลดข้อมูล...</span>
        </div>
      </div>
@@ -153,7 +153,7 @@ const ProvinceCount: React.FC<{ year?: number; zone?: string }> = ({ year, zone 
          <div className="mt-6 text-center">
            <button 
              onClick={() => setShowAllCards(true)}
-             className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
+             className="bg-[oklch(68%_0.196_126.665)] hover:bg-[oklch(56%_0.196_126.665)] text-white font-medium py-2 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
            >
              ดูทุกจังหวัด ({provinceData.length - 10} จังหวัดที่เหลือ)
            </button>
@@ -185,29 +185,29 @@ const ProvinceCount: React.FC<{ year?: number; zone?: string }> = ({ year, zone 
 
      {/* Summary Stats */}
      {!isLoading && provinceData.length > 0 && (
-       <div className="mt-6 p-4 bg-green-50 rounded-lg border border-green-100">
-         <h4 className="text-sm font-medium text-green-800 mb-3 flex items-center">
+       <div className="mt-6 p-4 bg-[oklch(97%_0.196_126.665)] rounded-lg border border-[oklch(95%_0.196_126.665)]">
+         <h4 className="text-sm font-medium text-[oklch(45%_0.196_126.665)] mb-3 flex items-center">
            สรุปข้อมูลภาพรวม
          </h4>
          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
-           <div className="bg-white p-3 rounded-lg border border-green-100">
-             <div className="text-green-700 font-medium">จำนวนจังหวัดทั้งหมด</div>
+           <div className="bg-white p-3 rounded-lg border border-[oklch(95%_0.196_126.665)]">
+             <div className="text-[oklch(56%_0.196_126.665)] font-medium">จำนวนจังหวัดทั้งหมด</div>
              <div className="text-sm font-medium text-black">{provinceData.length} จังหวัด</div>
            </div>
-           <div className="bg-white p-3 rounded-lg border border-green-100">
-             <div className="text-green-700 font-medium">ผู้ลงทะเบียนรวม</div>
+           <div className="bg-white p-3 rounded-lg border border-[oklch(95%_0.196_126.665)]">
+             <div className="text-[oklch(56%_0.196_126.665)] font-medium">ผู้ลงทะเบียนรวม</div>
              <div className="text-sm font-medium text-black">
                {provinceData.reduce((sum, item) => sum + item.count, 0).toLocaleString()} คน
              </div>
            </div>
-           <div className="bg-white p-3 rounded-lg border border-green-100">
-             <div className="text-green-700 font-medium">จังหวัดอันดับ 1</div>
+           <div className="bg-white p-3 rounded-lg border border-[oklch(95%_0.196_126.665)]">
+             <div className="text-[oklch(56%_0.196_126.665)] font-medium">จังหวัดอันดับ 1</div>
              <div className="text-sm font-medium text-black">
                {provinceData.length > 0 ? provinceData[0].province : '-'}
              </div>
            </div>
-           <div className="bg-white p-3 rounded-lg border border-green-100">
-             <div className="text-green-700 font-medium">ค่าเฉลี่ยต่อจังหวัด</div>
+           <div className="bg-white p-3 rounded-lg border border-[oklch(95%_0.196_126.665)]">
+             <div className="text-[oklch(56%_0.196_126.665)] font-medium">ค่าเฉลี่ยต่อจังหวัด</div>
              <div className="text-sm font-medium text-black">
                {provinceData.length > 0 
                  ? Math.round(provinceData.reduce((sum, item) => sum + item.count, 0) / provinceData.length).toLocaleString()

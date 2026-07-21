@@ -87,10 +87,10 @@ const GenderChart: React.FC<{ year?: number; zone?: string }> = ({ year, zone })
       }
     ],
     color: [
-      '#16A34A', // ชาย
-      '#4ADE80', // หญิง
-      '#111111', // LGBTQ+
-      '#86EFAC', // others
+      '#78AC00', // ชาย
+      '#BBF451', // หญิง
+      '#052C00', // LGBTQ+
+      '#C1FA58', // others
     ]
   };
 
@@ -99,7 +99,7 @@ const GenderChart: React.FC<{ year?: number; zone?: string }> = ({ year, zone })
     return (
       <div className="bg-white p-6 rounded-lg">
         <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-green-600"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-[oklch(68%_0.196_126.665)]"></div>
           <span className="ml-2 text-gray-600">กำลังโหลด...</span>
         </div>
       </div>
@@ -162,8 +162,8 @@ const GenderChart: React.FC<{ year?: number; zone?: string }> = ({ year, zone })
                   className="h-2 rounded-full transition-all duration-500"
                   style={{
                     width: `${percentage}%`,
-                    backgroundColor: gender === 'ชาย' ? '#16A34A' : 
-                                   gender === 'หญิง' ? '#4ADE80' : '#111111'
+                    backgroundColor: gender === 'ชาย' ? '#78AC00' :
+                                   gender === 'หญิง' ? '#BBF451' : '#052C00'
                   }}
                 ></div>
               </div>

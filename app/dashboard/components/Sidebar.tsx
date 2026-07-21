@@ -256,7 +256,7 @@ export default function Sidebar({ user }: SidebarProps) {
               <button
                 onClick={() => setIsOrganizationMenuOpen(!isOrganizationMenuOpen)}
                 className={cn(
-                  "group flex items-center w-full p-2 rounded text-sm transition-colors",
+                  "group flex items-center w-full p-2 rounded text-sm transition-colors focus:outline-none",
                   pathname?.startsWith("/dashboard/organization")
                     ? "bg-amber-50 text-amber-700 border-l-2 border-amber-500"
                     : "text-gray-700 hover:bg-gray-50",
@@ -304,7 +304,7 @@ export default function Sidebar({ user }: SidebarProps) {
                           <li key={subMenu.href}>
                             <Link
                               href={subMenu.href}
-                              className={`flex items-center p-2 text-sm rounded transition-colors ${
+                              className={`flex items-center p-2 text-sm rounded transition-colors focus:outline-none ${
                                 isSubActive
                                   ? "bg-amber-100 text-amber-800"
                                   : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
@@ -326,10 +326,10 @@ export default function Sidebar({ user }: SidebarProps) {
               <button
                 onClick={() => setIsSoberMenuOpen(!isSoberMenuOpen)}
                 className={cn(
-                  "group flex items-center w-full p-2 rounded text-sm transition-colors",
+                  "group flex items-center w-full p-2 rounded text-sm transition-colors focus:outline-none",
                   pathname?.startsWith("/dashboard/soberCheers") ||
                     pathname?.startsWith("/soberCheers")
-                    ? "bg-green-50 text-green-700 border-l-2 border-green-500"
+                    ? "bg-[oklch(97%_0.196_126.665)] text-[oklch(56%_0.196_126.665)] border-l-2 border-[oklch(80%_0.196_126.665)]"
                     : "text-gray-700 hover:bg-gray-50",
                   sidebarCollapsed && "justify-center"
                 )}
@@ -368,15 +368,15 @@ export default function Sidebar({ user }: SidebarProps) {
                         const Icon = subMenu.icon;
                         const isSubActive =
                           pathname === subMenu.href ||
-                          pathname?.startsWith(subMenu.href);
+                          (subMenu.href !== soberCheersMenu.href && pathname?.startsWith(subMenu.href));
 
                         return (
                           <li key={subMenu.href}>
                             <Link
                               href={subMenu.href}
-                              className={`flex items-center p-2 text-sm rounded transition-colors ${
+                              className={`flex items-center p-2 text-sm rounded transition-colors focus:outline-none ${
                                 isSubActive
-                                  ? "bg-green-100 text-green-800"
+                                  ? "bg-[oklch(95%_0.196_126.665)] text-[oklch(45%_0.196_126.665)]"
                                   : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                               }`}
                             >
@@ -397,7 +397,7 @@ export default function Sidebar({ user }: SidebarProps) {
                 <button
                   onClick={() => setIsSettingsMenuOpen(!isSettingsMenuOpen)}
                   className={cn(
-                    "group flex items-center w-full p-2 rounded text-sm transition-colors",
+                    "group flex items-center w-full p-2 rounded text-sm transition-colors focus:outline-none",
                     pathname?.startsWith("/dashboard/setting")
                       ? "bg-indigo-50 text-indigo-700 border-l-2 border-indigo-500"
                       : "text-gray-700 hover:bg-gray-50",
@@ -444,7 +444,7 @@ export default function Sidebar({ user }: SidebarProps) {
                             <li key={subMenu.href}>
                               <Link
                                 href={subMenu.href}
-                                className={`flex items-center p-2 text-sm rounded transition-colors ${
+                                className={`flex items-center p-2 text-sm rounded transition-colors focus:outline-none ${
                                   isSubActive
                                     ? "bg-indigo-100 text-indigo-800"
                                     : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
@@ -476,7 +476,7 @@ export default function Sidebar({ user }: SidebarProps) {
               <button
                 onClick={() => setIsFormReturnMenuOpen(!isFormReturnMenuOpen)}
                 className={cn(
-                  "group flex items-center w-full p-2 rounded text-sm transition-colors opacity-70 hover:opacity-100",
+                  "group flex items-center w-full p-2 rounded text-sm transition-colors focus:outline-none opacity-70 hover:opacity-100",
                   pathname?.startsWith("/dashboard/formReturn") ||
                     pathname?.startsWith("/dashboard/form_return") ||
                     pathname?.startsWith("/form_return")
@@ -525,7 +525,7 @@ export default function Sidebar({ user }: SidebarProps) {
                           <li key={subMenu.href}>
                             <Link
                               href={subMenu.href}
-                              className={`flex items-center p-2 text-sm rounded transition-colors ${
+                              className={`flex items-center p-2 text-sm rounded transition-colors focus:outline-none ${
                                 isSubActive
                                   ? "bg-gray-100 text-gray-700"
                                   : "text-gray-400 hover:bg-gray-50 hover:text-gray-600"

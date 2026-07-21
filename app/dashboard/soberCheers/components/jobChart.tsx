@@ -82,7 +82,7 @@ const JobChart: React.FC<{ year?: number; zone?: string }> = ({ year, zone }) =>
         data: chartData?.data || [],
         itemStyle: {
           color: (params: any) => {
-            const colors = ['#166534', '#16A34A', '#22C55E', '#4ADE80'];
+            const colors = ['#386500', '#78AC00', '#9CD324', '#BBF451'];
             return colors[params.dataIndex % colors.length];
           },
           borderRadius: [0, 4, 4, 0]
@@ -101,7 +101,7 @@ const JobChart: React.FC<{ year?: number; zone?: string }> = ({ year, zone }) =>
   if (loading) {
     return (
       <div className="h-96 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-green-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-[oklch(68%_0.196_126.665)]"></div>
         <span className="ml-2 text-gray-600">กำลังโหลด...</span>
       </div>
     );

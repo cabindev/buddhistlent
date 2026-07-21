@@ -194,14 +194,14 @@ export default function SoberCheersTable() {
           >
             <Filter className="w-3.5 h-3.5" />
             ตัวกรอง
-            {activeFilterCount > 0 && <span className="ml-0.5 bg-green-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">{activeFilterCount}</span>}
+            {activeFilterCount > 0 && <span className="ml-0.5 bg-[oklch(80%_0.196_126.665)] text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">{activeFilterCount}</span>}
           </button>
           <button onClick={handleCSV} disabled={loading || filtered.length === 0}
             className="flex items-center gap-1.5 px-3 py-2 text-sm rounded-lg border border-gray-200 bg-white text-gray-700 hover:border-gray-300 disabled:opacity-40">
             <Download className="w-3.5 h-3.5" /> CSV
           </button>
           <button onClick={handleExcel} disabled={loading || filtered.length === 0}
-            className="flex items-center gap-1.5 px-3 py-2 text-sm rounded-lg bg-green-600 text-white hover:bg-green-700 disabled:opacity-40">
+            className="flex items-center gap-1.5 px-3 py-2 text-sm rounded-lg bg-[oklch(68%_0.196_126.665)] text-white hover:bg-[oklch(56%_0.196_126.665)] disabled:opacity-40">
             <FileSpreadsheet className="w-3.5 h-3.5" /> Excel
           </button>
         </div>
@@ -215,35 +215,35 @@ export default function SoberCheersTable() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
               <input type="text" placeholder="ค้นหาชื่อ..." value={filters.name}
                 onChange={e => { setFilters(f => ({ ...f, name: e.target.value })); setPage(1); }}
-                className="pl-9 pr-3 py-2 w-full text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white" />
+                className="pl-9 pr-3 py-2 w-full text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[oklch(80%_0.196_126.665)] bg-white" />
             </div>
             <select value={filters.village} onChange={e => { setFilters(f => ({ ...f, village: e.target.value })); setPage(1); }}
-              className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white">
+              className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[oklch(80%_0.196_126.665)] bg-white">
               <option value="">ชื่อหมู่บ้าน ({getUnique(data, 'village').length})</option>
               {getUnique(data, 'village').map(v => <option key={v} value={v}>{v}</option>)}
             </select>
             <select value={filters.moo} onChange={e => { setFilters(f => ({ ...f, moo: e.target.value })); setPage(1); }}
-              className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white">
+              className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[oklch(80%_0.196_126.665)] bg-white">
               <option value="">หมู่ที่ ({getUnique(data, 'moo').length})</option>
               {getUnique(data, 'moo').map(v => <option key={v} value={v}>{v}</option>)}
             </select>
             <select value={filters.province} onChange={e => { setFilters(f => ({ ...f, province: e.target.value })); setPage(1); }}
-              className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white">
+              className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[oklch(80%_0.196_126.665)] bg-white">
               <option value="">จังหวัด ({getUnique(data, 'province').length})</option>
               {getUnique(data, 'province').map(v => <option key={v} value={v}>{v}</option>)}
             </select>
             <select value={filters.type} onChange={e => { setFilters(f => ({ ...f, type: e.target.value })); setPage(1); }}
-              className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white">
+              className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[oklch(80%_0.196_126.665)] bg-white">
               <option value="">ภาค ({getUnique(data, 'type').length})</option>
               {getUnique(data, 'type').map(v => <option key={v} value={v}>{v}</option>)}
             </select>
             <select value={filters.job} onChange={e => { setFilters(f => ({ ...f, job: e.target.value })); setPage(1); }}
-              className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white">
+              className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[oklch(80%_0.196_126.665)] bg-white">
               <option value="">อาชีพ ({getUnique(data, 'job').length})</option>
               {getUnique(data, 'job').map(v => <option key={v} value={v}>{v}</option>)}
             </select>
             <select value={filters.affiliation} onChange={e => { setFilters(f => ({ ...f, affiliation: e.target.value })); setPage(1); }}
-              className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 bg-white">
+              className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[oklch(80%_0.196_126.665)] bg-white">
               <option value="">สังกัด ({getUnique(data, 'affiliation').length})</option>
               {getUnique(data, 'affiliation').map(v => <option key={v} value={v}>{v}</option>)}
             </select>
@@ -259,14 +259,14 @@ export default function SoberCheersTable() {
 
       {/* Selection bar */}
       {selected.size > 0 && (
-        <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-lg px-4 py-2.5">
-          <span className="text-sm text-green-700">เลือกแล้ว {selected.size.toLocaleString()} รายการ</span>
+        <div className="flex items-center justify-between bg-[oklch(97%_0.196_126.665)] border border-[oklch(93%_0.196_126.665)] rounded-lg px-4 py-2.5">
+          <span className="text-sm text-[oklch(56%_0.196_126.665)]">เลือกแล้ว {selected.size.toLocaleString()} รายการ</span>
           <div className="flex items-center gap-3">
             <button onClick={() => setDeleteTarget('bulk')}
               className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors">
               <Trash2 className="w-3.5 h-3.5" /> ลบที่เลือก
             </button>
-            <button onClick={() => setSelected(new Set())} className="text-xs text-green-600 hover:text-green-800">ยกเลิก</button>
+            <button onClick={() => setSelected(new Set())} className="text-xs text-[oklch(68%_0.196_126.665)] hover:text-[oklch(45%_0.196_126.665)]">ยกเลิก</button>
           </div>
         </div>
       )}
@@ -275,7 +275,7 @@ export default function SoberCheersTable() {
       {loading ? <Loading size="lg" /> : error ? (
         <div className="flex flex-col items-center justify-center py-16 gap-3">
           <p className="text-red-500 text-sm">{error}</p>
-          <button onClick={() => loadData(year)} className="px-4 py-2 bg-green-500 text-white text-sm rounded-lg hover:bg-green-600">ลองใหม่</button>
+          <button onClick={() => loadData(year)} className="px-4 py-2 bg-[oklch(80%_0.196_126.665)] text-white text-sm rounded-lg hover:bg-[oklch(68%_0.196_126.665)]">ลองใหม่</button>
         </div>
       ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-gray-400">
@@ -290,7 +290,7 @@ export default function SoberCheersTable() {
                 <tr className="border-b border-gray-200 bg-gray-50">
                   <th className="w-10 px-4 py-3 text-left">
                     <input type="checkbox" checked={selected.size === filtered.length && filtered.length > 0}
-                      onChange={toggleSelectAll} className="h-4 w-4 rounded border-gray-300 text-green-500 focus:ring-green-500" />
+                      onChange={toggleSelectAll} className="h-4 w-4 rounded border-gray-300 text-[oklch(80%_0.196_126.665)] focus:ring-[oklch(80%_0.196_126.665)]" />
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">ชื่อ-นามสกุล</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">เพศ / อายุ</th>
@@ -305,10 +305,10 @@ export default function SoberCheersTable() {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {paginated.map(item => (
-                  <tr key={item.id} className={`hover:bg-gray-50 transition-colors ${selected.has(item.id) ? 'bg-green-50' : ''}`}>
+                  <tr key={item.id} className={`hover:bg-gray-50 transition-colors ${selected.has(item.id) ? 'bg-[oklch(97%_0.196_126.665)]' : ''}`}>
                     <td className="px-4 py-3">
                       <input type="checkbox" checked={selected.has(item.id)} onChange={() => toggleSelect(item.id)}
-                        className="h-4 w-4 rounded border-gray-300 text-green-500 focus:ring-green-500" />
+                        className="h-4 w-4 rounded border-gray-300 text-[oklch(80%_0.196_126.665)] focus:ring-[oklch(80%_0.196_126.665)]" />
                     </td>
                     <td className="px-4 py-3">
                       <div className="font-medium text-gray-900">{item.firstName} {item.lastName}</div>
@@ -331,7 +331,7 @@ export default function SoberCheersTable() {
                     <td className="px-4 py-3">
                       <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${
                         item.alcoholConsumption.includes('ดื่ม (ย้อนหลัง') ? 'bg-red-100 text-red-700'
-                        : item.alcoholConsumption.includes('ไม่เคยดื่ม') ? 'bg-green-100 text-green-700'
+                        : item.alcoholConsumption.includes('ไม่เคยดื่ม') ? 'bg-[oklch(95%_0.196_126.665)] text-[oklch(56%_0.196_126.665)]'
                         : 'bg-yellow-100 text-yellow-700'
                       }`}>
                         {item.alcoholConsumption.length > 20 ? item.alcoholConsumption.slice(0, 20) + '…' : item.alcoholConsumption}
@@ -343,7 +343,7 @@ export default function SoberCheersTable() {
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-1">
                         <Link href={`/soberCheers/edit/${item.id}`}
-                          className="p-1.5 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors" title="แก้ไข">
+                          className="p-1.5 text-gray-400 hover:text-[oklch(68%_0.196_126.665)] hover:bg-[oklch(97%_0.196_126.665)] rounded-lg transition-colors" title="แก้ไข">
                           <SquarePen className="w-4 h-4" />
                         </Link>
                         <button onClick={() => setDeleteTarget(item)}
@@ -376,7 +376,7 @@ export default function SoberCheersTable() {
               if (n < 1 || n > totalPages) return null;
               return (
                 <button key={n} onClick={() => setPage(n)}
-                  className={`w-8 h-8 text-xs rounded border transition-colors ${page === n ? 'bg-green-500 border-green-500 text-white font-medium' : 'border-gray-200 text-gray-700 hover:bg-gray-50'}`}>
+                  className={`w-8 h-8 text-xs rounded border transition-colors ${page === n ? 'bg-[oklch(80%_0.196_126.665)] border-[oklch(80%_0.196_126.665)] text-white font-medium' : 'border-gray-200 text-gray-700 hover:bg-gray-50'}`}>
                   {n}
                 </button>
               );

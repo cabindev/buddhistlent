@@ -71,7 +71,7 @@ const DrinkingFrequencyChart: React.FC<{ year?: number; zone?: string }> = ({ ye
         data: chartData?.data || [],
         itemStyle: {
           color: (params: any) => {
-            const colors = ['#166534', '#16A34A', '#22C55E', '#4ADE80', '#86EFAC'];
+            const colors = ['#386500', '#78AC00', '#9CD324', '#BBF451', '#C1FA58'];
             return colors[params.dataIndex % colors.length];
           },
           borderRadius: [0, 4, 4, 0]
@@ -86,7 +86,7 @@ const DrinkingFrequencyChart: React.FC<{ year?: number; zone?: string }> = ({ ye
   if (loading) {
     return (
       <div className="h-96 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-2 border-green-600 border-t-transparent"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-[oklch(68%_0.196_126.665)] border-t-transparent"></div>
         <span className="ml-3 text-gray-600">กำลังโหลด...</span>
       </div>
     );

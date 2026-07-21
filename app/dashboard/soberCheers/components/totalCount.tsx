@@ -29,12 +29,12 @@ const TotalCount: React.FC<{ year?: number }> = ({ year }) => {
   return (
     <div className="p-5">
       <div className="max-w-sm mx-auto">
-        <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl shadow-lg border border-green-200">
+        <div className="bg-gradient-to-br from-[oklch(97%_0.196_126.665)] to-[oklch(95%_0.196_126.665)] p-6 rounded-xl shadow-lg border border-[oklch(93%_0.196_126.665)]">
           <div className="flex flex-col items-center text-center">
             <div className="w-16 h-16 bg-amber-500 rounded-full flex items-center justify-center mb-4 shadow-lg">
               <FaUser className="text-white text-2xl" />
             </div>
-            <div className="text-green-700 font-medium text-lg mb-2">
+            <div className="text-[oklch(56%_0.196_126.665)] font-medium text-lg mb-2">
               จำนวนผู้ลงทะเบียน
             </div>
             <div className="text-xl font-medium text-gray-900">

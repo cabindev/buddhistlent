@@ -137,7 +137,7 @@ export default function DashboardOrganization() {
     grid: { left: '2%', right: '2%', bottom: '20%', top: '5%', containLabel: true },
     xAxis: { type: 'category', data: categories.slice(0, 10).map(c => c.name.length > 10 ? c.name.slice(0, 10) + '…' : c.name), axisLabel: { rotate: 35, fontSize: 9, color: '#6B7280' } },
     yAxis: { type: 'value', axisLabel: { fontSize: 10, color: '#6B7280' }, splitLine: { lineStyle: { color: '#F3F4F6' } } },
-    series: [{ type: 'bar', data: categories.slice(0, 10).map(c => c.value), itemStyle: { color: '#6366F1', borderRadius: [3, 3, 0, 0] } }],
+    series: [{ type: 'bar', data: categories.slice(0, 10).map(c => c.value), itemStyle: { color: '#34D399', borderRadius: [3, 3, 0, 0] } }],
   };
 
   const monthlyOption = {
@@ -147,8 +147,8 @@ export default function DashboardOrganization() {
     yAxis: { type: 'value', axisLabel: { fontSize: 10, color: '#6B7280' }, splitLine: { lineStyle: { color: '#F3F4F6' } } },
     series: [{
       type: 'bar', data: monthly.map(m => m.count),
-      itemStyle: { color: '#F59E0B', borderRadius: [3, 3, 0, 0] },
-      areaStyle: { color: 'rgba(245, 158, 11, 0.1)' },
+      itemStyle: { color: '#10B981', borderRadius: [3, 3, 0, 0] },
+      areaStyle: { color: 'rgba(16, 185, 129, 0.1)' },
     }],
   };
 
@@ -157,7 +157,7 @@ export default function DashboardOrganization() {
     grid: { left: '2%', right: '2%', bottom: '10%', top: '5%', containLabel: true },
     xAxis: { type: 'category', data: signers.map(s => s.range), axisLabel: { fontSize: 10, color: '#6B7280' } },
     yAxis: { type: 'value', axisLabel: { fontSize: 10, color: '#6B7280' }, splitLine: { lineStyle: { color: '#F3F4F6' } } },
-    series: [{ type: 'bar', data: signers.map(s => s.count), itemStyle: { color: '#8B5CF6', borderRadius: [3, 3, 0, 0] } }],
+    series: [{ type: 'bar', data: signers.map(s => s.count), itemStyle: { color: '#059669', borderRadius: [3, 3, 0, 0] } }],
   };
 
   return (

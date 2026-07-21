@@ -22,10 +22,10 @@ import AffiliationChart from './affiliationChart';
 // ── Stat Card ──────────────────────────────────────────────────────────────
 function StatCard({ label, value, unit, loading }: { label: string; value: string | number; unit: string; loading?: boolean }) {
   return (
-    <div className="bg-white border border-green-100 rounded-lg px-4 py-3">
+    <div className="bg-white border border-[oklch(95%_0.196_126.665)] rounded-lg px-4 py-3">
       <p className="text-[11px] font-normal text-black/50 mb-1">{label}</p>
       {loading ? (
-        <div className="h-5 w-14 bg-green-50 rounded animate-pulse" />
+        <div className="h-5 w-14 bg-[oklch(97%_0.196_126.665)] rounded animate-pulse" />
       ) : (
         <p className="text-base font-medium text-black">
           {typeof value === 'number' ? value.toLocaleString() : value}
@@ -41,8 +41,8 @@ function ChartCard({ title, children, className = '', minHeight = 'min-h-[360px]
   title: string; children: React.ReactNode; className?: string; minHeight?: string;
 }) {
   return (
-    <div className={`bg-white border border-green-100 rounded-lg overflow-hidden ${className}`}>
-      <div className="px-5 py-3 border-b border-green-50">
+    <div className={`bg-white border border-[oklch(95%_0.196_126.665)] rounded-lg overflow-hidden ${className}`}>
+      <div className="px-5 py-3 border-b border-[oklch(97%_0.196_126.665)]">
         <h3 className="text-xs font-medium text-black">{title}</h3>
       </div>
       <div className={`p-4 ${minHeight}`}>{children}</div>
@@ -86,21 +86,21 @@ export default function DashboardSober() {
         </div>
         <div className="flex items-center gap-2">
           <select value={zone} onChange={e => handleZoneChange(e.target.value)}
-            className="px-3 py-1.5 text-xs rounded-lg border border-green-100 bg-white text-black/70 focus:outline-none focus:ring-2 focus:ring-green-200">
+            className="px-3 py-1.5 text-xs rounded-lg border border-[oklch(95%_0.196_126.665)] bg-white text-black/70 focus:outline-none focus:ring-2 focus:ring-[oklch(93%_0.196_126.665)]">
             <option value="">ทุกโซน</option>
             {ZONES.map(z => <option key={z} value={z}>{z}</option>)}
           </select>
-          <div className="flex bg-green-50 rounded-lg p-1 gap-1">
+          <div className="flex bg-[oklch(97%_0.196_126.665)] rounded-lg p-1 gap-1">
             {years.map(y => (
               <button key={y} onClick={() => handleYearChange(y)}
                 className={`px-3 py-1 text-xs rounded-md font-medium transition-colors ${
-                  year === y ? 'bg-green-600 text-white' : 'text-black/50 hover:text-black'
+                  year === y ? 'bg-[oklch(68%_0.196_126.665)] text-white' : 'text-black/50 hover:text-black'
                 }`}
               >{y}</button>
             ))}
           </div>
           <button onClick={() => loadStats(year, zone)}
-            className="px-2.5 py-1 text-xs text-black/40 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors">
+            className="px-2.5 py-1 text-xs text-black/40 hover:text-[oklch(68%_0.196_126.665)] hover:bg-[oklch(97%_0.196_126.665)] rounded-lg transition-colors">
             รีเฟรช
           </button>
         </div>

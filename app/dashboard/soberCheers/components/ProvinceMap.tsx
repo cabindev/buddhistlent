@@ -51,7 +51,7 @@ const Map = dynamic(
     loading: () => (
       <div className="w-full h-96 bg-gray-100 rounded-lg flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-green-600 mx-auto mb-2"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-[oklch(68%_0.196_126.665)] mx-auto mb-2"></div>
           <p className="text-gray-600">กำลังโหลดแผนที่...</p>
         </div>
       </div>
@@ -93,13 +93,13 @@ const ProvinceMap: React.FC<{ year?: number; zone?: string }> = ({ year, zone })
 
  const getColor = (count: number) => {
    if (count === 0) return '#f3f4f6';
-   if (count > 1000) return '#052e16';
-   if (count > 500) return '#14532D';
-   if (count > 200) return '#166534';
-   if (count > 100) return '#15803D';
-   if (count > 50) return '#16A34A';
-   if (count > 20) return '#22C55E';
-   return '#86EFAC';
+   if (count > 1000) return '#052C00';
+   if (count > 500) return '#1E4800';
+   if (count > 200) return '#386500';
+   if (count > 100) return '#568600';
+   if (count > 50) return '#78AC00';
+   if (count > 20) return '#9CD324';
+   return '#C1FA58';
  };
 
  const getColorIntensity = (count: number) => {
@@ -116,7 +116,7 @@ const ProvinceMap: React.FC<{ year?: number; zone?: string }> = ({ year, zone })
      fillColor: getColor(count),
      weight: selectedProvince === provinceName ? 3 : 1,
      opacity: 1,
-     color: selectedProvince === provinceName ? '#16A34A' : '#ffffff',
+     color: selectedProvince === provinceName ? '#78AC00' : '#ffffff',
      dashArray: selectedProvince === provinceName ? '0' : '2',
      fillOpacity: getColorIntensity(count)
    };
@@ -129,7 +129,7 @@ const ProvinceMap: React.FC<{ year?: number; zone?: string }> = ({ year, zone })
    
    layer.bindTooltip(
      `<div class="text-center p-2">
-       <div class="font-medium text-green-700">${provinceName}</div>
+       <div class="font-medium text-[oklch(56%_0.196_126.665)]">${provinceName}</div>
        <div class="text-lg font-medium">${count.toLocaleString()} คน</div>
        <div class="text-xs text-gray-600">ผู้ลงทะเบียน</div>
      </div>`,
@@ -145,7 +145,7 @@ const ProvinceMap: React.FC<{ year?: number; zone?: string }> = ({ year, zone })
        setSelectedProvince(provinceName);
        layer.setStyle({
          weight: 3,
-         color: '#16A34A',
+         color: '#78AC00',
          dashArray: '0',
          fillOpacity: 0.9
        });
@@ -206,7 +206,7 @@ const ProvinceMap: React.FC<{ year?: number; zone?: string }> = ({ year, zone })
            </p>
          </div>
          <div className="text-right">
-           <div className="text-sm font-medium text-green-600">
+           <div className="text-sm font-medium text-[oklch(68%_0.196_126.665)]">
              {provinceData.reduce((sum, p) => sum + p.count, 0).toLocaleString()}
            </div>
            <div className="text-xs text-gray-600">ผู้ลงทะเบียนทั้งหมด</div>
@@ -235,31 +235,31 @@ const ProvinceMap: React.FC<{ year?: number; zone?: string }> = ({ year, zone })
                <span>0 คน</span>
              </div>
              <div className="flex items-center">
-               <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: '#86EFAC' }}></div>
+               <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: '#C1FA58' }}></div>
                <span>1-20 คน</span>
              </div>
              <div className="flex items-center">
-               <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: '#22C55E' }}></div>
+               <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: '#9CD324' }}></div>
                <span>21-50 คน</span>
              </div>
              <div className="flex items-center">
-               <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: '#16A34A' }}></div>
+               <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: '#78AC00' }}></div>
                <span>51-100 คน</span>
              </div>
              <div className="flex items-center">
-               <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: '#15803D' }}></div>
+               <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: '#568600' }}></div>
                <span>101-200 คน</span>
              </div>
              <div className="flex items-center">
-               <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: '#166534' }}></div>
+               <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: '#386500' }}></div>
                <span>201-500 คน</span>
              </div>
              <div className="flex items-center">
-               <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: '#14532D' }}></div>
+               <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: '#1E4800' }}></div>
                <span>501-1000 คน</span>
              </div>
              <div className="flex items-center">
-               <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: '#052e16' }}></div>
+               <div className="w-4 h-4 rounded mr-2" style={{ backgroundColor: '#052C00' }}></div>
                <span>1000+ คน</span>
              </div>
            </div>
@@ -279,20 +279,20 @@ const ProvinceMap: React.FC<{ year?: number; zone?: string }> = ({ year, zone })
                  <div
                    key={province.province}
                    className={`flex items-center justify-between p-2 rounded-lg transition-colors ${
-                     isSelected ? 'bg-green-50 border border-green-200' : 'bg-white hover:bg-gray-100'
+                     isSelected ? 'bg-[oklch(97%_0.196_126.665)] border border-[oklch(93%_0.196_126.665)]' : 'bg-white hover:bg-gray-100'
                    }`}
                  >
                    <div className="flex items-center">
                      <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium mr-2 ${
-                       index === 0 ? 'bg-green-600 text-white' :
-                       index === 1 ? 'bg-green-400 text-white' :
-                       index === 2 ? 'bg-green-200 text-black' :
-                       'bg-green-50 text-green-700'
+                       index === 0 ? 'bg-[oklch(68%_0.196_126.665)] text-white' :
+                       index === 1 ? 'bg-[oklch(89.7%_0.196_126.665)] text-white' :
+                       index === 2 ? 'bg-[oklch(93%_0.196_126.665)] text-black' :
+                       'bg-[oklch(97%_0.196_126.665)] text-[oklch(56%_0.196_126.665)]'
                      }`}>
                        {index + 1}
                      </div>
                      <div>
-                       <div className={`text-sm font-medium ${isSelected ? 'text-green-800' : 'text-gray-900'}`}>
+                       <div className={`text-sm font-medium ${isSelected ? 'text-[oklch(45%_0.196_126.665)]' : 'text-gray-900'}`}>
                          {province.province}
                        </div>
                        <div className="text-xs text-gray-600">
