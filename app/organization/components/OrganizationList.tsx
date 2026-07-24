@@ -144,14 +144,22 @@ export default function OrganizationList() {
                   <p className="text-xs text-gray-600">Manage submitted organization data | จัดการข้อมูลที่ส่งคืนจากองค์กรต่างๆ</p>
                 </div>
               </div>
-              
-              <Link
-                href="/organization/create"
-                className="inline-flex items-center px-3 py-1.5 text-sm font-medium bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors duration-200"
-              >
-                <Plus className="h-4 w-4 mr-1" />
-                Add New
-              </Link>
+
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-orange-50 border border-orange-200 rounded">
+                  <span className="text-xs text-orange-700">องค์กรที่ส่งข้อมูลแล้วทั้งหมด</span>
+                  <span className="text-base font-bold text-orange-600">{totalOrganizations.toLocaleString()}</span>
+                  <span className="text-xs text-orange-700">องค์กร</span>
+                </div>
+
+                <Link
+                  href="/organization/create"
+                  className="inline-flex items-center px-3 py-1.5 text-sm font-medium bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors duration-200"
+                >
+                  <Plus className="h-4 w-4 mr-1" />
+                  Add New
+                </Link>
+              </div>
             </div>
           </div>
 

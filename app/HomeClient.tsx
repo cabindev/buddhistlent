@@ -143,7 +143,7 @@ export default function HomeClient({ orgNames }: { orgNames: { name: string }[] 
                     <TypewriterOrg items={orgNames} />
                   </div>
                 )}
-                <div className="relative w-40 sm:w-56 h-[70px] sm:h-24 flex-shrink-0 rounded-lg overflow-hidden border border-stone-200 shadow-md bg-white">
+                <div className="relative w-64 sm:w-80 h-28 sm:h-36 flex-shrink-0 rounded-lg overflow-hidden border border-stone-200 shadow-md bg-white">
                   <Image src="/signBU.png" alt="สมุดลงนามปฏิญาณตน" fill className="object-cover" />
                 </div>
               </div>
