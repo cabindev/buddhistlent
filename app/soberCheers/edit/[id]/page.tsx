@@ -193,7 +193,7 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
   // District autocomplete
   const handleDistrictChange = (val: string) => {
     set('district', val);
-    setSuggestions(val.length > 0 ? regions.filter(r => r.district.toLowerCase().startsWith(val.toLowerCase())).slice(0, 8) : []);
+    setSuggestions(val.length > 0 ? regions.filter(r => r.district.toLowerCase().startsWith(val.toLowerCase())) : []);
   };
 
   const pickSuggestion = (s: any) => {
@@ -331,7 +331,7 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
                 <div className="relative" ref={districtRef}>
                   <input className={filledInput(form.district)} value={form.district} onChange={e => handleDistrictChange(e.target.value)} placeholder="พิมพ์ชื่อตำบล..." required />
                   {suggestions.length > 0 && (
-                    <ul className="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+                    <ul className="absolute z-20 w-full mt-1 max-h-72 overflow-y-auto bg-white border border-gray-200 rounded-lg shadow-lg">
                       {suggestions.map((s, i) => (
                         <li key={i} onClick={() => pickSuggestion(s)}
                           className="px-4 py-2.5 text-sm text-gray-700 hover:bg-[oklch(97%_0.196_126.665)] cursor-pointer border-b border-gray-100 last:border-0">
