@@ -124,8 +124,7 @@ export default function EditCampaignBuddhistLent({ params }: { params: Promise<{
 
     if (value.length > 0) {
       const filteredSuggestions = data
-        .filter((region) => region.district.startsWith(value))
-        .slice(0, 10);
+        .filter((region) => region.district.startsWith(value));
       setSuggestions(filteredSuggestions);
     } else {
       setSuggestions([]);
