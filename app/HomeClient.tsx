@@ -72,7 +72,7 @@ function TypewriterOrg({ items }: { items: { name: string }[] }) {
   );
 }
 
-export default function HomeClient({ orgNames }: { orgNames: { name: string }[] }) {
+export default function HomeClient({ orgNames, totalOrganizations }: { orgNames: { name: string }[]; totalOrganizations?: number }) {
   const router = useRouter();
   const lent = useLentCountdown();
   const [open, setOpen] = React.useState(true);
@@ -181,12 +181,17 @@ export default function HomeClient({ orgNames }: { orgNames: { name: string }[] 
             onClick={() => router.push('/organization')}
             className="group bg-white border border-stone-200 rounded-3xl p-6 hover:border-amber-300 hover:shadow-md transition-all flex flex-col justify-between items-start text-left min-h-[160px] shadow-sm"
           >
-            <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center border border-amber-100">
-              <ClipboardList className="w-4 h-4 text-amber-500" />
+            <div className="w-full flex items-center justify-between">
+              <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center border border-amber-100">
+                <ClipboardList className="w-4 h-4 text-amber-500" />
+              </div>
+              {typeof totalOrganizations === 'number' && (
+                <span className="text-2xl font-bold tabular-nums text-amber-600">{totalOrganizations.toLocaleString()}</span>
+              )}
             </div>
             <div>
               <h4 className="font-medium text-stone-800 group-hover:text-amber-600 transition-colors">ดูข้อมูลที่ส่งแล้ว</h4>
-              <p className="text-[10px] text-stone-500 mt-1">View Submissions</p>
+              <p className="text-[10px] text-stone-500 mt-1">View Submissions{typeof totalOrganizations === 'number' ? ` · ${totalOrganizations.toLocaleString()} องค์กร` : ''}</p>
             </div>
           </button>
 
