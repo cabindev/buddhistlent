@@ -310,7 +310,12 @@ export default function CreateSoberCheers() {
 
               <Field label="ตำบล/แขวง" required hint="พิมพ์ชื่อตำบลโดยไม่ต้องมีคำนำหน้า ระบบจะแนะนำข้อมูลอัตโนมัติ">
                 <div className="relative" ref={districtRef}>
-                  <input className={filledInput(form.district)} value={form.district} onChange={e => handleDistrictChange(e.target.value)} placeholder="พิมพ์ชื่อตำบล..." required />
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg className="h-5 w-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
+                  <input className={`${filledInput(form.district)} pl-10`} value={form.district} onChange={e => handleDistrictChange(e.target.value)} placeholder="พิมพ์ชื่อตำบล..." required />
                   {suggestions.length > 0 && (
                     <ul className="absolute z-20 w-full mt-1 max-h-72 overflow-y-auto bg-white border border-gray-200 rounded-lg shadow-lg">
                       {suggestions.map((s, i) => (
@@ -401,6 +406,14 @@ export default function CreateSoberCheers() {
                       </div>
                     </div>
                   ))}
+                  <button type="button" onClick={() => set('affiliation', form.affiliation === 'ไม่มีสังกัด' ? '' : 'ไม่มีสังกัด')}
+                    className={`w-full px-3 py-2.5 rounded-lg border text-sm font-medium transition-colors ${
+                      form.affiliation === 'ไม่มีสังกัด'
+                        ? 'bg-[oklch(97%_0.196_126.665)] border-[oklch(89.7%_0.196_126.665)] text-[oklch(45%_0.196_126.665)]'
+                        : 'border-gray-200 text-gray-600 hover:border-[oklch(93%_0.196_126.665)]'
+                    }`}>
+                    ไม่มีสังกัด
+                  </button>
                   <button type="button" onClick={() => set('affiliation', form.affiliation === 'อื่น ๆ' ? '' : 'อื่น ๆ')}
                     className={`w-full px-3 py-2.5 rounded-lg border text-sm font-medium transition-colors ${
                       form.affiliation === 'อื่น ๆ'

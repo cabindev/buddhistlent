@@ -183,16 +183,23 @@ export default function EditSoberCheersModal({ soberCheerId, isOpen, onClose, on
           </div>
 
           <div>
-            <label htmlFor="district" className="block text-sm font-medium text-gray-700">ตำบล/แขวง</label>
-            <input
-              id="district"
-              name="district"
-              type="text"
-              value={formData.district}
-              onChange={handleDistrictChange}
-              required
-              className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm text-sm"
-            />
+            <label htmlFor="district" className="block text-sm font-medium text-gray-700">ตำบล/แขวง <span className="text-red-500">*</span></label>
+            <div className="relative mt-1">
+              <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
+                <svg className="h-4 w-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <input
+                id="district"
+                name="district"
+                type="text"
+                value={formData.district}
+                onChange={handleDistrictChange}
+                required
+                className="block w-full pl-7 pr-2 py-1 border border-gray-300 rounded-md shadow-sm text-sm"
+              />
+            </div>
             {suggestions.length > 0 && (
               <ul className="border border-gray-300 mt-1 max-h-40 overflow-auto rounded-md">
                 {suggestions.map((suggestion, index) => (

@@ -413,10 +413,13 @@ export default function OrganizationForm({ organizationCategories, initialData, 
                   className={inputCls(formData.addressLine1, !!errors.addressLine1)} placeholder="ชื่อองค์กร / ชื่อสถานศึกษา" />
                 {errors.addressLine1 && <p className="mt-1 text-xs text-red-500">{errors.addressLine1}</p>}
               </div>
-              <TambonSearch onSelectLocation={handleLocationSelect}
-                initialLocation={{ district: formData.district, amphoe: formData.amphoe,
-                  province: formData.province, zipcode: formData.zipcode || 0,
-                  type: formData.type, district_code: 0, amphoe_code: 0, province_code: 0 }} />
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1.5">ค้นหาตำบล/อำเภอ/จังหวัด <span className="text-red-400">*</span></label>
+                <TambonSearch onSelectLocation={handleLocationSelect}
+                  initialLocation={{ district: formData.district, amphoe: formData.amphoe,
+                    province: formData.province, zipcode: formData.zipcode || 0,
+                    type: formData.type, district_code: 0, amphoe_code: 0, province_code: 0 }} />
+              </div>
             </div>
           </div>
 
