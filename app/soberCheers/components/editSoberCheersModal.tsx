@@ -5,6 +5,13 @@ import { data } from '@/app/data/regions';
 import { getSoberCheersById } from '@/app/soberCheers/actions/Get';
 import { updateSoberCheers } from '@/app/soberCheers/actions/Update';
 
+const DISTRICT_PREFIXES = ['ตำบล', 'ต.', 'อำเภอ', 'อ.', 'จังหวัด', 'จ.'];
+function stripDistrictPrefix(s: string) {
+  const trimmed = s.trim();
+  const prefix = DISTRICT_PREFIXES.find(p => trimmed.startsWith(p));
+  return prefix ? trimmed.slice(prefix.length).trim() : trimmed;
+}
+
 interface EditSoberCheersModalProps {
   soberCheerId: number;
   isOpen: boolean;
@@ -73,9 +80,10 @@ export default function EditSoberCheersModal({ soberCheerId, isOpen, onClose, on
     setFormData(prev => ({ ...prev, district: value }));
     setAutoFilledFields([]);
   
-    if (value.length > 0) {
+    const query = stripDistrictPrefix(value).toLowerCase();
+    if (query.length > 0) {
       const filteredSuggestions = data
-        .filter((region) => region.district.toLowerCase().startsWith(value.toLowerCase()));
+        .filter((region) => region.district.toLowerCase().startsWith(query));
       setSuggestions(filteredSuggestions);
     } else {
       setSuggestions([]);

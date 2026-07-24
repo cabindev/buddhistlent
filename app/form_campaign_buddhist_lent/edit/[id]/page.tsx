@@ -5,6 +5,13 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { data } from '@/app/data/regions';
 
+const DISTRICT_PREFIXES = ['ตำบล', 'ต.', 'อำเภอ', 'อ.', 'จังหวัด', 'จ.'];
+function stripDistrictPrefix(s: string) {
+  const trimmed = s.trim();
+  const prefix = DISTRICT_PREFIXES.find(p => trimmed.startsWith(p));
+  return prefix ? trimmed.slice(prefix.length).trim() : trimmed;
+}
+
 interface CampaignFormData {
   firstName: string;
   lastName: string;
@@ -122,9 +129,10 @@ export default function EditCampaignBuddhistLent({ params }: { params: Promise<{
     const value = e.target.value;
     setFormData(prev => ({ ...prev, district: value }));
 
-    if (value.length > 0) {
+    const query = stripDistrictPrefix(value);
+    if (query.length > 0) {
       const filteredSuggestions = data
-        .filter((region) => region.district.startsWith(value));
+        .filter((region) => region.district.startsWith(query));
       setSuggestions(filteredSuggestions);
     } else {
       setSuggestions([]);

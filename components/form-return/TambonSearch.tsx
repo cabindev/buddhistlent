@@ -35,7 +35,13 @@ export default function TambonSearch({
 
     const timeoutId = setTimeout(() => {
       try {
-        const query = searchQuery.toLowerCase();
+        const PREFIXES = ['ตำบล', 'ต.', 'อำเภอ', 'อ.', 'จังหวัด', 'จ.'];
+        const stripPrefix = (s: string) => {
+          const trimmed = s.trim();
+          const prefix = PREFIXES.find((p) => trimmed.startsWith(p));
+          return prefix ? trimmed.slice(prefix.length).trim() : trimmed;
+        };
+        const query = stripPrefix(searchQuery).toLowerCase();
         
         // ✅ ตรวจสอบว่า regionsData เป็น array และมีข้อมูล
         if (!Array.isArray(regionsData)) {

@@ -25,6 +25,13 @@ const MOTIVATIONS = [
 ];
 const MOTIVATION_OTHER = 'อื่นๆ';
 
+const DISTRICT_PREFIXES = ['ตำบล', 'ต.', 'อำเภอ', 'อ.', 'จังหวัด', 'จ.'];
+function stripDistrictPrefix(s: string) {
+  const trimmed = s.trim();
+  const prefix = DISTRICT_PREFIXES.find(p => trimmed.startsWith(p));
+  return prefix ? trimmed.slice(prefix.length).trim() : trimmed;
+}
+
 function calcAge(birthday: string) {
   if (!birthday) return null;
   const today = new Date();
@@ -193,7 +200,8 @@ export default function EditSoberCheers({ params }: { params: Promise<{ id: stri
   // District autocomplete
   const handleDistrictChange = (val: string) => {
     set('district', val);
-    setSuggestions(val.length > 0 ? regions.filter(r => r.district.toLowerCase().startsWith(val.toLowerCase())) : []);
+    const query = stripDistrictPrefix(val).toLowerCase();
+    setSuggestions(query.length > 0 ? regions.filter(r => r.district.toLowerCase().startsWith(query)) : []);
   };
 
   const pickSuggestion = (s: any) => {

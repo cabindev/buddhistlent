@@ -271,6 +271,23 @@ EMAIL_PASS="..."
 
 ---
 
+## District/Tambon Autocomplete — กฎสำคัญ
+
+`app/data/regions.ts` มี 7,498 rows แต่แค่ 5,883 ชื่อตำบลไม่ซ้ำกัน — 27 ชื่อซ้ำกัน ≥8 ครั้งทั่วประเทศ (เช่น "บ้านนา" ซ้ำ 13 ครั้ง, "หนองบัว" ซ้ำ 28 ครั้ง) และเรียงตาม `province_code` ไม่ใช่ตามความเกี่ยวข้อง ดังนั้น district-autocomplete ทุกจุดต้อง:
+
+1. **ห้าม hard-cap ผลลัพธ์ด้วย `.slice(0, N)`** — ตัวที่ตรงกันจะหายไปเงียบๆ ถ้าจังหวัดที่ต้องการอยู่ท้ายลำดับ ให้ปล่อยผลลัพธ์ทั้งหมดแล้วใช้ dropdown container ที่มี `max-h-* overflow-y-auto`/`overflow-auto` แทน (scroll ได้ ไม่ตัดทิ้ง)
+2. **ต้องตัดคำนำหน้าออกจาก query ก่อนเทียบ** — ข้อมูลเก็บ `district: "บ้านนา"` (ไม่มีคำว่า "ตำบล") ถ้า user พิมพ์ "ตำบลบ้านนา" ต้อง strip คำนำหน้าก่อน ไม่งั้นจะไม่ match เลย ใช้ helper `stripDistrictPrefix()` (ตัด `ตำบล`, `ต.`, `อำเภอ`, `อ.`, `จังหวัด`, `จ.`) — implement แยกไฟล์ต่อไฟล์ (ยังไม่ extract เป็น shared util)
+
+**จุดที่ implement district-search แยกกัน (6 จุด ไม่ได้ใช้ component เดียวกันหมด):**
+- `components/form-return/TambonSearch.tsx` — shared component (ใช้ใน organization + form_return AddressStep), match ทั้ง district/amphoe/province
+- `app/soberCheers/create/page.tsx`, `app/soberCheers/edit/[id]/page.tsx` — match district ด้วย `startsWith` เท่านั้น
+- `app/soberCheers/components/editSoberCheersModal.tsx`
+- `app/form_campaign_buddhist_lent/create/page.tsx`, `app/form_campaign_buddhist_lent/edit/[id]/page.tsx`
+
+ถ้าแก้ autocomplete logic ที่จุดใดจุดหนึ่ง ให้เช็คอีก 5 จุดด้วยว่าต้องแก้เหมือนกันไหม (เป็น pattern ซ้ำ ไม่ได้ share code)
+
+---
+
 ## Known Rules & Patterns
 
 - **TambonSearch** → import จาก `@/components/form-return/TambonSearch`, ใช้ `RegionData` type
