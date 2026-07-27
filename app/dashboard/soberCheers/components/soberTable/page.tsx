@@ -291,7 +291,8 @@ export default function SoberCheersTable() {
           <p className="text-sm">{activeFilterCount > 0 ? 'ไม่พบข้อมูลที่ตรงกับตัวกรอง' : `ไม่มีข้อมูลปี ${year}`}</p>
         </div>
       ) : (
-        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+        <>
+        <div className="hidden md:block bg-white border border-gray-200 rounded-lg overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -375,6 +376,69 @@ export default function SoberCheersTable() {
             </table>
           </div>
         </div>
+
+        {/* Cards (mobile) */}
+        <div className="md:hidden space-y-3">
+          <div className="flex items-center gap-2 px-1">
+            <input type="checkbox" checked={selected.size === filtered.length && filtered.length > 0}
+              onChange={toggleSelectAll}
+              className="h-4 w-4 rounded border-gray-300 text-[oklch(80%_0.196_126.665)] focus:ring-[oklch(80%_0.196_126.665)]" />
+            <span className="text-xs text-gray-500">เลือกทั้งหมด</span>
+          </div>
+          {paginated.map(item => (
+            <div key={item.id} className={`bg-white border rounded-lg p-4 ${selected.has(item.id) ? 'border-[oklch(80%_0.196_126.665)] bg-[oklch(97%_0.196_126.665)]' : 'border-gray-200'}`}>
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-start gap-2 min-w-0">
+                  <input type="checkbox" checked={selected.has(item.id)} onChange={() => toggleSelect(item.id)}
+                    className="mt-1 h-4 w-4 flex-shrink-0 rounded border-gray-300 text-[oklch(80%_0.196_126.665)] focus:ring-[oklch(80%_0.196_126.665)]" />
+                  <div className="min-w-0">
+                    <div className="font-medium text-gray-900 truncate">{item.firstName} {item.lastName}</div>
+                    {item.phone && (
+                      <div className="flex items-center gap-1 text-xs text-gray-400 mt-0.5">
+                        <span>{revealedPhones.has(item.id) ? item.phone : maskPhone(item.phone)}</span>
+                        <button onClick={() => toggleReveal(item.id)}
+                          title={revealedPhones.has(item.id) ? 'ซ่อนเบอร์' : 'แสดงเบอร์'}
+                          className="text-gray-300 hover:text-gray-500">
+                          {revealedPhones.has(item.id) ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="flex items-center gap-1 flex-shrink-0">
+                  <Link href={`/soberCheers/edit/${item.id}`}
+                    className="p-1.5 text-gray-400 hover:text-[oklch(68%_0.196_126.665)] hover:bg-[oklch(97%_0.196_126.665)] rounded-lg transition-colors" title="แก้ไข">
+                    <SquarePen className="w-4 h-4" />
+                  </Link>
+                  <button onClick={() => setDeleteTarget(item)}
+                    className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="ลบ">
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs mt-3 pt-3 border-t border-gray-100">
+                <div><span className="text-gray-400">เพศ/อายุ:</span> <span className="text-gray-700">{item.gender} · {calcAge(item.birthday)} ปี</span></div>
+                <div><span className="text-gray-400">จังหวัด/ภาค:</span> <span className="text-gray-700">{item.province} / {item.type}</span></div>
+                <div><span className="text-gray-400">หมู่บ้าน:</span> <span className="text-gray-700">{item.village || '-'}{item.moo ? ` หมู่ ${item.moo}` : ''}</span></div>
+                <div><span className="text-gray-400">อาชีพ:</span> <span className="text-gray-700">{item.job}</span></div>
+                <div><span className="text-gray-400">สังกัด:</span> <span className="text-gray-700">{item.affiliation || '-'}</span></div>
+                <div><span className="text-gray-400">ค่าใช้จ่าย/เดือน:</span> <span className="text-gray-700">{item.monthlyExpense ? `฿${(item.monthlyExpense as number).toLocaleString()}` : '-'}</span></div>
+              </div>
+
+              <div className="mt-2">
+                <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${
+                  item.alcoholConsumption.includes('ดื่ม (ย้อนหลัง') ? 'bg-red-100 text-red-700'
+                  : item.alcoholConsumption.includes('ไม่เคยดื่ม') ? 'bg-[oklch(95%_0.196_126.665)] text-[oklch(56%_0.196_126.665)]'
+                  : 'bg-yellow-100 text-yellow-700'
+                }`}>
+                  {item.alcoholConsumption}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+        </>
       )}
 
       {/* Pagination */}

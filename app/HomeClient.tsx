@@ -136,16 +136,16 @@ export default function HomeClient({ orgNames, totalOrganizations }: { orgNames:
               </div>
 
               {/* Typewriter + Sign Booklet */}
-              <div className="w-full flex items-center justify-between gap-3">
+              <div className="w-full flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div className="relative w-full sm:w-64 md:w-80 h-28 sm:h-28 md:h-36 flex-shrink-0 rounded-lg overflow-hidden border border-stone-200 shadow-md bg-white order-1">
+                  <Image src="/signBU.png" alt="สมุดลงนามปฏิญาณตน" fill className="object-cover" />
+                </div>
                 {orgNames.length > 0 && (
-                  <div className="flex-1 min-w-0">
+                  <div className="w-full sm:flex-1 sm:min-w-0 order-2">
                     <p className="text-[10px] text-stone-400 uppercase tracking-widest mb-1">หน่วยงานร่วม</p>
                     <TypewriterOrg items={orgNames} />
                   </div>
                 )}
-                <div className="relative w-64 sm:w-80 h-28 sm:h-36 flex-shrink-0 rounded-lg overflow-hidden border border-stone-200 shadow-md bg-white">
-                  <Image src="/signBU.png" alt="สมุดลงนามปฏิญาณตน" fill className="object-cover" />
-                </div>
               </div>
 
               <div>
