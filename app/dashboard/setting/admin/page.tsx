@@ -277,7 +277,7 @@ const AdminManagementPage: React.FC = () => {
                 placeholder="ค้นหาชื่อ, นามสกุล, อีเมล..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:border-gray-400 focus:outline-none transition-colors font-light text-sm"
+                className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-900 focus:border-gray-400 focus:outline-none transition-colors font-light text-sm"
               />
             </div>
           </div>

@@ -249,7 +249,7 @@ export default function EditFormReturn({ initialData }: EditFormReturnProps) {
               name="firstName"
               value={formData.firstName}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               required
             />
           </div>
@@ -263,7 +263,7 @@ export default function EditFormReturn({ initialData }: EditFormReturnProps) {
               name="lastName"
               value={formData.lastName}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               required
             />
           </div>
@@ -279,7 +279,7 @@ export default function EditFormReturn({ initialData }: EditFormReturnProps) {
             name="organizationName"
             value={formData.organizationName}
             onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             required
           />
         </div>
@@ -294,7 +294,7 @@ export default function EditFormReturn({ initialData }: EditFormReturnProps) {
             name="addressLine1"
             value={formData.addressLine1}
             onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             required
           />
         </div>
@@ -310,7 +310,7 @@ export default function EditFormReturn({ initialData }: EditFormReturnProps) {
               name="district"
               value={formData.district}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               required
             />
           </div>
@@ -324,7 +324,7 @@ export default function EditFormReturn({ initialData }: EditFormReturnProps) {
               name="amphoe"
               value={formData.amphoe}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               required
             />
           </div>
@@ -338,7 +338,7 @@ export default function EditFormReturn({ initialData }: EditFormReturnProps) {
               name="province"
               value={formData.province}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               required
             />
           </div>
@@ -352,7 +352,7 @@ export default function EditFormReturn({ initialData }: EditFormReturnProps) {
               name="zipcode"
               value={formData.zipcode}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               required
             />
           </div>
@@ -368,7 +368,7 @@ export default function EditFormReturn({ initialData }: EditFormReturnProps) {
               name="type"
               value={formData.type}
               onChange={handleInputChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               required
             >
               <option value="ตำบล">ตำบล</option>
@@ -387,7 +387,7 @@ export default function EditFormReturn({ initialData }: EditFormReturnProps) {
               value={formData.phoneNumber}
               onChange={handleInputChange}
               maxLength={10}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               required
             />
           </div>
@@ -404,7 +404,7 @@ export default function EditFormReturn({ initialData }: EditFormReturnProps) {
             value={formData.numberOfSigners}
             onChange={handleInputChange}
             min="2"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             required
           />
         </div>

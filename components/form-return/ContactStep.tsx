@@ -52,7 +52,7 @@ export default function ContactStep({ data, onUpdate, isEditing = false }: Conta
           id="phoneNumber"
           value={data.phoneNumber || ''}
           onChange={(e) => handlePhoneNumberChange(e.target.value)}
-          className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+          className="w-full px-4 py-3 rounded-lg border border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
           placeholder="0812345678"
           maxLength={10}
         />
@@ -71,7 +71,7 @@ export default function ContactStep({ data, onUpdate, isEditing = false }: Conta
             id="numberOfSigners"
             value={data.numberOfSigners ? data.numberOfSigners.toLocaleString() : ''}
             onChange={(e) => handleNumberOfSignersChange(e.target.value)}
-            className="w-full px-4 py-3 pr-12 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            className="w-full px-4 py-3 pr-12 rounded-lg border border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
             placeholder="จำนวนผู้ลงนาม"
           />
           <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-500 text-sm">

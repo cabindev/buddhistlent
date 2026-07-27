@@ -184,7 +184,7 @@ export default function ListCampaignBuddhistLent() {
           <select
             value={rowsPerPage}
             onChange={(e) => setRowsPerPage(parseInt(e.target.value))}
-            className="mx-2 px-2 py-1 border border-amber-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="mx-2 px-2 py-1 border border-amber-300 rounded-md text-sm bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-500"
           >
             <option value={10}>10</option>
             <option value={25}>25</option>

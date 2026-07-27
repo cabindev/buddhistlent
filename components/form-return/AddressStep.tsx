@@ -49,7 +49,7 @@ const initialLocation: RegionData | undefined = data.district && data.amphoe && 
           id="addressLine1"
           value={data.addressLine1 || ''}
           onChange={(e) => onUpdate({ addressLine1: e.target.value })}
-          className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+          className="w-full px-4 py-3 rounded-lg border border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
           placeholder="เลขที่ หมู่บ้าน ซอย ถนน"
         />
       </div>

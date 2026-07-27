@@ -86,7 +86,7 @@ export default function PersonalInfoStep({ data, onUpdate, isEditing = false }: 
             id="firstName"
             value={data.firstName || ""}
             onChange={(e) => onUpdate({ firstName: e.target.value })}
-            className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            className="w-full px-4 py-3 rounded-lg border border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
             placeholder="กรอกชื่อ"
           />
         </div>
@@ -103,7 +103,7 @@ export default function PersonalInfoStep({ data, onUpdate, isEditing = false }: 
             id="lastName"
             value={data.lastName || ""}
             onChange={(e) => onUpdate({ lastName: e.target.value })}
-            className="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            className="w-full px-4 py-3 rounded-lg border border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
             placeholder="กรอกนามสกุล"
           />
         </div>
@@ -168,7 +168,7 @@ export default function PersonalInfoStep({ data, onUpdate, isEditing = false }: 
                 id="customOrganization"
                 value={data.organizationName || ""}
                 onChange={(e) => handleCustomOrganizationChange(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg border border-orange-300 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-3 rounded-lg border border-orange-300 bg-white text-slate-900 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                 placeholder="เช่น บริษัท ABC จำกัด / วัดพระธาตุ / โรงเรียนมัธยม..."
               />
             </div>

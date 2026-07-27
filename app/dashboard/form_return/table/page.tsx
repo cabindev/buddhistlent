@@ -464,7 +464,7 @@ const FormReturnTable: React.FC = () => {
             <div className="flex items-center gap-3">
               <label className={`text-xs ${textMuted}`}>ปี:</label>
               <select
-          className="px-3 py-1 text-sm font-light border border-amber-200 rounded-md focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
+          className="px-3 py-1 text-sm font-light border border-amber-200 rounded-md bg-white focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
           value={selectedYear}
           onChange={(e) => handleYearChange(parseInt(e.target.value))}
               >
@@ -483,7 +483,7 @@ const FormReturnTable: React.FC = () => {
             <div className="flex items-center gap-2">
               <label className={`text-xs ${textMuted} hidden sm:inline`}>องค์กร:</label>
               <select
-          className="px-3 py-1 text-sm font-light border border-amber-200 rounded-md min-w-[220px] focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
+          className="px-3 py-1 text-sm font-light border border-amber-200 rounded-md min-w-[220px] bg-white focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
           value={selectedOrganizationName}
           onChange={(e) => handleOrganizationFilter(e.target.value)}
               >
@@ -551,7 +551,7 @@ const FormReturnTable: React.FC = () => {
                   <input
                     type="text"
                     placeholder="พิมพ์ชื่อ..."
-                    className="pl-8 pr-3 py-2 w-full border border-amber-200 rounded-md text-sm font-light focus:ring-1 focus:ring-amber-400 focus:border-amber-400 transition-all"
+                    className="pl-8 pr-3 py-2 w-full border border-amber-200 rounded-md text-sm font-light bg-white focus:ring-1 focus:ring-amber-400 focus:border-amber-400 transition-all"
                     value={filters.name}
                     onChange={(e) => handleFilterChange(e.target.value, "name")}
                   />
@@ -564,7 +564,7 @@ const FormReturnTable: React.FC = () => {
                   จังหวัด
                 </label>
                 <select
-                  className="w-full px-3 py-2 border border-amber-200 rounded-md text-sm font-light focus:ring-1 focus:ring-amber-400 focus:border-amber-400 transition-all"
+                  className="w-full px-3 py-2 border border-amber-200 rounded-md text-sm font-light bg-white focus:ring-1 focus:ring-amber-400 focus:border-amber-400 transition-all"
                   value={filters.province}
                   onChange={(e) => handleFilterChange(e.target.value, "province")}
                 >
@@ -585,7 +585,7 @@ const FormReturnTable: React.FC = () => {
                   องค์กร
                 </label>
                 <select
-                  className="w-full px-3 py-2 border border-amber-200 rounded-md text-sm font-light focus:ring-1 focus:ring-amber-400 focus:border-amber-400 transition-all"
+                  className="w-full px-3 py-2 border border-amber-200 rounded-md text-sm font-light bg-white focus:ring-1 focus:ring-amber-400 focus:border-amber-400 transition-all"
                   value={filters.organizationName}
                   onChange={(e) => handleFilterChange(e.target.value, "organizationName")}
                 >
@@ -606,7 +606,7 @@ const FormReturnTable: React.FC = () => {
                   ประเภท
                 </label>
                 <select
-                  className="w-full px-3 py-2 border border-amber-200 rounded-md text-sm font-light focus:ring-1 focus:ring-amber-400 focus:border-amber-400 transition-all"
+                  className="w-full px-3 py-2 border border-amber-200 rounded-md text-sm font-light bg-white focus:ring-1 focus:ring-amber-400 focus:border-amber-400 transition-all"
                   value={filters.type}
                   onChange={(e) => handleFilterChange(e.target.value, "type")}
                 >
@@ -627,7 +627,7 @@ const FormReturnTable: React.FC = () => {
                   อำเภอ
                 </label>
                 <select
-                  className="w-full px-3 py-2 border border-amber-200 rounded-md text-sm font-light focus:ring-1 focus:ring-amber-400 focus:border-amber-400 transition-all"
+                  className="w-full px-3 py-2 border border-amber-200 rounded-md text-sm font-light bg-white focus:ring-1 focus:ring-amber-400 focus:border-amber-400 transition-all"
                   value={filters.amphoe}
                   onChange={(e) => handleFilterChange(e.target.value, "amphoe")}
                 >
@@ -648,7 +648,7 @@ const FormReturnTable: React.FC = () => {
                   ตำบล
                 </label>
                 <select
-                  className="w-full px-3 py-2 border border-amber-200 rounded-md text-sm font-light focus:ring-1 focus:ring-amber-400 focus:border-amber-400 transition-all"
+                  className="w-full px-3 py-2 border border-amber-200 rounded-md text-sm font-light bg-white focus:ring-1 focus:ring-amber-400 focus:border-amber-400 transition-all"
                   value={filters.district}
                   onChange={(e) => handleFilterChange(e.target.value, "district")}
                 >

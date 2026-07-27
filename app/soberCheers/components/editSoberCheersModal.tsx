@@ -146,7 +146,7 @@ export default function EditSoberCheersModal({ soberCheerId, isOpen, onClose, on
                 value={formData.firstName}
                 onChange={handleChange}
                 required
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm text-sm"
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm text-sm bg-white text-gray-900"
               />
             </div>
             <div>
@@ -158,7 +158,7 @@ export default function EditSoberCheersModal({ soberCheerId, isOpen, onClose, on
                 value={formData.lastName}
                 onChange={handleChange}
                 required
-                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm text-sm"
+                className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm text-sm bg-white text-gray-900"
               />
             </div>
           </div>
@@ -172,7 +172,7 @@ export default function EditSoberCheersModal({ soberCheerId, isOpen, onClose, on
               value={formData.birthday}
               onChange={handleChange}
               required
-              className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm text-sm"
+              className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm text-sm bg-white text-gray-900"
             />
             <p className="text-sm text-gray-500 mt-1">อายุ: {calculateAge(formData.birthday)} ปี</p>
           </div>
@@ -186,7 +186,7 @@ export default function EditSoberCheersModal({ soberCheerId, isOpen, onClose, on
               value={formData.addressLine1}
               onChange={handleChange}
               required
-              className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm text-sm"
+              className="mt-1 block w-full px-2 py-1 border border-gray-300 rounded-md shadow-sm text-sm bg-white text-gray-900"
             />
           </div>
 
@@ -205,11 +205,11 @@ export default function EditSoberCheersModal({ soberCheerId, isOpen, onClose, on
                 value={formData.district}
                 onChange={handleDistrictChange}
                 required
-                className="block w-full pl-7 pr-2 py-1 border border-gray-300 rounded-md shadow-sm text-sm"
+                className="block w-full pl-7 pr-2 py-1 border border-gray-300 rounded-md shadow-sm text-sm bg-white text-gray-900"
               />
             </div>
             {suggestions.length > 0 && (
-              <ul className="border border-gray-300 mt-1 max-h-40 overflow-auto rounded-md">
+              <ul className="border border-gray-300 mt-1 max-h-40 overflow-auto rounded-md bg-white">
                 {suggestions.map((suggestion, index) => (
                   <li
                     key={index}

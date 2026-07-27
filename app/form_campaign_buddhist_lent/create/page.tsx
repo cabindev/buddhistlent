@@ -211,7 +211,7 @@ export default function CreateCampaign() {
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     required
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 bg-white text-gray-900 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
                   />
                 </div>
                 <div>
@@ -224,7 +224,7 @@ export default function CreateCampaign() {
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                     required
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 bg-white text-gray-900 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
                   />
                 </div>
               </div>
@@ -259,7 +259,7 @@ export default function CreateCampaign() {
                   value={birthday}
                   onChange={(e) => setBirthday(e.target.value)}
                   required
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 bg-white text-gray-900 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
                 />
                 {age !== null && (
                   <p className="mt-1 text-sm text-gray-500">อายุ: {age} ปี</p>
@@ -276,7 +276,7 @@ export default function CreateCampaign() {
                   value={addressLine1}
                   onChange={(e) => setAddressLine1(e.target.value)}
                   required
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 bg-white text-gray-900 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
                 />
               </div>
 
@@ -291,7 +291,7 @@ export default function CreateCampaign() {
                   onChange={handleDistrictChange}
                   placeholder="กรุณาระบุ ตำบล/แขวง ระบบจะแนะนำข้อมูลที่เกี่ยวข้อง (เลือกข้อมูลที่ถูกต้อง)"
                   required
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 bg-white text-gray-900 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
                 />
                 {suggestions.length > 0 && (
                   <ul className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
@@ -381,7 +381,7 @@ export default function CreateCampaign() {
                   value={phone}
                   onChange={handlePhoneChange}
                   maxLength={10}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-gray-900 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
                 />
                 {phoneError && (
                   <p className="mt-1 text-sm text-red-600">{phoneError}</p>
@@ -397,7 +397,7 @@ export default function CreateCampaign() {
                   value={job}
                   onChange={(e) => setJob(e.target.value)}
                   required
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-gray-900 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
                 >
                   <option value="" disabled>เลือกอาชีพ</option>
                   <option value="ประกอบธุรกิจส่วนตัว">ประกอบธุรกิจส่วนตัว</option>
@@ -422,7 +422,7 @@ export default function CreateCampaign() {
                   value={alcoholConsumption}
                   onChange={(e) => setAlcoholConsumption(e.target.value)}
                   required
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-gray-900 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
                 >
                   <option value="" disabled>เลือกคำตอบ</option>
                   <option value="ดื่ม (ย้อนหลังไป 1 ปี)">ดื่ม (ย้อนหลังไป 1 ปี)</option>
@@ -444,7 +444,7 @@ export default function CreateCampaign() {
                       value={drinkingFrequency}
                       onChange={(e) => setDrinkingFrequency(e.target.value)}
                       required
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-gray-900 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
                     >
                       <option value="" disabled>เลือกคำตอบ</option>
                       <option value="ทุกวัน (7 วัน/สัปดาห์)">ทุกวัน (7 วัน/สัปดาห์)</option>
@@ -465,7 +465,7 @@ export default function CreateCampaign() {
                       value={formatMonthlyExpense(monthlyExpense)}
                       onChange={(e) => setMonthlyExpense(e.target.value)}
                       required
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-gray-900 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
                     />
                   </div>
 
@@ -478,7 +478,7 @@ export default function CreateCampaign() {
                       value={intentPeriod}
                       onChange={(e) => setIntentPeriod(e.target.value)}
                       required
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-gray-900 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
                     >
                       <option value="" disabled>เลือกคำตอบ</option>
                       <option value="1 เดือน">1 เดือน</option>
@@ -531,7 +531,7 @@ export default function CreateCampaign() {
                   value={healthImpact}
                   onChange={(e) => setHealthImpact(e.target.value)}
                   required
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-gray-900 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
                 >
                   <option value="" disabled>เลือกคำตอบ</option>
                   <option value="ไม่มีผลกระทบ">ไม่มีผลกระทบ</option>

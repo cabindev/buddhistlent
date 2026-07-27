@@ -246,7 +246,7 @@ export default function EditCampaignBuddhistLent({ params }: { params: Promise<{
                   value={formData.firstName}
                   onChange={handleChange}
                   required
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-gray-900 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
                 />
               </div>
               <div className="w-1/2">
@@ -263,7 +263,7 @@ export default function EditCampaignBuddhistLent({ params }: { params: Promise<{
                   value={formData.lastName}
                   onChange={handleChange}
                   required
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-gray-900 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
                 />
               </div>
             </div>
@@ -307,7 +307,7 @@ export default function EditCampaignBuddhistLent({ params }: { params: Promise<{
                 value={formData.birthday}
                 onChange={handleChange}
                 required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-gray-900 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
               />
               {age !== null && (
                 <p className="mt-1 text-sm text-gray-500">อายุ: {age} ปี</p>
@@ -328,7 +328,7 @@ export default function EditCampaignBuddhistLent({ params }: { params: Promise<{
                 value={formData.addressLine1}
                 onChange={handleChange}
                 required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-gray-900 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
               />
             </div>
 
@@ -346,10 +346,10 @@ export default function EditCampaignBuddhistLent({ params }: { params: Promise<{
                 value={formData.district}
                 onChange={handleDistrictChange}
                 required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-gray-900 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
               />
               {suggestions.length > 0 && (
-                <ul className="border border-gray-300 mt-1 max-h-60 overflow-auto rounded-md">
+                <ul className="border border-gray-300 mt-1 max-h-60 overflow-auto rounded-md bg-white">
                   {suggestions.map((suggestion, index) => (
                     <li
                       key={index}
@@ -378,7 +378,7 @@ export default function EditCampaignBuddhistLent({ params }: { params: Promise<{
                 value={formData.amphoe}
                 onChange={handleChange}
                 required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-gray-900 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
               />
             </div>
 
@@ -396,7 +396,7 @@ export default function EditCampaignBuddhistLent({ params }: { params: Promise<{
                 value={formData.province}
                 onChange={handleChange}
                 required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-gray-900 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
               />
             </div>
 
@@ -414,7 +414,7 @@ export default function EditCampaignBuddhistLent({ params }: { params: Promise<{
                 value={formData.zipcode}
                 onChange={handleChange}
                 required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-gray-900 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
               />
             </div>
 
@@ -432,7 +432,7 @@ export default function EditCampaignBuddhistLent({ params }: { params: Promise<{
                 value={formData.phone}
                 onChange={handlePhoneChange}
                 maxLength={10}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-gray-900 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
               />
               {phoneError && (
                 <p className="mt-1 text-sm text-red-600">{phoneError}</p>
@@ -452,7 +452,7 @@ export default function EditCampaignBuddhistLent({ params }: { params: Promise<{
                 value={formData.job}
                 onChange={handleChange}
                 required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-gray-900 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
               >
                 <option value="" disabled>
                   เลือกอาชีพ
@@ -487,7 +487,7 @@ export default function EditCampaignBuddhistLent({ params }: { params: Promise<{
                 value={formData.alcoholConsumption}
                 onChange={handleChange}
                 required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-gray-900 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
               >
                 <option value="" disabled>
                   เลือกคำตอบ
@@ -524,7 +524,7 @@ export default function EditCampaignBuddhistLent({ params }: { params: Promise<{
                     value={formData.drinkingFrequency || ""}
                     onChange={handleChange}
                     required
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-gray-900 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
                   >
                     <option value="" disabled>
                       เลือกคำตอบ
@@ -561,7 +561,7 @@ export default function EditCampaignBuddhistLent({ params }: { params: Promise<{
                     value={formData.monthlyExpense || ""}
                     onChange={handleMonthlyExpenseChange}
                     required
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-gray-900 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
                   />
                 </div>
 
@@ -578,7 +578,7 @@ export default function EditCampaignBuddhistLent({ params }: { params: Promise<{
                     value={formData.intentPeriod || ""}
                     onChange={handleChange}
                     required
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-gray-900 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
                   >
                     <option value="" disabled>
                       เลือกคำตอบ
@@ -642,7 +642,7 @@ export default function EditCampaignBuddhistLent({ params }: { params: Promise<{
                 value={formData.healthImpact}
                 onChange={handleChange}
                 required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-gray-900 focus:outline-none focus:ring-amber-500 focus:border-amber-500 sm:text-sm"
               >
                 <option value="" disabled>
                   เลือกคำตอบ

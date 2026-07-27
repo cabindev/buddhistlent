@@ -169,7 +169,7 @@ export default function EditModal({ isOpen, onClose, recordId, onSuccess }: Edit
                   type="text"
                   value={formData.firstName || ''}
                   onChange={(e) => handleInputChange('firstName', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light bg-white focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
                 />
               </div>
 
@@ -182,7 +182,7 @@ export default function EditModal({ isOpen, onClose, recordId, onSuccess }: Edit
                   type="text"
                   value={formData.lastName || ''}
                   onChange={(e) => handleInputChange('lastName', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light bg-white focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
                 />
               </div>
 
@@ -195,7 +195,7 @@ export default function EditModal({ isOpen, onClose, recordId, onSuccess }: Edit
                   <select
                     value={formData.organizationName || ''}
                     onChange={(e) => handleInputChange('organizationName', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light bg-white focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
                   >
                     <option value="">เลือกองค์กร (ปี 2025)...</option>
                     {filterOptions.organizationNames.map((orgName) => (
@@ -209,7 +209,7 @@ export default function EditModal({ isOpen, onClose, recordId, onSuccess }: Edit
                     type="text"
                     value={formData.organizationName || ''}
                     onChange={(e) => handleInputChange('organizationName', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light bg-white focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
                     placeholder="กำลังโหลดรายการองค์กร..."
                     disabled
                   />
@@ -225,7 +225,7 @@ export default function EditModal({ isOpen, onClose, recordId, onSuccess }: Edit
                   type="text"
                   value={formData.addressLine1 || ''}
                   onChange={(e) => handleInputChange('addressLine1', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light bg-white focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
                 />
               </div>
 
@@ -238,7 +238,7 @@ export default function EditModal({ isOpen, onClose, recordId, onSuccess }: Edit
                   <select
                     value={formData.district || ''}
                     onChange={(e) => handleInputChange('district', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light bg-white focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
                   >
                     <option value="">เลือกตำบล (ปี 2025)...</option>
                     {filterOptions.districts.map((district) => (
@@ -252,7 +252,7 @@ export default function EditModal({ isOpen, onClose, recordId, onSuccess }: Edit
                     type="text"
                     value={formData.district || ''}
                     onChange={(e) => handleInputChange('district', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light bg-white focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
                   />
                 )}
               </div>
@@ -266,7 +266,7 @@ export default function EditModal({ isOpen, onClose, recordId, onSuccess }: Edit
                   <select
                     value={formData.amphoe || ''}
                     onChange={(e) => handleInputChange('amphoe', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light bg-white focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
                   >
                     <option value="">เลือกอำเภอ (ปี 2025)...</option>
                     {filterOptions.amphoes.map((amphoe) => (
@@ -280,7 +280,7 @@ export default function EditModal({ isOpen, onClose, recordId, onSuccess }: Edit
                     type="text"
                     value={formData.amphoe || ''}
                     onChange={(e) => handleInputChange('amphoe', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light bg-white focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
                   />
                 )}
               </div>
@@ -294,7 +294,7 @@ export default function EditModal({ isOpen, onClose, recordId, onSuccess }: Edit
                   <select
                     value={formData.province || ''}
                     onChange={(e) => handleInputChange('province', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light bg-white focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
                   >
                     <option value="">เลือกจังหวัด (ปี 2025)...</option>
                     {filterOptions.provinces.map((province) => (
@@ -308,7 +308,7 @@ export default function EditModal({ isOpen, onClose, recordId, onSuccess }: Edit
                     type="text"
                     value={formData.province || ''}
                     onChange={(e) => handleInputChange('province', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light bg-white focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
                   />
                 )}
               </div>
@@ -322,7 +322,7 @@ export default function EditModal({ isOpen, onClose, recordId, onSuccess }: Edit
                   type="text"
                   value={formData.zipcode || ''}
                   onChange={(e) => handleInputChange('zipcode', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light bg-white focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
                 />
               </div>
 
@@ -335,7 +335,7 @@ export default function EditModal({ isOpen, onClose, recordId, onSuccess }: Edit
                   <select
                     value={formData.type || ''}
                     onChange={(e) => handleInputChange('type', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light bg-white focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
                   >
                     <option value="">เลือกประเภท (ปี 2025)...</option>
                     {filterOptions.types.map((type) => (
@@ -349,7 +349,7 @@ export default function EditModal({ isOpen, onClose, recordId, onSuccess }: Edit
                     type="text"
                     value={formData.type || ''}
                     onChange={(e) => handleInputChange('type', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light bg-white focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
                   />
                 )}
               </div>
@@ -363,7 +363,7 @@ export default function EditModal({ isOpen, onClose, recordId, onSuccess }: Edit
                   type="text"
                   value={formData.phoneNumber || ''}
                   onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light bg-white focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
                 />
               </div>
 
@@ -377,7 +377,7 @@ export default function EditModal({ isOpen, onClose, recordId, onSuccess }: Edit
                   min="0"
                   value={formData.numberOfSigners || 0}
                   onChange={(e) => handleInputChange('numberOfSigners', parseInt(e.target.value) || 0)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm font-light bg-white focus:ring-1 focus:ring-amber-400 focus:border-amber-400"
                 />
               </div>
             </div>

@@ -139,7 +139,7 @@ export default function OrganizationTablePage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
           <input type="text" placeholder="ค้นหาชื่อ, เบอร์โทร..."
             value={search} onChange={e => { setSearch(e.target.value); setPage(1); }}
-            className="pl-9 pr-3 py-2 w-full text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="pl-9 pr-3 py-2 w-full text-sm border border-gray-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-amber-500"
           />
         </div>
         <button onClick={() => setShowFilters(!showFilters)}

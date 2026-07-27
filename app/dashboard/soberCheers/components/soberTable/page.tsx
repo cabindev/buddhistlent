@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { Search, Filter, X, Download, FileSpreadsheet, ChevronLeft, ChevronRight, RefreshCw, SquarePen, Trash2, LoaderCircle, AlertTriangle } from 'lucide-react';
+import { Search, Filter, X, Download, FileSpreadsheet, ChevronLeft, ChevronRight, RefreshCw, SquarePen, Trash2, LoaderCircle, AlertTriangle, Eye, EyeOff } from 'lucide-react';
 import { getAllSoberCheersForTable } from '@/app/soberCheers/actions/Get';
 import { getAvailableSoberCheersYears } from '@/app/dashboard/soberCheers/actions/GetChartData';
 import { deleteSoberCheers } from '@/app/soberCheers/actions/Delete';
@@ -36,6 +36,11 @@ const PAGE_SIZE = 20;
 function calcAge(b: string | Date) {
   try { return Math.abs(new Date(Date.now() - new Date(b).getTime()).getUTCFullYear() - 1970); }
   catch { return 0; }
+}
+
+function maskPhone(phone: string): string {
+  if (phone.length !== 10) return phone.replace(/./g, '•');
+  return `${phone.slice(0, 3)}-•••-••${phone.slice(-2)}`;
 }
 
 function parseMotivations(m: any): string {
@@ -74,6 +79,8 @@ export default function SoberCheersTable() {
   const [showFilters, setShowFilters] = useState(false);
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [page, setPage] = useState(1);
+  const [revealedPhones, setRevealedPhones] = useState<Set<number>>(new Set());
+  const toggleReveal = (id: number) => setRevealedPhones(p => { const n = new Set(p); n.has(id) ? n.delete(id) : n.add(id); return n; });
 
   // delete: single row target, or 'bulk' for selected rows
   const [deleteTarget, setDeleteTarget] = useState<SoberCheersItem | 'bulk' | null>(null);
@@ -83,6 +90,7 @@ export default function SoberCheersTable() {
     setLoading(true);
     setError(null);
     setSelected(new Set());
+    setRevealedPhones(new Set());
     setFilters({ name: '', village: '', moo: '', province: '', type: '', job: '', affiliation: '' });
     setPage(1);
 
@@ -312,7 +320,16 @@ export default function SoberCheersTable() {
                     </td>
                     <td className="px-4 py-3">
                       <div className="font-medium text-gray-900">{item.firstName} {item.lastName}</div>
-                      {item.phone && <div className="text-xs text-gray-400 mt-0.5">{item.phone}</div>}
+                      {item.phone && (
+                        <div className="flex items-center gap-1 text-xs text-gray-400 mt-0.5">
+                          <span>{revealedPhones.has(item.id) ? item.phone : maskPhone(item.phone)}</span>
+                          <button onClick={() => toggleReveal(item.id)}
+                            title={revealedPhones.has(item.id) ? 'ซ่อนเบอร์' : 'แสดงเบอร์'}
+                            className="text-gray-300 hover:text-gray-500">
+                            {revealedPhones.has(item.id) ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                          </button>
+                        </div>
+                      )}
                     </td>
                     <td className="px-4 py-3 text-gray-700">
                       <div>{item.gender}</div>
