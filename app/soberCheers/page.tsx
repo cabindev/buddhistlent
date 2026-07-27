@@ -25,11 +25,6 @@ interface SoberCheer {
 
 const PAGE_SIZE = 20;
 
-function calcAge(b: string | Date) {
-  try { return Math.abs(new Date(Date.now() - new Date(b).getTime()).getUTCFullYear() - 1970); }
-  catch { return 0; }
-}
-
 export default function SoberCheersPage() {
   const { data: session } = useSession();
   const isAdmin = session?.user?.role === 'admin';
@@ -197,8 +192,8 @@ export default function SoberCheersPage() {
           )}
         </div>
 
-        {/* Table */}
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        {/* Table (desktop) */}
+        <div className="hidden md:block bg-white rounded-xl border border-gray-200 overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-gray-100 text-xs text-gray-500 font-medium">
@@ -214,7 +209,6 @@ export default function SoberCheersPage() {
                 )}
                 <th className="px-4 py-3 text-left">#</th>
                 <th className="px-4 py-3 text-left">ชื่อ-นามสกุล</th>
-                <th className="px-4 py-3 text-left">อายุ</th>
                 <th className="px-4 py-3 text-left">จังหวัด</th>
                 <th className="px-4 py-3 text-left">ภาค</th>
                 <th className="px-4 py-3 text-left">อาชีพ</th>
@@ -224,7 +218,7 @@ export default function SoberCheersPage() {
             <tbody>
               {rows.length === 0 ? (
                 <tr>
-                  <td colSpan={isAdmin ? 8 : 6} className="px-4 py-12 text-center text-sm text-gray-400">
+                  <td colSpan={isAdmin ? 7 : 5} className="px-4 py-12 text-center text-sm text-gray-400">
                     ไม่พบข้อมูล
                   </td>
                 </tr>
@@ -248,9 +242,7 @@ export default function SoberCheersPage() {
                   </td>
                   <td className="px-4 py-3">
                     <span className="font-medium text-gray-900">{item.firstName} {item.lastName}</span>
-                    {item.phone && <span className="text-gray-400 text-xs ml-2">{item.phone}</span>}
                   </td>
-                  <td className="px-4 py-3 text-gray-600">{calcAge(item.birthday)} ปี</td>
                   <td className="px-4 py-3 text-gray-600">{item.province}</td>
                   <td className="px-4 py-3 text-gray-500">{item.type || '—'}</td>
                   <td className="px-4 py-3 text-gray-500">{item.job}</td>
@@ -268,6 +260,49 @@ export default function SoberCheersPage() {
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* Cards (mobile) */}
+        <div className="md:hidden space-y-3">
+          {rows.length === 0 ? (
+            <div className="bg-white rounded-xl border border-gray-200 px-4 py-12 text-center text-sm text-gray-400">
+              ไม่พบข้อมูล
+            </div>
+          ) : rows.map((item, i) => (
+            <div key={item.id} className="bg-white rounded-xl border border-gray-200 p-4">
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-start gap-2">
+                  {isAdmin && (
+                    <input
+                      type="checkbox"
+                      checked={selected.has(item.id)}
+                      onChange={() => toggle(item.id)}
+                      className="mt-1 rounded border-gray-300 text-green-500 focus:ring-green-500"
+                    />
+                  )}
+                  <div>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-gray-400 text-xs tabular-nums">{(page - 1) * PAGE_SIZE + i + 1}</span>
+                      <span className="font-medium text-gray-900">{item.firstName} {item.lastName}</span>
+                    </div>
+                  </div>
+                </div>
+                {isAdmin && (
+                  <button
+                    onClick={() => setEditId(item.id)}
+                    className="p-1.5 text-gray-400 hover:text-gray-700 rounded hover:bg-gray-100 transition-colors flex-shrink-0"
+                  >
+                    <Pencil className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
+              <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs mt-3 pt-3 border-t border-gray-100">
+                <div><span className="text-gray-400">ภาค:</span> <span className="text-gray-700">{item.type || '—'}</span></div>
+                <div><span className="text-gray-400">จังหวัด:</span> <span className="text-gray-700">{item.province}</span></div>
+                <div><span className="text-gray-400">อาชีพ:</span> <span className="text-gray-700">{item.job}</span></div>
+              </div>
+            </div>
+          ))}
         </div>
 
         {/* Pagination */}

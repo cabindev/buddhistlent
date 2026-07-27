@@ -45,10 +45,6 @@ export default function RecentUploadCard({ formReturn }: RecentUploadCardProps) 
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-slate-600 mb-4">
             <div>
-              <span className="font-medium">เบอร์โทร:</span>
-              <p>{formReturn.phoneNumber}</p>
-            </div>
-            <div>
               <span className="font-medium">จำนวนผู้ลงนาม:</span>
               <p className="text-green-600 font-semibold">{formReturn.numberOfSigners?.toLocaleString() || 0} คน</p>
             </div>

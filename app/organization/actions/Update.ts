@@ -2,6 +2,8 @@
 'use server';
 import prisma from '@/app/lib/db';
 import { revalidatePath } from 'next/cache';
+import { getServerSession } from 'next-auth';
+import authOptions from '@/app/lib/configs/auth/authOptions';
 
 export interface UpdateOrganizationData {
   firstName?: string;
@@ -24,6 +26,11 @@ export interface UpdateOrganizationData {
 
 export async function updateOrganization(id: number, data: UpdateOrganizationData): Promise<{ success: boolean; message: string }> {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session || session.user.role !== 'admin') {
+      return { success: false, message: 'ไม่ได้รับอนุญาตให้แก้ไขข้อมูลนี้' };
+    }
+
     // ตรวจสอบว่าข้อมูลมีอยู่หรือไม่
     const existingOrganization = await prisma.organization.findUnique({
       where: { id }

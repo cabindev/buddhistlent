@@ -3,13 +3,23 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
+import { Eye, EyeOff } from 'lucide-react';
 import { FormReturnData } from '@/types/form-return';
+
+function maskPhone(phone: string): string {
+  if (phone.length !== 10) return phone.replace(/./g, '•');
+  return `${phone.slice(0, 3)}-•••-••${phone.slice(-2)}`;
+}
 
 interface InstagramCardProps {
   form: FormReturnData;
 }
 
 const InstagramCard: React.FC<InstagramCardProps> = ({ form }) => {
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.role === 'admin';
+  const [phoneRevealed, setPhoneRevealed] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
   
@@ -60,14 +70,16 @@ const InstagramCard: React.FC<InstagramCardProps> = ({ form }) => {
   return (
     <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group relative">
       {/* Edit Icon - Top Right */}
-      <Link 
-        href={`/form_return/edit/${form.id}`}
-        className="absolute top-4 right-4 z-10 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md hover:bg-white hover:scale-110 transition-all"
-      >
-        <svg className="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-        </svg>
-      </Link>
+      {isAdmin && (
+        <Link
+          href={`/form_return/edit/${form.id}`}
+          className="absolute top-4 right-4 z-10 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md hover:bg-white hover:scale-110 transition-all"
+        >
+          <svg className="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+          </svg>
+        </Link>
+      )}
 
       {/* Image Section */}
       <div className="relative h-64 overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200">
@@ -181,12 +193,17 @@ const InstagramCard: React.FC<InstagramCardProps> = ({ form }) => {
             </div>
           )}
           
-          {form.phoneNumber && (
+          {form.phoneNumber && isAdmin && (
             <div className="flex items-center">
               <svg className="w-4 h-4 mr-3 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
               </svg>
-              <span className="truncate">{form.phoneNumber}</span>
+              <span className="truncate">{phoneRevealed ? form.phoneNumber : maskPhone(form.phoneNumber)}</span>
+              <button onClick={() => setPhoneRevealed(v => !v)}
+                title={phoneRevealed ? 'ซ่อนเบอร์' : 'แสดงเบอร์'}
+                className="ml-1.5 text-slate-300 hover:text-slate-500 flex-shrink-0">
+                {phoneRevealed ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+              </button>
             </div>
           )}
         </div>

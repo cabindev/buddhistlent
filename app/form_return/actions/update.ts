@@ -6,6 +6,8 @@ import { writeFile } from 'fs/promises';
 import path from 'path';
 import fs from 'fs/promises';
 import prisma from '@/app/lib/db';
+import { getServerSession } from 'next-auth';
+import authOptions from '@/app/lib/configs/auth/authOptions';
 
 // ฟังก์ชันสำหรับบันทึกรูปภาพ
 async function saveImage(file: File, suffix: string): Promise<string> {
@@ -41,6 +43,11 @@ export async function updateFormReturn(formData: FormData): Promise<{
   error?: string;
 }> {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session || session.user.role !== 'admin') {
+      return { success: false, error: 'ไม่ได้รับอนุญาตให้แก้ไขข้อมูลนี้' };
+    }
+
     const id = formData.get('id') as string;
     
     if (!id) {

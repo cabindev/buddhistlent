@@ -1,5 +1,7 @@
 // app/organization/edit/[id]/page.tsx - แก้ไขให้ส่ง ID ไปยัง OrganizationForm
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
+import { getServerSession } from 'next-auth';
+import authOptions from '@/app/lib/configs/auth/authOptions';
 import { getOrganizationById } from '../../actions/Get';
 import { getActiveOrganizationCategories } from '@/app/dashboard/organization-category/actions/Get';
 import OrganizationForm from '../../components/OrganizationForm';
@@ -9,6 +11,11 @@ interface EditOrganizationPageProps {
 }
 
 export default async function EditOrganizationPage({ params }: EditOrganizationPageProps) {
+  const session = await getServerSession(authOptions);
+  if (!session || session.user.role !== 'admin') {
+    redirect('/auth/signin');
+  }
+
   const { id } = await params;
   const organizationId = parseInt(id);
 

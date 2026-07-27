@@ -3,19 +3,22 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { Organization, OrganizationCategory } from '@/types/organization';
 import { getAllOrganizations, getAvailableOrganizationYears, OrganizationFilters } from '../actions/Get';
 import { deleteOrganization } from '../actions/Delete';
 import { getActiveOrganizationCategories } from '@/app/dashboard/organization-category/actions/Get';
-import { 
-  Edit, Trash2, Plus, Search, Building2, 
-  X, Eye, Phone, MapPin, Users, Image as ImageIcon, 
+import {
+  Edit, Trash2, Plus, Search, Building2,
+  X, Eye, MapPin, Users, Image as ImageIcon,
   ChevronLeft, ChevronRight, Calendar, Check, AlertTriangle
 } from 'lucide-react';
 
 export default function OrganizationList() {
   const router = useRouter();
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.role === 'admin';
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [organizationCategories, setOrganizationCategories] = useState<OrganizationCategory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -217,7 +220,7 @@ export default function OrganizationList() {
                     setSearchTerm(e.target.value);
                     setCurrentPage(1);
                   }}
-                  className="pl-8 pr-3 w-full py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500"
+                  className="pl-8 pr-3 w-full py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500"
                 />
                 {searchTerm && (
                   <button
@@ -239,7 +242,7 @@ export default function OrganizationList() {
                     setFilterCategory(e.target.value ? parseInt(e.target.value) : '');
                     setCurrentPage(1);
                   }}
-                  className="px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500 min-w-[120px]"
+                  className="px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500 min-w-[120px]"
                 >
                   <option value="">All Organizations</option>
                   {organizationCategories.map((category) => (
@@ -255,7 +258,7 @@ export default function OrganizationList() {
                     setFilterProvince(e.target.value);
                     setCurrentPage(1);
                   }}
-                  className="px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500 min-w-[100px]"
+                  className="px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500 min-w-[100px]"
                 >
                   <option value="">All Provinces</option>
                   {provinces.map((province) => (
@@ -273,7 +276,7 @@ export default function OrganizationList() {
                     setSortOrder(newSortOrder as typeof sortOrder);
                     setCurrentPage(1);
                   }}
-                  className="px-2 py-1.5 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500 min-w-[120px]"
+                  className="px-2 py-1.5 text-sm border border-gray-300 rounded bg-white text-gray-900 focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500 min-w-[120px]"
                 >
                   <option value="createdAt-desc">Latest First</option>
                   <option value="createdAt-asc">Oldest First</option>
@@ -334,10 +337,6 @@ export default function OrganizationList() {
                           <div>
                             <div className="text-sm font-medium text-gray-900">
                               {org.firstName} {org.lastName}
-                            </div>
-                            <div className="text-xs text-gray-500 flex items-center">
-                              <Phone className="h-3 w-3 mr-1" />
-                              {org.phoneNumber}
                             </div>
                           </div>
                         </div>
@@ -402,26 +401,30 @@ export default function OrganizationList() {
                             <Eye className="h-3 w-3" />
                           </Link>
                           
-                          <Link
-                            href={`/organization/edit/${org.id}`}
-                            className="p-1 text-gray-600 hover:bg-gray-100 rounded transition-colors duration-200"
-                            title="Edit"
-                          >
-                            <Edit className="h-3 w-3" />
-                          </Link>
-                          
-                          <button
-                            onClick={() => handleDelete(org.id, `${org.firstName} ${org.lastName}`)}
-                            disabled={isDeleting === org.id}
-                            className="p-1 text-red-600 hover:bg-red-50 rounded transition-colors duration-200 disabled:opacity-50"
-                            title="Delete"
-                          >
-                            {isDeleting === org.id ? (
-                              <div className="animate-spin h-3 w-3 border border-red-600 border-t-transparent rounded-full"></div>
-                            ) : (
-                              <Trash2 className="h-3 w-3" />
-                            )}
-                          </button>
+                          {isAdmin && (
+                            <>
+                              <Link
+                                href={`/organization/edit/${org.id}`}
+                                className="p-1 text-gray-600 hover:bg-gray-100 rounded transition-colors duration-200"
+                                title="Edit"
+                              >
+                                <Edit className="h-3 w-3" />
+                              </Link>
+
+                              <button
+                                onClick={() => handleDelete(org.id, `${org.firstName} ${org.lastName}`)}
+                                disabled={isDeleting === org.id}
+                                className="p-1 text-red-600 hover:bg-red-50 rounded transition-colors duration-200 disabled:opacity-50"
+                                title="Delete"
+                              >
+                                {isDeleting === org.id ? (
+                                  <div className="animate-spin h-3 w-3 border border-red-600 border-t-transparent rounded-full"></div>
+                                ) : (
+                                  <Trash2 className="h-3 w-3" />
+                                )}
+                              </button>
+                            </>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -454,18 +457,22 @@ export default function OrganizationList() {
                       >
                         <Eye className="h-3 w-3" />
                       </Link>
-                      <Link
-                        href={`/organization/edit/${org.id}`}
-                        className="p-1 text-gray-600 hover:bg-gray-100 rounded"
-                      >
-                        <Edit className="h-3 w-3" />
-                      </Link>
-                      <button
-                        onClick={() => handleDelete(org.id, `${org.firstName} ${org.lastName}`)}
-                        className="p-1 text-red-600 hover:bg-red-50 rounded"
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </button>
+                      {isAdmin && (
+                        <>
+                          <Link
+                            href={`/organization/edit/${org.id}`}
+                            className="p-1 text-gray-600 hover:bg-gray-100 rounded"
+                          >
+                            <Edit className="h-3 w-3" />
+                          </Link>
+                          <button
+                            onClick={() => handleDelete(org.id, `${org.firstName} ${org.lastName}`)}
+                            className="p-1 text-red-600 hover:bg-red-50 rounded"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </button>
+                        </>
+                      )}
                     </div>
                   </div>
 
@@ -477,10 +484,6 @@ export default function OrganizationList() {
                     <div className="flex items-center justify-between">
                       <span className="text-gray-500">Category:</span>
                       <span className="text-gray-900">{org.organizationCategory?.categoryType || '-'}</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-500">Phone:</span>
-                      <span className="text-gray-900">{org.phoneNumber}</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-gray-500">Region:</span>

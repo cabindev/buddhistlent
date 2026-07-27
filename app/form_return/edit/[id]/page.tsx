@@ -1,5 +1,7 @@
 // app/form_return/edit/[id]/page.tsx
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
+import { getServerSession } from 'next-auth';
+import authOptions from '@/app/lib/configs/auth/authOptions';
 import { getFormReturnById } from '@/app/form_return/actions/get';
 import EditFormReturn from '@/components/form-return/EditFormReturn';
 
@@ -10,6 +12,11 @@ interface EditFormReturnPageProps {
 }
 
 export default async function EditFormReturnPage({ params }: EditFormReturnPageProps) {
+  const session = await getServerSession(authOptions);
+  if (!session || session.user.role !== 'admin') {
+    redirect('/auth/signin');
+  }
+
   const { id } = await params; // เพิ่ม await ตรงนี้
   const formId = parseInt(id);
   

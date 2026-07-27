@@ -1,14 +1,21 @@
 // app/organization/components/OrganizationView.tsx
 'use client';
 
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { Organization } from '@/types/organization';
-import { 
-  ArrowLeft, Edit, Building2, User, MapPin, Phone, 
+import {
+  ArrowLeft, Edit, Building2, User, MapPin, Phone,
   Users, Calendar, Tag, Image as ImageIcon, Download,
-  CheckCircle, Clock, FileText
+  CheckCircle, Clock, FileText, Eye, EyeOff
 } from 'lucide-react';
+
+function maskPhone(phone: string): string {
+  if (phone.length !== 10) return phone.replace(/./g, '•');
+  return `${phone.slice(0, 3)}-•••-••${phone.slice(-2)}`;
+}
 
 interface OrganizationViewProps {
   organization: Organization;
@@ -16,6 +23,9 @@ interface OrganizationViewProps {
 
 export default function OrganizationView({ organization }: OrganizationViewProps) {
   const router = useRouter();
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.role === 'admin';
+  const [phoneRevealed, setPhoneRevealed] = useState(false);
 
   const images = [
     organization.image1,
@@ -63,15 +73,17 @@ export default function OrganizationView({ organization }: OrganizationViewProps
               </div>
             </div>
             
-            <div className="flex items-center space-x-2">
-              <Link
-                href={`/organization/edit/${organization.id}`}
-                className="inline-flex items-center px-3 py-1.5 text-sm font-medium bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors duration-200"
-              >
-                <Edit className="h-4 w-4 mr-1" />
-                Edit
-              </Link>
-            </div>
+            {isAdmin && (
+              <div className="flex items-center space-x-2">
+                <Link
+                  href={`/organization/edit/${organization.id}`}
+                  className="inline-flex items-center px-3 py-1.5 text-sm font-medium bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors duration-200"
+                >
+                  <Edit className="h-4 w-4 mr-1" />
+                  Edit
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -206,12 +218,27 @@ export default function OrganizationView({ organization }: OrganizationViewProps
                 </div>
                 <div className="flex-1">
                   <p className="text-xs text-gray-500 mb-0.5">Phone Number | เบอร์โทรศัพท์</p>
-                  <a 
-                    href={`tel:${organization.phoneNumber}`}
-                    className="text-sm text-orange-600 hover:text-orange-700"
-                  >
-                    {organization.phoneNumber}
-                  </a>
+                  {isAdmin ? (
+                    <span className="inline-flex items-center gap-1.5">
+                      {phoneRevealed ? (
+                        <a
+                          href={`tel:${organization.phoneNumber}`}
+                          className="text-sm text-orange-600 hover:text-orange-700"
+                        >
+                          {organization.phoneNumber}
+                        </a>
+                      ) : (
+                        <span className="text-sm text-gray-500">{maskPhone(organization.phoneNumber)}</span>
+                      )}
+                      <button onClick={() => setPhoneRevealed(v => !v)}
+                        title={phoneRevealed ? 'ซ่อนเบอร์' : 'แสดงเบอร์'}
+                        className="text-gray-300 hover:text-gray-500">
+                        {phoneRevealed ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                      </button>
+                    </span>
+                  ) : (
+                    <span className="text-sm text-gray-400">ซ่อนเบอร์โทรศัพท์</span>
+                  )}
                 </div>
               </div>
 
@@ -369,14 +396,16 @@ export default function OrganizationView({ organization }: OrganizationViewProps
         {/* Actions */}
         <div className="bg-white border border-gray-200 rounded p-3">
           <div className="flex flex-col sm:flex-row gap-2 justify-center">
-            <Link
-              href={`/organization/edit/${organization.id}`}
-              className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors duration-200"
-            >
-              <Edit className="h-4 w-4 mr-1" />
-              Edit Data
-            </Link>
-            
+            {isAdmin && (
+              <Link
+                href={`/organization/edit/${organization.id}`}
+                className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors duration-200"
+              >
+                <Edit className="h-4 w-4 mr-1" />
+                Edit Data
+              </Link>
+            )}
+
             <button
               onClick={() => window.print()}
               className="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors duration-200"
