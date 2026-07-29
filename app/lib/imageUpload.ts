@@ -29,8 +29,10 @@ export async function uploadImage(file: File, organizationId?: number): Promise<
     const compressedFile = await compressImage(file);
     
     // สร้าง FormData
+    // ระบุชื่อไฟล์เดิมตรงๆ เพราะ browser-image-compression (useWebWorker: true)
+    // อาจคืนไฟล์ที่ไม่มีชื่อ ทำให้ FormData ตั้งชื่อ default เป็น "blob" (ไม่มีนามสกุล)
     const formData = new FormData();
-    formData.append('file', compressedFile);
+    formData.append('file', compressedFile, file.name);
     if (organizationId) {
       formData.append('organizationId', organizationId.toString());
     }

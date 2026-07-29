@@ -35,10 +35,22 @@ export async function uploadOrganizationImage(formData: FormData): Promise<{ suc
     }
     
     // สร้างชื่อไฟล์
+    // หมายเหตุ: file.name.split('.').pop() คืนค่าทั้งสตริงถ้าไม่มีจุดอยู่เลย (เช่น "blob"
+    // ที่ FormData ตั้ง default ให้ถ้าไม่ได้ระบุชื่อไฟล์) ทำให้ || 'jpg' ไม่ทำงาน
+    // ต้อง validate นามสกุลที่ได้กับ mimeToExt เสมอ ไม่ใช่แค่เช็คว่า falsy
+    const mimeToExt: Record<string, string> = {
+      'image/jpeg': 'jpg',
+      'image/jpg': 'jpg',
+      'image/png': 'png',
+      'image/webp': 'webp',
+    };
     const timestamp = Date.now();
     const random = Math.random().toString(36).substring(2, 8);
-    const extension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
-    
+    const rawExt = file.name.split('.').pop()?.toLowerCase() || '';
+    const extension = ['jpg', 'jpeg', 'png', 'webp'].includes(rawExt)
+      ? rawExt
+      : (mimeToExt[file.type] || 'jpg');
+
     const fileName = organizationId 
       ? `org_${organizationId}_${timestamp}_${random}.${extension}`
       : `temp_${timestamp}_${random}.${extension}`;
