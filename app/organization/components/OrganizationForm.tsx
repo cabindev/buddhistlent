@@ -2,7 +2,6 @@
 'use client';
 import { useState, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 import { ArrowLeft, Save, X, AlertTriangle, Building2, Upload, Image as ImageIcon, Trash2, Check } from 'lucide-react';
 import { OrganizationCategory } from '@/types/organization';
 import { RegionData } from '@/types/form-return';
@@ -473,8 +472,10 @@ export default function OrganizationForm({ organizationCategories, initialData, 
                     </p>
                     {validImageUrl ? (
                       <div className="relative w-full aspect-square rounded-xl overflow-hidden border border-gray-200 bg-gray-50">
-                        <Image src={validImageUrl} alt={`Image ${index}`} fill className="object-cover"
-                          sizes="(max-width: 768px) 50vw, 20vw"
+                        {/* ใช้ <img> ธรรมดาแทน next/image เพราะรูปเพิ่งอัปโหลดสดๆ
+                            การผ่าน Next Image Optimizer อาจ fetch ไฟล์ไม่ทันหรือพลาดได้ */}
+                        <img src={validImageUrl} alt={`Image ${index}`}
+                          className="absolute inset-0 w-full h-full object-cover"
                           onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                         <button type="button" onClick={() => handleImageRemove(index)}
                           className="absolute top-1.5 right-1.5 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-sm border border-gray-200 hover:border-gray-400 transition-colors z-10">
