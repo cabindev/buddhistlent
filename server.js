@@ -30,6 +30,27 @@ app.prepare().then(() => {
         }
     }));
     
+    // ✅ ตั้งค่าเสิร์ฟไฟล์ static สำหรับรูปภาพองค์กร (เดิมไม่มี route นี้ ทำให้ตกไปที่ Next handler
+    // แทน express.static เหมือน /images ส่งผลให้ Content-Type/cache ไม่สม่ำเสมอ)
+    server.use('/organization', express.static(path.join(__dirname, 'public/organization'), {
+        // redirect: false ป้องกัน redirect loop กับหน้า /organization (Next.js page route)
+        // ที่ใช้ path เดียวกันกับโฟลเดอร์รูปภาพ — ถ้าไม่เจอไฟล์ตรงกับ path นี้ ให้ผ่านไป Next handler เลย
+        redirect: false,
+        maxAge: dev ? 0 : '1d',
+        etag: true,
+        lastModified: true,
+        setHeaders: (res, filePath) => {
+            res.set('Access-Control-Allow-Origin', '*');
+            res.set('Access-Control-Allow-Methods', 'GET');
+
+            if (filePath.match(/\.(jpg|jpeg|png|webp|gif)$/i)) {
+                res.set('Cache-Control', dev ? 'no-cache' : 'public, max-age=86400');
+            }
+
+            res.set('X-Content-Type-Options', 'nosniff');
+        }
+    }));
+
     // ตั้งค่าเสิร์ฟไฟล์ static อื่นๆ
     server.use('/img', express.static(path.join(__dirname, 'public/img')));
     server.use('/covers', express.static(path.join(__dirname, 'public/covers')));
