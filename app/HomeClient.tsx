@@ -157,7 +157,7 @@ export default function HomeClient({ orgNames, totalOrganizations }: { orgNames:
 
           {/* Countdown Card */}
           <div className="bg-white border border-stone-200 rounded-3xl p-8 flex flex-col justify-between min-h-[200px] shadow-sm">
-            <div className="text-[10px] text-stone-400 tracking-widest uppercase w-full text-left">Countdown</div>
+            <div className="text-[10px] text-stone-400 tracking-widest uppercase w-full text-left">นับถอยหลัง</div>
             <div className="my-auto text-center flex flex-col items-center justify-center">
               <div className="text-7xl md:text-8xl font-bold tabular-nums tracking-tighter mb-2 bg-gradient-to-b from-amber-400 to-amber-600 bg-clip-text text-transparent">
                 {lent.days}
