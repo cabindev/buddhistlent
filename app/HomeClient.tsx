@@ -9,8 +9,8 @@ function useLentCountdown() {
   React.useEffect(() => {
     const calc = () => {
       const now = new Date();
-      const start = new Date('2026-07-31T00:00:00');
-      const end   = new Date('2026-10-27T23:59:59');
+      const start = new Date('2026-07-30T00:00:00');
+      const end   = new Date('2026-10-26T23:59:59');
       const total = (end.getTime() - start.getTime()) / 86400000;
       if (now < start) {
         const d = Math.ceil((start.getTime() - now.getTime()) / 86400000);
