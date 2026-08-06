@@ -14,9 +14,13 @@ interface SoberCheersItem {
   lastName: string;
   gender: string;
   birthday: string | Date;
+  addressLine1: string;
   village: string;
   moo: string;
+  district: string;
+  amphoe: string;
   province: string;
+  zipcode: string;
   type: string;
   job: string;
   affiliation: string;
@@ -27,6 +31,8 @@ interface SoberCheersItem {
   drinkingFrequency: string;
   intentPeriod: string;
   healthImpact: string;
+  previousYearParticipant: boolean | null;
+  createdAt: string | Date;
 }
 
 interface Filters { name: string; village: string; moo: string; province: string; type: string; job: string; affiliation: string; }
@@ -63,7 +69,14 @@ function clean(items: any[]): SoberCheersItem[] {
     type: item.type || '', job: item.job || '', affiliation: item.affiliation || '', phone: item.phone || '',
     drinkingFrequency: item.drinkingFrequency || '', intentPeriod: item.intentPeriod || '',
     healthImpact: item.healthImpact || '', birthday: item.birthday || new Date().toISOString(),
+    addressLine1: item.addressLine1 || '', district: item.district || '', amphoe: item.amphoe || '',
+    zipcode: item.zipcode || '',
   }));
+}
+
+function fmtDate(d: string | Date) {
+  try { return new Date(d).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' }); }
+  catch { return '-'; }
 }
 
 export default function SoberCheersTable() {
@@ -144,27 +157,47 @@ export default function SoberCheersTable() {
 
   const exportData = filtered.filter(d => selected.size === 0 || selected.has(d.id));
 
+  const exportRow = (d: SoberCheersItem) => ({
+    'ID': d.id,
+    'ชื่อ': d.firstName,
+    'นามสกุล': d.lastName,
+    'เพศ': d.gender || '-',
+    'วันเกิด': fmtDate(d.birthday),
+    'อายุ (ปี)': calcAge(d.birthday),
+    'เบอร์โทร': d.phone || '-',
+    'ที่อยู่': d.addressLine1 || '-',
+    'ชื่อหมู่บ้าน': d.village || '-',
+    'หมู่ที่': d.moo || '-',
+    'ตำบล': d.district || '-',
+    'อำเภอ': d.amphoe || '-',
+    'จังหวัด': d.province,
+    'รหัสไปรษณีย์': d.zipcode || '-',
+    'ภาค': d.type || '-',
+    'อาชีพ': d.job,
+    'สังกัด': d.affiliation || '-',
+    'การดื่มแอลกอฮอล์': d.alcoholConsumption,
+    'ความถี่ในการดื่ม': d.drinkingFrequency || '-',
+    'ค่าใช้จ่าย/เดือน (฿)': d.monthlyExpense || 0,
+    'ระยะเวลาที่ตั้งใจงด': d.intentPeriod || '-',
+    'แรงจูงใจ': parseMotivations(d.motivations),
+    'ผลกระทบต่อสุขภาพ': d.healthImpact || '-',
+    'เคยร่วมปีที่แล้ว': d.previousYearParticipant == null ? '-' : d.previousYearParticipant ? 'ใช่' : 'ไม่ใช่',
+    'วันที่ลงทะเบียน': fmtDate(d.createdAt),
+  });
+
   const handleCSV = () => {
-    const headers = ['ชื่อ-นามสกุล', 'เพศ', 'อายุ', 'หมู่ที่', 'ชื่อหมู่บ้าน', 'จังหวัด', 'ภาค', 'อาชีพ', 'สังกัด', 'การดื่ม', 'ค่าใช้จ่าย/เดือน', 'แรงจูงใจ'];
-    const rows = exportData.map(d => [
-      `"${d.firstName} ${d.lastName}"`, `"${d.gender}"`, calcAge(d.birthday),
-      `"${d.moo || '-'}"`, `"${d.village || '-'}"`,
-      `"${d.province}"`, `"${d.type}"`, `"${d.job}"`, `"${d.affiliation}"`, `"${d.alcoholConsumption}"`,
-      d.monthlyExpense || 0, `"${parseMotivations(d.motivations)}"`,
-    ].join(','));
-    const blob = new Blob(['﻿' + [headers.join(','), ...rows].join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const rowsData = exportData.map(exportRow);
+    if (rowsData.length === 0) return;
+    const headers = Object.keys(rowsData[0]);
+    const esc = (v: unknown) => `"${String(v ?? '').replace(/"/g, '""')}"`;
+    const lines = rowsData.map(row => headers.map(h => esc(row[h as keyof typeof row])).join(','));
+    const blob = new Blob(['﻿' + [headers.join(','), ...lines].join('\n')], { type: 'text/csv;charset=utf-8;' });
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
     a.download = `sober_${year}_${new Date().toISOString().split('T')[0]}.csv`; a.click();
   };
 
   const handleExcel = () => {
-    const ws = XLSX.utils.json_to_sheet(exportData.map(d => ({
-      'ชื่อ-นามสกุล': `${d.firstName} ${d.lastName}`, 'เพศ': d.gender,
-      'อายุ': `${calcAge(d.birthday)} ปี`, 'หมู่ที่': d.moo || '-', 'ชื่อหมู่บ้าน': d.village || '-',
-      'จังหวัด': d.province, 'ภาค': d.type,
-      'อาชีพ': d.job, 'สังกัด': d.affiliation, 'การดื่มแอลกอฮอล์': d.alcoholConsumption,
-      'ค่าใช้จ่าย/เดือน (฿)': d.monthlyExpense || 0, 'แรงจูงใจ': parseMotivations(d.motivations),
-    })));
+    const ws = XLSX.utils.json_to_sheet(exportData.map(exportRow));
     const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'SoberCheers');
     XLSX.writeFile(wb, `sober_${year}_${new Date().toISOString().split('T')[0]}.xlsx`);
   };

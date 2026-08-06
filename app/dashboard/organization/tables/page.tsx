@@ -20,6 +20,14 @@ function fmtDate(d: Date) {
   catch { return '-'; }
 }
 
+function fmtDateTime(d: Date) {
+  try {
+    return new Date(d).toLocaleString('th-TH', {
+      year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit',
+    });
+  } catch { return '-'; }
+}
+
 export default function OrganizationTablePage() {
   const currentYear = new Date().getFullYear();
   const [year, setYear] = useState(currentYear);
@@ -58,7 +66,7 @@ export default function OrganizationTablePage() {
 
   const filtered = data.filter(org => {
     const q = search.toLowerCase();
-    return (!q || `${org.firstName} ${org.lastName} ${org.phoneNumber}`.toLowerCase().includes(q))
+    return (!q || `${org.firstName} ${org.lastName} ${org.phoneNumber} ${org.addressLine1}`.toLowerCase().includes(q))
       && (!province || org.province === province)
       && (!categoryId || org.organizationCategoryId?.toString() === categoryId);
   });
@@ -80,25 +88,46 @@ export default function OrganizationTablePage() {
 
   const exportRows = filtered.filter(d => selected.size === 0 || selected.has(d.id));
 
+  // addressLine1 = ช่อง "ที่อยู่ / ชื่อองค์กร / ชื่อสถานศึกษา" ในฟอร์มลงทะเบียน
+  // organizationCategory.name = หมวดหมู่/โครงการที่สังกัด (ไม่ใช่ชื่อองค์กรของผู้ส่ง)
+  const exportRow = (o: Organization) => ({
+    'ID': o.id,
+    'ชื่อ': o.firstName,
+    'นามสกุล': o.lastName,
+    'เบอร์โทร': o.phoneNumber,
+    'ชื่อองค์กร/สถานศึกษา': o.addressLine1 || '-',
+    'หมวดหมู่/โครงการ': o.organizationCategory?.name || '-',
+    'ชื่อย่อหมวดหมู่': o.organizationCategory?.shortName || '-',
+    'ประเภทองค์กร': o.organizationCategory?.categoryType || '-',
+    'ตำบล': o.district,
+    'อำเภอ': o.amphoe,
+    'จังหวัด': o.province,
+    'รหัสไปรษณีย์': o.zipcode,
+    'ภูมิภาค': o.type,
+    'จำนวนผู้ลงนาม': o.numberOfSigners,
+    'จำนวนรูปภาพ': `${imgCount(o)}/5`,
+    'รูปภาพ 1': o.image1 || '-',
+    'รูปภาพ 2': o.image2 || '-',
+    'รูปภาพ 3': o.image3 || '-',
+    'รูปภาพ 4': o.image4 || '-',
+    'รูปภาพ 5': o.image5 || '-',
+    'วันที่บันทึก': fmtDateTime(o.createdAt),
+    'แก้ไขล่าสุด': fmtDateTime(o.updatedAt),
+  });
+
   const handleCSV = () => {
-    const headers = ['ชื่อ-นามสกุล', 'เบอร์โทร', 'องค์กร', 'จังหวัด', 'ภูมิภาค', 'ผู้ลงนาม', 'รูปภาพ', 'วันที่'];
-    const rows = exportRows.map(o => [
-      `"${o.firstName} ${o.lastName}"`, `"${o.phoneNumber}"`,
-      `"${o.organizationCategory?.name || '-'}"`, `"${o.province}"`, `"${o.type}"`,
-      o.numberOfSigners, imgCount(o), `"${fmtDate(o.createdAt)}"`,
-    ].join(','));
-    const blob = new Blob(['﻿' + [headers.join(','), ...rows].join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const data = exportRows.map(exportRow);
+    if (data.length === 0) return;
+    const headers = Object.keys(data[0]);
+    const esc = (v: unknown) => `"${String(v ?? '').replace(/"/g, '""')}"`;
+    const lines = data.map(row => headers.map(h => esc(row[h as keyof typeof row])).join(','));
+    const blob = new Blob(['﻿' + [headers.join(','), ...lines].join('\n')], { type: 'text/csv;charset=utf-8;' });
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
     a.download = `org_${year}_${new Date().toISOString().split('T')[0]}.csv`; a.click();
   };
 
   const handleExcel = () => {
-    const ws = XLSX.utils.json_to_sheet(exportRows.map(o => ({
-      'ชื่อ-นามสกุล': `${o.firstName} ${o.lastName}`, 'เบอร์โทร': o.phoneNumber,
-      'องค์กร': o.organizationCategory?.name || '-', 'จังหวัด': o.province,
-      'ภูมิภาค': o.type, 'ผู้ลงนาม': o.numberOfSigners,
-      'รูปภาพ': `${imgCount(o)}/5`, 'วันที่': fmtDate(o.createdAt),
-    })));
+    const ws = XLSX.utils.json_to_sheet(exportRows.map(exportRow));
     const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, 'Organizations');
     XLSX.writeFile(wb, `org_${year}_${new Date().toISOString().split('T')[0]}.xlsx`);
   };
@@ -207,7 +236,7 @@ export default function OrganizationTablePage() {
                     />
                   </th>
                   <th className="px-4 py-3 text-left">ผู้ติดต่อ</th>
-                  <th className="px-4 py-3 text-left">องค์กร</th>
+                  <th className="px-4 py-3 text-left">ชื่อองค์กร/สถานศึกษา</th>
                   <th className="px-4 py-3 text-left">จังหวัด</th>
                   <th className="px-4 py-3 text-left">ภูมิภาค</th>
                   <th className="px-4 py-3 text-center">ผู้ลงนาม</th>
@@ -227,9 +256,9 @@ export default function OrganizationTablePage() {
                       <div className="font-medium text-gray-900">{org.firstName} {org.lastName}</div>
                       <div className="text-xs text-gray-400 mt-0.5">{org.phoneNumber}</div>
                     </td>
-                    <td className="px-4 py-3 text-gray-600 max-w-[180px]">
-                      <div className="truncate">{org.organizationCategory?.name || '—'}</div>
-                      <div className="text-xs text-gray-400 truncate">{org.organizationCategory?.categoryType || ''}</div>
+                    <td className="px-4 py-3 text-gray-600 max-w-[220px]">
+                      <div className="truncate" title={org.addressLine1}>{org.addressLine1 || '—'}</div>
+                      <div className="text-xs text-gray-400 truncate">{org.organizationCategory?.name || ''}</div>
                     </td>
                     <td className="px-4 py-3 text-gray-600">{org.province}</td>
                     <td className="px-4 py-3 text-gray-500">{org.type}</td>
