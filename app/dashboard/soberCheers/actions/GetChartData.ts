@@ -268,6 +268,41 @@ export async function getAffiliationChartData(year?: number, zone?: string): Pro
   }
 }
 
+// ── Affiliation breakdown (ทุกสังกัด ไม่ตัด top 15 — ใช้แสดงตัวเลขรายสังกัด) ──
+export interface AffiliationBreakdown {
+  items: { name: string; value: number }[];
+  totalAffiliations: number;
+  totalParticipants: number;
+  unspecified: number;
+}
+
+export async function getAffiliationBreakdown(year?: number, zone?: string): Promise<ChartResult<AffiliationBreakdown>> {
+  try {
+    const where = baseWhere(year, zone);
+    const [rows, totalParticipants] = await Promise.all([
+      prisma.soberCheers.groupBy({
+        by: ['affiliation'], where,
+        _count: { _all: true },
+      }),
+      prisma.soberCheers.count({ where }),
+    ]);
+
+    // รวมค่าว่าง/null เป็น "ไม่ระบุ" แยกออกจากรายการสังกัดจริง
+    let unspecified = 0;
+    const items: { name: string; value: number }[] = [];
+    rows.forEach(r => {
+      const name = (r.affiliation || '').trim();
+      if (!name) unspecified += r._count._all;
+      else items.push({ name, value: r._count._all });
+    });
+    items.sort((a, b) => b.value - a.value);
+
+    return { success: true, data: { items, totalAffiliations: items.length, totalParticipants, unspecified } };
+  } catch (error) {
+    return { success: false, error: error instanceof Error ? error.message : 'Failed' };
+  }
+}
+
 // ── Motivations ────────────────────────────────────────────────────────────
 export async function getMotivationsChartData(year?: number, zone?: string): Promise<ChartResult<{ motivationCounts: Record<string, number>; totalResponses: number }>> {
   try {

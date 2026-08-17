@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { getDashboardSummary, getTotalCount, getAvailableSoberCheersYears } from '../actions/GetChartData';
+import { getDashboardSummary, getTotalCount, getAvailableSoberCheersYears, getAffiliationBreakdown, AffiliationBreakdown } from '../actions/GetChartData';
 
 const ZONES = [
   'กรุงเทพมหานคร', 'กลาง', 'ตะวันตก', 'ตะวันออก', 'อีสานบน',
@@ -36,6 +36,70 @@ function StatCard({ label, value, unit, loading }: { label: string; value: strin
   );
 }
 
+// ── Affiliation breakdown — จำนวนคนของแต่ละสังกัด ──────────────────────────
+function AffiliationBreakdownCard({ data, loading }: { data: AffiliationBreakdown | null; loading?: boolean }) {
+  const [expanded, setExpanded] = useState(false);
+  const COLLAPSED = 8;
+
+  if (loading) {
+    return (
+      <div className="bg-white border border-[oklch(95%_0.196_126.665)] rounded-lg px-5 py-4 space-y-2">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="h-4 bg-[oklch(97%_0.196_126.665)] rounded animate-pulse" />
+        ))}
+      </div>
+    );
+  }
+
+  if (!data || data.items.length === 0) {
+    return (
+      <div className="bg-white border border-[oklch(95%_0.196_126.665)] rounded-lg px-5 py-8 text-center text-xs text-black/40">
+        ไม่มีข้อมูลสังกัด
+      </div>
+    );
+  }
+
+  const max = data.items[0].value;
+  const shown = expanded ? data.items : data.items.slice(0, COLLAPSED);
+  const pct = (v: number) => data.totalParticipants ? (v / data.totalParticipants) * 100 : 0;
+
+  return (
+    <div className="bg-white border border-[oklch(95%_0.196_126.665)] rounded-lg overflow-hidden">
+      <div className="px-5 py-3 border-b border-[oklch(97%_0.196_126.665)] flex items-center justify-between gap-3">
+        <h3 className="text-xs font-medium text-black">จำนวนผู้ลงทะเบียนแต่ละสังกัด</h3>
+        <span className="text-[11px] text-black/40">
+          {data.totalAffiliations.toLocaleString()} สังกัด
+          {data.unspecified > 0 && ` · ไม่ระบุ ${data.unspecified.toLocaleString()} คน`}
+        </span>
+      </div>
+
+      <div className="divide-y divide-[oklch(97%_0.196_126.665)]">
+        {shown.map((item, i) => (
+          <div key={item.name} className="px-5 py-2.5 flex items-center gap-3">
+            <span className="w-5 text-[11px] text-black/30 tabular-nums">{i + 1}</span>
+            <span className="flex-1 min-w-0 text-xs text-black/70 truncate" title={item.name}>{item.name}</span>
+            <div className="hidden sm:block w-32 h-1.5 bg-[oklch(97%_0.196_126.665)] rounded-full overflow-hidden">
+              <div className="h-full bg-[oklch(68%_0.196_126.665)] rounded-full"
+                style={{ width: `${max ? (item.value / max) * 100 : 0}%` }} />
+            </div>
+            <span className="w-20 text-right text-xs font-medium text-black tabular-nums">
+              {item.value.toLocaleString()} <span className="text-[11px] font-normal text-black/40">คน</span>
+            </span>
+            <span className="w-12 text-right text-[11px] text-black/40 tabular-nums">{pct(item.value).toFixed(1)}%</span>
+          </div>
+        ))}
+      </div>
+
+      {data.items.length > COLLAPSED && (
+        <button onClick={() => setExpanded(!expanded)}
+          className="w-full px-5 py-2.5 text-[11px] text-black/50 hover:text-[oklch(56%_0.196_126.665)] hover:bg-[oklch(97%_0.196_126.665)] border-t border-[oklch(97%_0.196_126.665)] transition-colors">
+          {expanded ? 'ย่อรายการ' : `ดูทั้งหมด ${data.items.length.toLocaleString()} สังกัด`}
+        </button>
+      )}
+    </div>
+  );
+}
+
 // ── Chart Card ─────────────────────────────────────────────────────────────
 function ChartCard({ title, children, className = '', minHeight = 'min-h-[360px]' }: {
   title: string; children: React.ReactNode; className?: string; minHeight?: string;
@@ -57,15 +121,18 @@ export default function DashboardSober() {
   const [years, setYears] = useState<number[]>([currentYear]);
   const [zone, setZone] = useState('');
   const [stats, setStats] = useState({ totalParticipants: 0, totalProvinces: 0, totalRegions: 0, avgAge: 0 });
+  const [affiliations, setAffiliations] = useState<AffiliationBreakdown | null>(null);
   const [loading, setLoading] = useState(true);
 
   const loadStats = async (y: number, z: string) => {
     setLoading(true);
-    const [sumResult, availYears] = await Promise.all([
+    const [sumResult, affResult, availYears] = await Promise.all([
       getDashboardSummary(y, z || undefined),
+      getAffiliationBreakdown(y, z || undefined),
       getAvailableSoberCheersYears(),
     ]);
     if (sumResult.success && sumResult.data) setStats(sumResult.data);
+    setAffiliations(affResult.success && affResult.data ? affResult.data : null);
     setYears([...new Set([...availYears, currentYear])].sort());
     setLoading(false);
   };
@@ -107,12 +174,16 @@ export default function DashboardSober() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         <StatCard label="ผู้ลงทะเบียนทั้งหมด" value={stats.totalParticipants} unit="คน" loading={loading} />
         <StatCard label="จังหวัดที่เข้าร่วม" value={stats.totalProvinces} unit="จังหวัด" loading={loading} />
         <StatCard label="ภูมิภาคที่เข้าร่วม" value={stats.totalRegions} unit="ภาค" loading={loading} />
+        <StatCard label="สังกัดที่เข้าร่วม" value={affiliations?.totalAffiliations ?? 0} unit="สังกัด" loading={loading} />
         <StatCard label="อายุเฉลี่ย" value={stats.avgAge} unit="ปี" loading={loading} />
       </div>
+
+      {/* จำนวนผู้ลงทะเบียนแยกตามสังกัด */}
+      <AffiliationBreakdownCard data={affiliations} loading={loading} />
 
       {/* Charts — ส่ง year+zone ให้ทุก component, key บังคับ re-mount เมื่อเปลี่ยนตัวกรอง */}
       <div key={`${year}-${zone}`}>
