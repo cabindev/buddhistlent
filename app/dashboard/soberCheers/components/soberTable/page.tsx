@@ -35,7 +35,14 @@ interface SoberCheersItem {
   createdAt: string | Date;
 }
 
-interface Filters { name: string; village: string; moo: string; province: string; type: string; job: string; affiliation: string; }
+interface Filters { name: string; village: string; moo: string; type: string; province: string; amphoe: string; district: string; job: string; affiliation: string; }
+
+const EMPTY_FILTERS: Filters = { name: '', village: '', moo: '', type: '', province: '', amphoe: '', district: '', job: '', affiliation: '' };
+
+const FILTER_LABELS: Record<keyof Filters, string> = {
+  name: 'ชื่อ', village: 'หมู่บ้าน', moo: 'หมู่ที่', type: 'ภาค', province: 'จังหวัด',
+  amphoe: 'อำเภอ', district: 'ตำบล', job: 'อาชีพ', affiliation: 'สังกัด',
+};
 
 const PAGE_SIZE = 20;
 
@@ -88,7 +95,7 @@ export default function SoberCheersTable() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [filters, setFilters] = useState<Filters>({ name: '', village: '', moo: '', province: '', type: '', job: '', affiliation: '' });
+  const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
   const [showFilters, setShowFilters] = useState(false);
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [page, setPage] = useState(1);
@@ -104,7 +111,7 @@ export default function SoberCheersTable() {
     setError(null);
     setSelected(new Set());
     setRevealedPhones(new Set());
-    setFilters({ name: '', village: '', moo: '', province: '', type: '', job: '', affiliation: '' });
+    setFilters(EMPTY_FILTERS);
     setPage(1);
 
     const [res, availYears] = await Promise.all([
@@ -126,11 +133,40 @@ export default function SoberCheersTable() {
     (!filters.name || `${item.firstName} ${item.lastName}`.toLowerCase().includes(filters.name.toLowerCase())) &&
     (!filters.village || item.village === filters.village) &&
     (!filters.moo || item.moo === filters.moo) &&
-    (!filters.province || item.province === filters.province) &&
     (!filters.type || item.type === filters.type) &&
+    (!filters.province || item.province === filters.province) &&
+    (!filters.amphoe || item.amphoe === filters.amphoe) &&
+    (!filters.district || item.district === filters.district) &&
     (!filters.job || item.job === filters.job) &&
     (!filters.affiliation || item.affiliation === filters.affiliation)
   );
+
+  // ตัวเลือกแบบไล่ระดับ: ภาค → จังหวัด → อำเภอ → ตำบล
+  const regionRows = filters.type ? data.filter(d => d.type === filters.type) : data;
+  const provinceRows = filters.province ? regionRows.filter(d => d.province === filters.province) : regionRows;
+  const amphoeRows = filters.amphoe ? provinceRows.filter(d => d.amphoe === filters.amphoe) : provinceRows;
+  const areaRows = filters.district ? amphoeRows.filter(d => d.district === filters.district) : amphoeRows;
+
+  const typeOptions = getUnique(data, 'type');
+  const provinceOptions = getUnique(regionRows, 'province');
+  const amphoeOptions = getUnique(provinceRows, 'amphoe');
+  const districtOptions = getUnique(amphoeRows, 'district');
+  const affiliationOptions = getUnique(areaRows, 'affiliation');
+  const villageOptions = getUnique(areaRows, 'village');
+  const mooOptions = getUnique(areaRows, 'moo');
+  const jobOptions = getUnique(areaRows, 'job');
+
+  // เลือกระดับบน → ล้างระดับล่างที่ไม่เกี่ยวข้องออก
+  const setFilter = (patch: Partial<Filters>) => {
+    setFilters(f => {
+      const next = { ...f, ...patch };
+      if (patch.type !== undefined) { next.province = ''; next.amphoe = ''; next.district = ''; }
+      if (patch.province !== undefined) { next.amphoe = ''; next.district = ''; }
+      if (patch.amphoe !== undefined) { next.district = ''; }
+      return next;
+    });
+    setPage(1);
+  };
 
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
   const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
@@ -255,45 +291,67 @@ export default function SoberCheersTable() {
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
               <input type="text" placeholder="ค้นหาชื่อ..." value={filters.name}
-                onChange={e => { setFilters(f => ({ ...f, name: e.target.value })); setPage(1); }}
+                onChange={e => setFilter({ name: e.target.value })}
                 className="pl-9 pr-3 py-2 w-full text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[oklch(80%_0.196_126.665)] bg-white" />
             </div>
-            <select value={filters.village} onChange={e => { setFilters(f => ({ ...f, village: e.target.value })); setPage(1); }}
+            <select value={filters.type} onChange={e => setFilter({ type: e.target.value })}
               className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[oklch(80%_0.196_126.665)] bg-white">
-              <option value="">ชื่อหมู่บ้าน ({getUnique(data, 'village').length})</option>
-              {getUnique(data, 'village').map(v => <option key={v} value={v}>{v}</option>)}
+              <option value="">ภาค ({typeOptions.length})</option>
+              {typeOptions.map(v => <option key={v} value={v}>{v}</option>)}
             </select>
-            <select value={filters.moo} onChange={e => { setFilters(f => ({ ...f, moo: e.target.value })); setPage(1); }}
+            <select value={filters.province} onChange={e => setFilter({ province: e.target.value })}
               className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[oklch(80%_0.196_126.665)] bg-white">
-              <option value="">หมู่ที่ ({getUnique(data, 'moo').length})</option>
-              {getUnique(data, 'moo').map(v => <option key={v} value={v}>{v}</option>)}
+              <option value="">จังหวัด ({provinceOptions.length})</option>
+              {provinceOptions.map(v => <option key={v} value={v}>{v}</option>)}
             </select>
-            <select value={filters.province} onChange={e => { setFilters(f => ({ ...f, province: e.target.value })); setPage(1); }}
+            <select value={filters.amphoe} onChange={e => setFilter({ amphoe: e.target.value })}
               className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[oklch(80%_0.196_126.665)] bg-white">
-              <option value="">จังหวัด ({getUnique(data, 'province').length})</option>
-              {getUnique(data, 'province').map(v => <option key={v} value={v}>{v}</option>)}
+              <option value="">อำเภอ ({amphoeOptions.length})</option>
+              {amphoeOptions.map(v => <option key={v} value={v}>{v}</option>)}
             </select>
-            <select value={filters.type} onChange={e => { setFilters(f => ({ ...f, type: e.target.value })); setPage(1); }}
+            <select value={filters.district} onChange={e => setFilter({ district: e.target.value })}
               className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[oklch(80%_0.196_126.665)] bg-white">
-              <option value="">ภาค ({getUnique(data, 'type').length})</option>
-              {getUnique(data, 'type').map(v => <option key={v} value={v}>{v}</option>)}
+              <option value="">ตำบล ({districtOptions.length})</option>
+              {districtOptions.map(v => <option key={v} value={v}>{v}</option>)}
             </select>
-            <select value={filters.job} onChange={e => { setFilters(f => ({ ...f, job: e.target.value })); setPage(1); }}
+            <select value={filters.affiliation} onChange={e => setFilter({ affiliation: e.target.value })}
               className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[oklch(80%_0.196_126.665)] bg-white">
-              <option value="">อาชีพ ({getUnique(data, 'job').length})</option>
-              {getUnique(data, 'job').map(v => <option key={v} value={v}>{v}</option>)}
+              <option value="">สังกัด ({affiliationOptions.length})</option>
+              {affiliationOptions.map(v => <option key={v} value={v}>{v}</option>)}
             </select>
-            <select value={filters.affiliation} onChange={e => { setFilters(f => ({ ...f, affiliation: e.target.value })); setPage(1); }}
+            <select value={filters.village} onChange={e => setFilter({ village: e.target.value })}
               className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[oklch(80%_0.196_126.665)] bg-white">
-              <option value="">สังกัด ({getUnique(data, 'affiliation').length})</option>
-              {getUnique(data, 'affiliation').map(v => <option key={v} value={v}>{v}</option>)}
+              <option value="">ชื่อหมู่บ้าน ({villageOptions.length})</option>
+              {villageOptions.map(v => <option key={v} value={v}>{v}</option>)}
+            </select>
+            <select value={filters.moo} onChange={e => setFilter({ moo: e.target.value })}
+              className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[oklch(80%_0.196_126.665)] bg-white">
+              <option value="">หมู่ที่ ({mooOptions.length})</option>
+              {mooOptions.map(v => <option key={v} value={v}>{v}</option>)}
+            </select>
+            <select value={filters.job} onChange={e => setFilter({ job: e.target.value })}
+              className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[oklch(80%_0.196_126.665)] bg-white">
+              <option value="">อาชีพ ({jobOptions.length})</option>
+              {jobOptions.map(v => <option key={v} value={v}>{v}</option>)}
             </select>
           </div>
           {activeFilterCount > 0 && (
-            <button onClick={() => { setFilters({ name: '', village: '', moo: '', province: '', type: '', job: '', affiliation: '' }); setPage(1); }}
-              className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700">
-              <X className="w-3 h-3" /> ล้างตัวกรอง
-            </button>
+            <div className="flex flex-wrap items-center gap-2">
+              {(Object.entries(filters) as [keyof Filters, string][])
+                .filter(([, v]) => v)
+                .map(([k, v]) => (
+                  <span key={k} className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-white border border-gray-200 rounded-full text-gray-700">
+                    <span className="text-gray-400">{FILTER_LABELS[k]}:</span> {v}
+                    <button onClick={() => setFilter({ [k]: '' } as Partial<Filters>)} className="text-gray-300 hover:text-gray-600">
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                ))}
+              <button onClick={() => { setFilters(EMPTY_FILTERS); setPage(1); }}
+                className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700">
+                <X className="w-3 h-3" /> ล้างตัวกรองทั้งหมด
+              </button>
+            </div>
           )}
         </div>
       )}
@@ -337,7 +395,7 @@ export default function SoberCheersTable() {
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">ชื่อ-นามสกุล</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">เพศ / อายุ</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">หมู่บ้าน</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">จังหวัด / ภาค</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">จังหวัด / อำเภอ / ภาค</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">อาชีพ</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">สังกัด</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">สถานะการดื่ม</th>
@@ -375,6 +433,11 @@ export default function SoberCheersTable() {
                     </td>
                     <td className="px-4 py-3 text-gray-700">
                       <div>{item.province}</div>
+                      {(item.district || item.amphoe) && (
+                        <div className="text-xs text-gray-400">
+                          {[item.district && `ต.${item.district}`, item.amphoe && `อ.${item.amphoe}`].filter(Boolean).join(' ')}
+                        </div>
+                      )}
                       <div className="text-xs text-gray-400">{item.type}</div>
                     </td>
                     <td className="px-4 py-3 text-gray-700">{item.job}</td>
@@ -453,6 +516,7 @@ export default function SoberCheersTable() {
               <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs mt-3 pt-3 border-t border-gray-100">
                 <div><span className="text-gray-400">เพศ/อายุ:</span> <span className="text-gray-700">{item.gender} · {calcAge(item.birthday)} ปี</span></div>
                 <div><span className="text-gray-400">จังหวัด/ภาค:</span> <span className="text-gray-700">{item.province} / {item.type}</span></div>
+                <div><span className="text-gray-400">ตำบล/อำเภอ:</span> <span className="text-gray-700">{item.district || '-'} / {item.amphoe || '-'}</span></div>
                 <div><span className="text-gray-400">หมู่บ้าน:</span> <span className="text-gray-700">{item.village || '-'}{item.moo ? ` หมู่ ${item.moo}` : ''}</span></div>
                 <div><span className="text-gray-400">อาชีพ:</span> <span className="text-gray-700">{item.job}</span></div>
                 <div><span className="text-gray-400">สังกัด:</span> <span className="text-gray-700">{item.affiliation || '-'}</span></div>

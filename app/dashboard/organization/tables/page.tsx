@@ -38,6 +38,7 @@ export default function OrganizationTablePage() {
   const [loading, setLoading] = useState(true);
 
   const [search, setSearch] = useState('');
+  const [region, setRegion] = useState('');
   const [province, setProvince] = useState('');
   const [categoryId, setCategoryId] = useState('');
   const [showFilters, setShowFilters] = useState(false);
@@ -67,16 +68,24 @@ export default function OrganizationTablePage() {
   const filtered = data.filter(org => {
     const q = search.toLowerCase();
     return (!q || `${org.firstName} ${org.lastName} ${org.phoneNumber} ${org.addressLine1}`.toLowerCase().includes(q))
+      && (!region || org.type === region)
       && (!province || org.province === province)
       && (!categoryId || org.organizationCategoryId?.toString() === categoryId);
   });
 
-  const provinces = [...new Set(data.map(d => d.province).filter(Boolean))].sort();
+  const regions = [...new Set(data.map(d => d.type).filter(Boolean))].sort();
+  // จังหวัดที่เลือกได้ ขึ้นกับภาคที่เลือกอยู่
+  const provinces = [...new Set(
+    data.filter(d => !region || d.type === region).map(d => d.province).filter(Boolean)
+  )].sort();
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
   const rows = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
+  // เปลี่ยนภาค → ล้างจังหวัดที่เลือกไว้ (อาจไม่อยู่ในภาคใหม่)
+  const handleRegionChange = (value: string) => { setRegion(value); setProvince(''); setPage(1); };
+
   const toggle = (id: number) => setSelected(p => { const n = new Set(p); n.has(id) ? n.delete(id) : n.add(id); return n; });
-  const activeFilters = [search, province, categoryId].filter(Boolean).length;
+  const activeFilters = [search, region, province, categoryId].filter(Boolean).length;
 
   const handleDelete = async (id: number, name: string) => {
     if (!confirm(`ลบ "${name}" ใช่ไหม?`)) return;
@@ -194,6 +203,12 @@ export default function OrganizationTablePage() {
       {showFilters && (
         <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-3">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <select value={region} onChange={e => handleRegionChange(e.target.value)}
+              className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white"
+            >
+              <option value="">ภาค ({regions.length})</option>
+              {regions.map(r => <option key={r} value={r}>{r}</option>)}
+            </select>
             <select value={province} onChange={e => { setProvince(e.target.value); setPage(1); }}
               className="px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white"
             >
@@ -208,7 +223,7 @@ export default function OrganizationTablePage() {
             </select>
           </div>
           {activeFilters > 0 && (
-            <button onClick={() => { setSearch(''); setProvince(''); setCategoryId(''); setPage(1); }}
+            <button onClick={() => { setSearch(''); setRegion(''); setProvince(''); setCategoryId(''); setPage(1); }}
               className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700">
               <X className="w-3 h-3" /> ล้างตัวกรอง
             </button>
